@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Academy - تعلم الرسوم البيانية باحتراف</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'x-primary': '#099999',
+                        'x-primary-dark': '#067a7a',
+                        'x-secondary': '#fbbf24',
+                        'x-light': '#f0fdfa',
+                        'x-dark': '#0f172a',
+                        'excel-green': '#107c41',
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'ui-sans-serif', 'system-ui'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'bounce-short': 'bounceShort 0.5s ease-in-out 1',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        bounceShort: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
+        
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: white; padding: 12px 24px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transform: translateY(-20px); transition: all 0.4s; pointer-events: auto; display: flex; align-items: center; gap: 10px; }
+        .dark .toast { background: #1e293b; color: #f1f5f9; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { border-left: 5px solid #099999; }
+        .toast.error { border-left: 5px solid #ef4444; }
+
+        .active-link { background-color: #099999 !important; color: white !important; border-right: 4px solid #fbbf24; }
+        html[dir="ltr"] .active-link { border-right: none; border-left: 4px solid #fbbf24; }
+
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; animation: fadeIn 0.3s ease-out; }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 20px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .dark .modal-content { background: #1e293b; color: #f1f5f9; }
+        
+        .chart-btn:hover { transform: scale(1.05); }
+        
+        aside::-webkit-scrollbar { width: 6px; }
+        aside::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .dark aside::-webkit-scrollbar-thumb { background-color: #475569; }
+    </style>
+</head>
+<body class="bg-x-light dark:bg-x-dark text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <div id="name-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content text-center">
+            <div class="inline-block mb-4">
+               <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-28 w-auto mx-auto block dark:hidden" alt="X Academy">
+               
+               <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" class="h-28 w-auto mx-auto hidden dark:block" alt="X Academy">
+            </div>
+            <h2 id="modal-title" class="text-3xl font-black mb-2">يا هلا بيك!</h2>
+            <p id="modal-desc" class="text-gray-600 dark:text-gray-300 mb-6">سجل اسمك عشان نبلش رحلة الاحتراف.</p>
+            <form id="name-form" class="space-y-4">
+                <input type="text" id="user-name" class="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-transparent text-center text-lg focus:border-x-primary outline-none" placeholder="..." required autofocus>
+                <button type="submit" id="modal-btn" class="w-full bg-x-primary hover:bg-x-primary-dark text-white font-bold py-4 rounded-xl transition shadow-lg">يلا نبلش 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur shadow-sm border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" onclick="renderContent('hero')" class="flex items-center gap-2 group transition-transform hover:scale-105">
+                <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" 
+                     alt="X Academy" 
+                     class="h-16 w-auto block dark:hidden">
+                
+                <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" 
+                     alt="X Academy" 
+                     class="h-16 w-auto hidden dark:block">
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <div id="user-info" class="hidden md:flex items-center gap-3">
+                    <span id="header-username" class="font-bold text-sm text-x-primary"></span>
+                </div>
+                <button onclick="toggleLanguage()" class="px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-bold flex items-center gap-2 transition">
+                    <i data-lucide="languages" class="w-4 h-4"></i>
+                    <span id="lang-text">English</span>
+                </button>
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    <i data-lucide="moon" class="w-5 h-5 hidden dark:inline"></i>
+                    <i data-lucide="sun" class="w-5 h-5 dark:hidden"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto flex flex-col lg:flex-row p-4 gap-6 mt-2 flex-grow w-full">
+        <aside class="w-full lg:w-72 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 h-fit lg:sticky lg:top-24 max-h-[85vh] overflow-y-auto">
+            <div class="mb-6 text-center">
+                <div class="inline-block relative">
+                    <svg class="w-24 h-24 transform -rotate-90">
+                        <circle cx="48" cy="48" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" class="dark:stroke-gray-700"/>
+                        <circle id="progress-circle" cx="48" cy="48" r="45" fill="none" stroke="#099999" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="283" class="transition-all duration-1000"/>
+                    </svg>
+                    <span id="progress-text" class="absolute inset-0 flex items-center justify-center font-bold text-xl">0%</span>
+                </div>
+                <p id="progress-label" class="text-sm font-medium mt-2 text-gray-500">مستوى الإنجاز</p>
+            </div>
+            <nav id="lesson-nav" class="space-y-2"></nav>
+        </aside>
+
+        <section id="content-container" class="flex-grow bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 min-h-[70vh]">
+            </section>
+    </main>
+
+    <div id="certificate-modal" style="display: none;" class="modal-overlay">
+        <div id="certificate-content" class="bg-white dark:bg-gray-800 p-10 rounded-xl max-w-3xl w-full text-center relative border-8 border-double border-x-primary shadow-2xl">
+            <button onclick="document.getElementById('certificate-modal').style.display = 'none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition" data-html2canvas-ignore="true">
+                <i data-lucide="x-circle" class="w-8 h-8"></i>
+            </button>
+            
+            <div class="mb-8 flex justify-center">
+                 <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-32 w-auto block dark:hidden">
+                 <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" class="h-32 w-auto hidden dark:block">
+            </div>
+
+            <h2 id="cert-header" class="text-4xl font-bold text-x-primary mb-2">شهادة إتمام الدرس</h2>
+            <p id="cert-sub" class="text-xl text-gray-600 dark:text-gray-300">تشهد منصة X Academy بأن</p>
+            <h1 id="cert-name" class="text-5xl font-black text-gray-800 dark:text-white my-6 border-b-2 border-x-secondary inline-block pb-2 px-10">...</h1>
+            <p id="cert-desc" class="text-lg text-gray-600 dark:text-gray-300">قد أتم بنجاح درس <span class="font-bold text-x-primary">احتراف الرسوم البيانية في Excel</span></p>
+            <p class="text-sm text-gray-400 mt-8 font-mono">Date: <span id="cert-date"></span></p>
+            
+            <button onclick="downloadPNG()" class="mt-8 bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-8 rounded-xl transition transform hover:scale-105 flex items-center justify-center gap-2 mx-auto" data-html2canvas-ignore="true">
+                <i data-lucide="download" class="inline w-5 h-5"></i> تحميل الشهادة (PNG)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== الترجمات (لهجة أردنية) ====================
+        const t = {
+            ar: {
+                modal: { title: 'يا هلا بيك في X Academy!', desc: 'سجل اسمك يا غالي عشان نبلش صح.', btn: 'يلا نبلش 🚀', ph: 'اكتب اسمك هون' },
+                hero: { 
+                    title: 'X Charts', 
+                    subtitle: 'دورة تفاعلية بتخليك حوت في الرسوم البيانية.',
+                    welcome: 'يا هلا بـ',
+                    desc: 'في هالدورة رح تفهم كل أنواع المخططات (الـ 8 أنواع) ومتى تستخدم كل واحد، مع محاكاة وتطبيق عملي عشان تثبت المعلومة.',
+                    btnStart: 'بلش الدورة',
+                    features: { v: 'شوف بعينك', v_desc: 'حول الأرقام الجامدة لرسمات بتحكي.', s: 'تطبيق عملي', s_desc: 'اختار الرسم الصح وشوف النتيجة قدامك.', c: 'شهادة مرتبة', c_desc: 'بس تخلص وتنجح الك شهادة باسمك.' }
+                },
+                nav: {
+                    hero: 'الرئيسية',
+                    comparison: '١. المقارنات',
+                    trends: '٢. الاتجاهات (الزمن)',
+                    proportions: '٣. النسب (الأجزاء)',
+                    relationships: '٤. العلاقات المعقدة',
+                    quiz: '٥. الاختبار النهائي'
+                },
+                common: {
+                    progress: 'مستوى الإنجاز',
+                    lesson: 'درس',
+                    learn: 'شو رح تتعلم؟',
+                    task: 'تحدي عملي',
+                    taskSub: 'المطلوب: اختار الرسم البياني الأنسب للبيانات',
+                    scenario: 'القصة:',
+                    data: 'البيانات الموجودة:',
+                    choose: 'اختار نوع الـ Chart المناسب:',
+                    placeholder: 'اختار جواب عشان نرسم الرسمة هون',
+                    next: 'الدرس التالي',
+                    correct: 'وحش! إجابة صحيحة.',
+                    wrong: 'لاحظ الرسمة.. مش ضابطة صح؟ جرب غيرها.',
+                    submit: 'سلم الاختبار',
+                    review: 'راجع الدروس',
+                    check: 'تحقق من الإجابة',
+                    cert: { h: 'شهادة إتمام الدورة', s: 'تشهد منصة X Academy بأن', d: 'قد أتم بنجاح دورة' }
+                },
+                charts: {
+                    column: { t: 'الأعمدة (Column)', d: 'للمقارنة بين شغلات مختلفة (فئات). الرسمة بتيجي عواميد واقفة، وكل ما طول العامود زادت القيمة.' },
+                    bar: { t: 'الأشرطة (Bar)', d: 'نفس الأعمدة بس نايمة (أفقية)، هاي ممتازة اذا كانت الأسماء طويلة وبدك تقرأها بسهولة.' },
+                    line: { t: 'الخطوط (Line)', d: 'هاي عشان تشوف كيف الوضع بتغير مع الوقت (طالع ولا نازل)، زي رسمة الأسهم أو درجات الحرارة.' },
+                    pie: { t: 'الدائرية (Pie)', d: 'هاي بتبين حصة كل واحد من الكعكة الكبيرة (نسبة مئوية). بس دير بالك، لا تستخدمها اذا عندك اكثر من 7 أقسام بتصير عجقة.' },
+                    area: { t: 'المساحة (Area)', d: 'زي الخطوط بالزبط، بس المنطقة اللي تحت الخط بتكون ملونة، عشان تبينلك حجم التغيير مش بس الاتجاه.' },
+                    scatter: { t: 'التشتت (Scatter)', d: 'هاي شغل تحليل، بتبينلك العلاقة بين رقمين (مثلاً: كل ما زاد السعر، قل الطلب). بتشوف نقاط مبعثرة.' },
+                    radar: { t: 'الرادار (Radar)', d: 'عشان تقارن شغلات الها خصائص كثيرة (زي مهارات الموظف: تواصل، تقنية، التزام...). شكلها زي شبكة العنكبوت.' },
+                    surface: { t: 'السطحية (Surface)', d: 'هاي للشغلات المعقدة شوي، بتعطيك منظور ثلاثي الأبعاد للعلاقات، بتشبه الخرائط الطبوغرافية.' }
+                },
+                questions: [
+                    { t: 'شو الرسم الأنسب عشان تفرجيني "النسب المئوية" (جزء من الكل)؟', o: ['Line', 'Pie', 'Column'] },
+                    { t: 'مديرك بدو يقارن مبيعات 3 أقسام ببعض، شو بتختار؟', o: ['Clustered Column', 'Pie', 'Scatter'] },
+                    { t: 'بدك تفرجي العلاقة بين "عدد ساعات الدراسة" و "المعدل" (Correlation)؟', o: ['Area', 'Radar', 'Scatter'] },
+                    { t: 'عندك أسماء منتجات طويلة وبدك تقارن مبيعاتها، شو بتستخدم؟', o: ['Bar', 'Line', 'Surface'] }
+                ]
+            },
+            en: {
+                modal: { title: 'Welcome to X Academy!', desc: 'Ready to master Charts? Enter your name.', btn: 'Let\'s Start 🚀', ph: 'Enter your name here' },
+                hero: { 
+                    title: 'X Charts', 
+                    subtitle: 'Interactive professional course to master Data Visualization.',
+                    welcome: 'Hey',
+                    desc: 'In this course, you will understand all 8 chart types and when to use them, with simulation and practice.',
+                    btnStart: 'Start Course',
+                    features: { v: 'Visualizing', v_desc: 'Turn boring numbers into insights.', s: 'Simulation', s_desc: 'Pick the chart and see it drawn live.', c: 'Certificate', c_desc: 'Pass the quiz and get certified.' }
+                },
+                nav: {
+                    hero: 'Home',
+                    comparison: '1. Comparisons',
+                    trends: '2. Trends',
+                    proportions: '3. Proportions',
+                    relationships: '4. Relationships',
+                    quiz: '5. Final Quiz'
+                },
+                common: {
+                    progress: 'Progress',
+                    lesson: 'Lesson',
+                    learn: 'What will you learn?',
+                    task: 'Practical Challenge',
+                    taskSub: 'Task: Select the correct chart',
+                    scenario: 'Scenario:',
+                    data: 'Data (Table):',
+                    choose: 'Choose the appropriate Chart:',
+                    placeholder: 'Select an answer to visualize the chart',
+                    next: 'Next Lesson',
+                    correct: 'Correct Answer! Great job.',
+                    wrong: 'Notice how this chart looks off? Try another.',
+                    submit: 'Submit Quiz',
+                    review: 'Review Lessons',
+                    check: 'Check Answer',
+                    cert: { h: 'Certificate of Completion', s: 'X Academy Certifies that', d: 'Has successfully mastered' }
+                },
+                charts: {
+                    column: { t: 'Column', d: 'Comparing values across categories (Vertical).' },
+                    bar: { t: 'Bar', d: 'Comparing values (Horizontal), perfect for long labels.' },
+                    line: { t: 'Line', d: 'Showing trends and changes over time.' },
+                    pie: { t: 'Pie', d: 'Showing percentages (Part of a whole). Don\'t use if > 7 slices.' },
+                    area: { t: 'Area', d: 'Like Line but filled to show volume of change.' },
+                    scatter: { t: 'Scatter', d: 'Showing relationship between two numerical variables.' },
+                    radar: { t: 'Radar', d: 'Comparing multiple features/skills of an item.' },
+                    surface: { t: 'Surface', d: 'Showing relationships in 3D perspective.' }
+                },
+                questions: [
+                    { t: 'Which chart is best for showing percentages (Part of whole)?', o: ['Line', 'Pie', 'Column'] },
+                    { t: 'Comparing sales of 3 departments against each other?', o: ['Clustered Column', 'Pie', 'Scatter'] },
+                    { t: 'To show correlation between "Study Hours" and "Grades"?', o: ['Area', 'Radar', 'Scatter'] },
+                    { t: 'You have long category names to compare, which chart?', o: ['Bar', 'Line', 'Surface'] }
+                ]
+            }
+        };
+
+        // ==================== State & Config ====================
+        const appState = {
+            lang: 'ar',
+            currentSection: 'hero',
+            completedSections: new Set(),
+            userName: null,
+            score: 0,
+            tempSelection: null
+        };
+
+        const chartConfig = {
+            column: { type: 'bar', icon: 'bar-chart-2' },
+            bar: { type: 'bar', indexAxis: 'y', icon: 'align-left' },
+            line: { type: 'line', icon: 'trending-up' },
+            pie: { type: 'pie', icon: 'pie-chart' },
+            area: { type: 'line', fill: true, icon: 'layers' },
+            scatter: { type: 'scatter', icon: 'scatter-chart' },
+            radar: { type: 'radar', icon: 'hexagon' },
+            surface: { type: 'bubble', icon: 'map' }
+        };
+
+        const lessonsData = {
+            'comparison': {
+                task: {
+                    data: { labels: ['Prod A', 'Prod B', 'Prod C'], datasets: [{ label: 'Sales', data: [120, 190, 80], backgroundColor: ['#099999', '#fbbf24', '#107c41'] }] },
+                    options: ['column', 'line', 'pie'],
+                    correct: 'column'
+                }
+            },
+            'trends': {
+                task: {
+                    data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], datasets: [{ label: 'Gold Price', data: [1800, 1820, 1790, 1850, 1900], borderColor: '#fbbf24', tension: 0.1, fill: false }] },
+                    options: ['pie', 'bar', 'line'],
+                    correct: 'line'
+                }
+            },
+            'proportions': {
+                task: {
+                    data: { labels: ['Salaries', 'Marketing', 'Ops'], datasets: [{ data: [50, 30, 20], backgroundColor: ['#ef4444', '#3b82f6', '#10b981'] }] },
+                    options: ['radar', 'pie', 'scatter'],
+                    correct: 'pie'
+                }
+            },
+            'relationships': {
+                task: {
+                    data: { labels: ['Comm', 'Tech', 'Team', 'Commit', 'Create'], datasets: [{ label: 'Employee A', data: [80, 90, 70, 85, 60], fill: true, backgroundColor: 'rgba(9, 153, 153, 0.2)', borderColor: '#099999' }] },
+                    options: ['radar', 'line', 'column'],
+                    correct: 'radar'
+                }
+            }
+        };
+
+        function getLessonContent(key) {
+            const T = t[appState.lang];
+            const C = T.charts;
+            if(key === 'comparison') return {
+                title: T.nav.comparison, desc: C.column.d, types: [C.column.t, C.bar.t], 
+                question: appState.lang === 'ar' ? 'عندك تقرير مبيعات لـ 3 منتجات. بدك تقارن مين باع أكثر ومين أقل بسرعة. شو بتختار؟' : 'You have sales data for 3 products. You want to quickly compare who sold more. Which chart?',
+            };
+            if(key === 'trends') return {
+                title: T.nav.trends, desc: C.line.d, types: [C.line.t, C.area.t],
+                question: appState.lang === 'ar' ? 'سعر الذهب طالع نازل كل يوم. بدك تفرجي المستثمرين "اتجاه" السعر بآخر شهر. شو أنسب اشي؟' : 'Gold price fluctuates daily. You want to show investors the price "Trend" over the last month. Best choice?',
+            };
+            if(key === 'proportions') return {
+                title: T.nav.proportions, desc: C.pie.d, types: [C.pie.t],
+                question: appState.lang === 'ar' ? 'بدك تعمل تقرير عن توزيع ميزانية الشركة (رواتب 50%، تسويق 30%، تشغيل 20%). كيف تعرض الحصص؟' : 'Reporting company budget split (50% Salaries, 30% Marketing, 20% Ops). How to display shares?',
+            };
+            if(key === 'relationships') return {
+                title: T.nav.relationships, desc: C.scatter.d, types: [C.scatter.t, C.radar.t],
+                question: appState.lang === 'ar' ? 'بدك تقيم موظف بناءً على 5 مهارات مختلفة (تواصل، تقنية، عمل جماعي...). كيف بتعرض كل هالجوانب برسمة وحدة؟' : 'Evaluating an employee based on 5 different skills (Comm, Tech, Teamwork...). How to show all aspects in one chart?',
+            };
+            return {};
+        }
+
+        // ==================== Logic ====================
+        window.onload = () => {
+            updateStaticText();
+            showNameModal();
+            lucide.createIcons();
+            document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+        };
+
+        function toggleLanguage() {
+            appState.lang = appState.lang === 'ar' ? 'en' : 'ar';
+            document.documentElement.lang = appState.lang;
+            document.documentElement.dir = appState.lang === 'ar' ? 'rtl' : 'ltr';
+            updateStaticText();
+            renderNav();
+            renderContent(appState.currentSection);
+        }
+
+        function updateStaticText() {
+            const T = t[appState.lang];
+            document.getElementById('lang-text').textContent = appState.lang === 'ar' ? 'English' : 'عربي';
+            document.getElementById('modal-title').textContent = T.modal.title;
+            document.getElementById('modal-desc').textContent = T.modal.desc;
+            document.getElementById('modal-btn').textContent = T.modal.btn;
+            document.getElementById('user-name').placeholder = T.modal.ph;
+            if(appState.userName) {
+                document.getElementById('header-username').textContent = `${T.hero.welcome} ${appState.userName}`;
+                document.getElementById('cert-name').textContent = appState.userName;
+            }
+            document.getElementById('progress-label').textContent = T.common.progress;
+
+            document.getElementById('cert-header').textContent = T.common.cert.h;
+            document.getElementById('cert-sub').textContent = T.common.cert.s;
+            document.getElementById('cert-desc').innerHTML = `${T.common.cert.d} <span class="font-bold text-x-primary">X Charts</span>`;
+        }
+
+        function showNameModal() {
+            document.getElementById('name-modal').style.display = 'flex';
+            document.getElementById('name-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('user-name').value.trim();
+                if(name) {
+                    appState.userName = name;
+                    updateStaticText();
+                    document.getElementById('name-modal').style.display = 'none';
+                    renderNav();
+                    renderContent('hero');
+                }
+            });
+        }
+
+        function renderNav() {
+            const T = t[appState.lang];
+            const sectionsList = [
+                { id: 'hero', icon: 'home', title: T.nav.hero },
+                { id: 'comparison', icon: 'bar-chart-2', title: T.nav.comparison },
+                { id: 'trends', icon: 'trending-up', title: T.nav.trends },
+                { id: 'proportions', icon: 'pie-chart', title: T.nav.proportions },
+                { id: 'relationships', icon: 'share-2', title: T.nav.relationships },
+                { id: 'quiz', icon: 'award', title: T.nav.quiz },
+            ];
+            const nav = document.getElementById('lesson-nav');
+            nav.innerHTML = '';
+            sectionsList.forEach(sec => {
+                if(sec.id === 'hero') return;
+                const active = appState.currentSection === sec.id;
+                const done = appState.completedSections.has(sec.id);
+                const btn = document.createElement('button');
+                const align = appState.lang === 'ar' ? 'text-right' : 'text-left';
+                btn.className = `w-full ${align} px-4 py-3 rounded-xl mb-2 flex items-center justify-between transition-all ${active ? 'active-link' : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`;
+                btn.onclick = () => renderContent(sec.id);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="${sec.icon}" class="w-4 h-4"></i>
+                        <span class="font-medium">${sec.title}</span>
+                    </div>
+                    ${done ? '<i data-lucide="check-circle-2" class="w-4 h-4 text-excel-green"></i>' : ''}
+                `;
+                nav.appendChild(btn);
+            });
+            updateProgress();
+            lucide.createIcons();
+        }
+
+        function updateProgress() {
+            const total = 5; 
+            const done = appState.completedSections.size;
+            const pct = Math.round((done / total) * 100);
+            const circle = document.getElementById('progress-circle');
+            const circumference = 2 * Math.PI * 45;
+            circle.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        function renderContent(key) {
+            appState.currentSection = key;
+            appState.tempSelection = null;
+            const container = document.getElementById('content-container');
+            if(key === 'hero') container.innerHTML = renderHero();
+            else if(key === 'quiz') container.innerHTML = renderQuiz();
+            else container.innerHTML = renderLesson(key);
+            container.classList.remove('animate-fade-in');
+            void container.offsetWidth; 
+            container.classList.add('animate-fade-in');
+            renderNav();
+            lucide.createIcons();
+        }
+
+        function renderHero() {
+            const T = t[appState.lang].hero;
+            const align = appState.lang === 'ar' ? 'text-right' : 'text-left';
+            const arrow = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
+            return `
+                <div class="text-center py-10">
+                    <div class="w-24 h-24 bg-x-light dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary animate-bounce-short">
+                        <i data-lucide="bar-chart" class="w-12 h-12"></i>
+                    </div>
+                    <h1 class="text-6xl font-black mb-4 dark:text-white tracking-tight">${T.title}</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                        ${T.welcome} <span class="text-x-primary font-bold">${appState.userName || ''}</span>, ${T.desc}
+                    </p>
+                    <button onclick="renderContent('comparison')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-10 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2 mx-auto">
+                        ${T.btnStart} <i data-lucide="${arrow}"></i>
+                    </button>
+                    <div class="grid md:grid-cols-3 gap-4 mt-12 ${align}">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
+                            <i data-lucide="eye" class="text-x-secondary mb-2"></i>
+                            <h3 class="font-bold dark:text-white">${T.features.v}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.v_desc}</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
+                            <i data-lucide="mouse-pointer" class="text-x-secondary mb-2"></i>
+                            <h3 class="font-bold dark:text-white">${T.features.s}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.s_desc}</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
+                            <i data-lucide="award" class="text-x-secondary mb-2"></i>
+                            <h3 class="font-bold dark:text-white">${T.features.c}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.c_desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let currentChartInstance = null;
+
+        function renderLesson(lessonKey) {
+            const T = t[appState.lang].common;
+            const content = getLessonContent(lessonKey);
+            const data = lessonsData[lessonKey];
+            const isDone = appState.completedSections.has(lessonKey);
+            const arrow = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
+
+            return `
+                <div class="space-y-6">
+                    <div class="border-b dark:border-gray-700 pb-4">
+                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson}</span>
+                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${content.title}</h2>
+                        <p class="text-gray-500 dark:text-gray-300 mt-2 text-lg leading-relaxed">${content.desc}</p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-gray-900/50 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
+                        <h3 class="font-bold text-lg mb-3 flex items-center gap-2 text-blue-800 dark:text-blue-300">
+                            <i data-lucide="book-open"></i> ${T.learn}
+                        </h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                            ${content.types.map(type => `<li>${type}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-4 border-b dark:border-gray-600 flex justify-between items-center">
+                            <h3 class="font-bold dark:text-white flex items-center gap-2"><i data-lucide="activity"></i> ${T.task}</h3>
+                            <span class="text-xs bg-white dark:bg-gray-600 px-2 py-1 rounded border dark:border-gray-500">${T.taskSub}</span>
+                        </div>
+                        <div class="p-6 grid lg:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2 dark:text-white text-x-primary">${T.scenario}</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 font-medium">${content.question}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-500 mb-3">${T.data}</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-900 rounded p-3 font-mono text-sm overflow-x-auto" dir="ltr">
+                                        <table class="w-full text-left">
+                                            <thead><tr class="border-b border-gray-300 dark:border-gray-700"><th>Label</th><th>Value</th></tr></thead>
+                                            <tbody>
+                                                ${data.task.data.labels.map((l, i) => `<tr><td>${l}</td><td>${data.task.data.datasets[0].data[i]}</td></tr>`).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="options-container-${lessonKey}">
+                                    <h4 class="font-bold text-sm mb-3 dark:text-white">${T.choose}</h4>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        ${data.task.options.map(opt => `
+                                            <button onclick="selectOption('${lessonKey}', '${opt}')" 
+                                                class="chart-btn flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:shadow-md transition ${isDone && opt === data.task.correct ? 'ring-2 ring-excel-green bg-green-50 dark:bg-green-900/20' : ''}" 
+                                                id="btn-${opt}">
+                                                <i data-lucide="${chartConfig[opt].icon}" class="w-8 h-8 text-x-primary"></i>
+                                                <span class="text-xs font-bold dark:text-gray-300">${t[appState.lang].charts[opt].t.split('(')[0]}</span>
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-xl p-4 relative min-h-[300px]">
+                                <div id="chart-placeholder-${lessonKey}" class="${isDone ? 'hidden' : 'flex'} flex-col items-center text-gray-400">
+                                    <i data-lucide="bar-chart" class="w-16 h-16 mb-2 opacity-50"></i>
+                                    <p class="text-sm">${T.placeholder}</p>
+                                </div>
+                                <div class="w-full h-full">
+                                    <canvas id="chart-canvas-${lessonKey}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="action-area-${lessonKey}" class="${isDone ? 'flex' : 'hidden'} justify-end animate-fade-in gap-4">
+                        <button id="btn-verify-${lessonKey}" onclick="verifyAnswer('${lessonKey}')" class="bg-x-secondary hover:bg-yellow-500 text-gray-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition">
+                            ${T.check} <i data-lucide="check-square"></i>
+                        </button>
+                        <button id="btn-next-${lessonKey}" onclick="nextLesson('${lessonKey}')" class="hidden bg-x-primary hover:bg-x-primary-dark text-white px-6 py-3 rounded-xl font-bold items-center gap-2 shadow-lg transition transform hover:scale-105">
+                            ${T.next} <i data-lucide="${arrow}"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(lessonKey, selectedOpt) {
+            const data = lessonsData[lessonKey];
+            drawChart(lessonKey, selectedOpt, data.task.data);
+            
+            const container = document.getElementById(`options-container-${lessonKey}`);
+            container.querySelectorAll('.chart-btn').forEach(b => {
+                b.classList.remove('ring-4', 'ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20', 'ring-red-500', 'bg-red-50', 'ring-excel-green', 'bg-green-50');
+            });
+            const selectedBtn = document.getElementById(`btn-${selectedOpt}`);
+            selectedBtn.classList.add('ring-4', 'ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+
+            appState.tempSelection = selectedOpt;
+
+            if (!appState.completedSections.has(lessonKey)) {
+                document.getElementById(`action-area-${lessonKey}`).classList.remove('hidden');
+                document.getElementById(`action-area-${lessonKey}`).classList.add('flex');
+                document.getElementById(`btn-verify-${lessonKey}`).classList.remove('hidden');
+            }
+        }
+
+        function verifyAnswer(lessonKey) {
+            if(!appState.tempSelection) return;
+
+            const selectedOpt = appState.tempSelection;
+            const data = lessonsData[lessonKey];
+            const correct = data.task.correct;
+            const T = t[appState.lang].common;
+            const selectedBtn = document.getElementById(`btn-${selectedOpt}`);
+
+            if (selectedOpt === correct) {
+                showToast(T.correct, 'success');
+                appState.completedSections.add(lessonKey);
+                updateProgress();
+                
+                selectedBtn.classList.remove('ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+                selectedBtn.classList.add('ring-excel-green', 'bg-green-50', 'dark:bg-green-900/20');
+                
+                document.getElementById(`btn-verify-${lessonKey}`).classList.add('hidden');
+                const nextBtn = document.getElementById(`btn-next-${lessonKey}`);
+                nextBtn.classList.remove('hidden');
+                nextBtn.classList.add('flex');
+                
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+            } else {
+                showToast(T.wrong, 'error');
+                selectedBtn.classList.remove('ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+                selectedBtn.classList.add('ring-red-500', 'bg-red-50', 'dark:bg-red-900/20');
+                selectedBtn.classList.add('animate-shake');
+                setTimeout(() => selectedBtn.classList.remove('animate-shake'), 500);
+            }
+        }
+
+        function drawChart(lessonKey, type, chartData) {
+            const ctx = document.getElementById(`chart-canvas-${lessonKey}`).getContext('2d');
+            document.getElementById(`chart-placeholder-${lessonKey}`).classList.add('hidden');
+            document.getElementById(`chart-placeholder-${lessonKey}`).classList.remove('flex');
+            
+            if (currentChartInstance) {
+                currentChartInstance.destroy();
+            }
+
+            const config = chartConfig[type];
+            const title = t[appState.lang].charts[type].t;
+            
+            currentChartInstance = new Chart(ctx, {
+                type: config.type,
+                data: chartData,
+                options: {
+                    indexAxis: config.indexAxis || 'x',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: title }
+                    },
+                    scales: type === 'radar' ? {
+                        r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 }
+                    } : {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function nextLesson(current) {
+            const sections = ['hero', 'comparison', 'trends', 'proportions', 'relationships', 'quiz'];
+            const idx = sections.indexOf(current);
+            if(idx < sections.length - 1) {
+                renderContent(sections[idx + 1]);
+            }
+        }
+        
+        function renderQuiz() {
+            const T = t[appState.lang];
+            const questions = T.questions;
+            return `
+                <div class="max-w-3xl mx-auto py-8 text-center">
+                    <h2 class="text-3xl font-black mb-6 text-x-primary">${T.nav.quiz}</h2>
+                    <div id="quiz-form" class="space-y-6 ${appState.lang === 'ar' ? 'text-right' : 'text-left'}">
+                        ${questions.map((q, idx) => generateQuizQuestion(idx, q.t, q.o)).join('')}
+                    </div>
+                    <button onclick="submitQuiz()" class="mt-8 bg-x-secondary hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-xl shadow-lg w-full md:w-auto transition transform hover:scale-105">
+                        ${T.common.submit}
+                    </button>
+                </div>
+            `;
+        }
+
+        function generateQuizQuestion(idx, text, options) {
+            const correctValues = ['Pie', 'Clustered Column', 'Scatter', 'Bar'];
+            return `
+                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <p class="font-bold text-lg mb-4 dark:text-white"><span class="text-x-primary mx-2">${idx+1}.</span>${text}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        ${options.map(opt => `
+                            <label class="flex items-center p-3 bg-white dark:bg-gray-700 rounded-lg cursor-pointer border hover:border-x-primary transition">
+                                <input type="radio" name="q${idx}" value="${opt}" data-correct="${correctValues[idx]}" class="text-x-primary focus:ring-x-primary w-4 h-4">
+                                <span class="mx-3 dark:text-gray-200">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitQuiz() {
+            const questions = document.querySelectorAll('[name^="q"]');
+            let correct = 0;
+            const correctAnswers = ['Pie', 'Clustered Column', 'Scatter', 'Bar'];
+            for(let i=0; i<4; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if(selected && selected.value === correctAnswers[i]) correct++;
+            }
+            if(correct >= 3) {
+                appState.completedSections.add('quiz');
+                updateProgress();
+                showToast(`Score: ${correct}/4 - Passed!`, 'success');
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+                setTimeout(() => { document.getElementById('certificate-modal').style.display = 'flex'; }, 1500);
+            } else {
+                showToast(`Score: ${correct}/4 - Try Again`, 'error');
+            }
+        }
+        
+        function showToast(msg, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = type === 'success' ? `<i data-lucide="check-circle"></i> ${msg}` : `<i data-lucide="x-circle"></i> ${msg}`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // دالة تنزيل الشهادة كصورة PNG
+        function downloadPNG() {
+            const element = document.getElementById('certificate-content');
+            
+            // خيارات لتحسين جودة الصورة ودعم العربية
+            const options = {
+                scale: 2, // جودة أعلى (Retina)
+                useCORS: true, // للسماح بتحميل الصور الخارجية
+                backgroundColor: null, // خلفية شفافة إذا لزم الأمر، أو white
+            };
+
+            html2canvas(element, options).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Certificate-${appState.userName || 'X-Academy'}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                console.error('Failed to capture certificate:', err);
+                alert('حدث خطأ أثناء حفظ الصورة. يرجى المحاولة مرة أخرى.');
+            });
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>
