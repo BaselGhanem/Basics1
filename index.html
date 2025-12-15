@@ -449,7 +449,7 @@
             <h2 class="text-4xl font-bold text-x-primary mb-2">شهادة إتمام الدورة</h2>
             <p class="text-xl text-gray-600 dark:text-gray-300">تشهد منصة X Academy بأن</p>
             <h1 id="cert-name" class="text-5xl font-black text-gray-800 dark:text-white my-6 border-b-2 border-x-secondary inline-block pb-2 px-10">المتدرب</h1>
-            <p class="text-lg text-gray-600 dark:text-gray-300">قد أتم بنجاح <span class="font-bold text-x-primary">دورة Excel الاحترافية التفاعلية</span></p>
+            <p class="text-lg text-gray-600 dark:text-gray-300">قد أتم بنجاح <span class="font-bold text-x-primary">المعادلات الأساسية في  Excel </span></p>
             <p class="text-gray-500 dark:text-gray-400 mt-4">بتقدير ممتاز وإتقان كامل لجميع الدوال والمهارات العملية</p>
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-8 font-mono">تاريخ الإصدار: <span id="cert-date"></span></p>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">رقم الشهادة: XA-<span id="cert-id"></span></p>
@@ -517,21 +517,14 @@
         };
 
         // ==================== التهيئة الأولية ====================
-        window.onload = () => {
+window.onload = () => {
             document.getElementById('year').textContent = new Date().getFullYear();
             lucide.createIcons();
             
-            // التحقق مما إذا كان الاسم محفوظاً
-            const savedName = localStorage.getItem('xa_user_name');
-            if (savedName) {
-                appState.userName = savedName;
-                appState.userInitial = savedName.charAt(0).toUpperCase();
-                initializeApp();
-            } else {
-                showNameModal();
-            }
+            // --- تعديل: إجبار ظهور النافذة دائماً ---
+            showNameModal();
             
-            // التحقق من الوضع المظلم المحفوظ
+            // التحقق من الوضع المظلم المحفوظ (هذا خليه عشان يحفظ الثيم بس)
             const savedDarkMode = localStorage.getItem('darkMode');
             if (savedDarkMode === 'true') {
                 appState.darkMode = true;
@@ -539,23 +532,29 @@
                 updateDarkModeButton();
             }
         };
-
-        function showNameModal() {
+function showNameModal() {
             const modal = document.getElementById('name-modal');
             modal.style.display = 'flex';
             lucide.createIcons();
             
             // إضافة حدث للنموذج
-            document.getElementById('name-form').addEventListener('submit', function(e) {
+            // ملاحظة: تأكدنا من عدم تكرار الـ Event Listener
+            const form = document.getElementById('name-form');
+            // نقوم باستنساخ العنصر لإزالة أي مستمعات أحداث سابقة لتجنب التكرار
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+
+            newForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const nameInput = document.getElementById('user-name');
                 const userName = nameInput.value.trim();
                 
                 if (userName && userName.length > 0) {
-                    // حفظ الاسم
+                    // حفظ الاسم في المتغيرات المؤقتة فقط (بدون LocalStorage)
                     appState.userName = userName;
                     appState.userInitial = userName.charAt(0).toUpperCase();
-                    localStorage.setItem('xa_user_name', userName);
+                    
+                    // --- تم حذف سطر localStorage.setItem من هنا ---
                     
                     // إخفاء النموذج
                     modal.style.display = 'none';
@@ -574,7 +573,6 @@
                 }
             });
         }
-
         function initializeApp() {
             // تحديث واجهة المستخدم بالاسم
             updateUserUI();
@@ -1301,10 +1299,10 @@
                     <div id="final-quiz-container" class="space-y-6 text-right mb-10">
                         ${finalQ(0, 'أي دالة تستخدم لجمع نطاق من الخلايا؟', ['SUM', 'ADD', 'PLUS'], 'SUM')}
                         ${finalQ(1, 'نتيجة =MAX(10, 50, 20) هي؟', ['10', '50', '20'], '50')}
-                        ${finalQ(2, 'للبدء بأي معادلة في Excel يجب كتابة؟', ['=', '#', '+'], '=')}
+                        ${finalQ(2, 'للبدء بأي معادلة في Excel يجب كتابة؟', ['=', '#', '/'], '=')}
                         ${finalQ(3, 'دالة UNIQUE تعيد؟', ['القيم المكررة', 'القيم الفريدة', 'مجموع القيم'], 'القيم الفريدة')}
                         ${finalQ(4, 'ما نتيجة =10/0 في Excel؟', ['0', '10', '#DIV/0!'], '#DIV/0!')}
-                        ${finalQ(5, 'أي مما يلي يعتبر معادلة منطقية صحيحة؟', ['=5>3', '=5+3', '=SUM(5,3)'], '=5>3')}
+                        ${finalQ(5, 'أي من الانواع التالية يعتبر معادلة منطقية ؟', ['=5>3', '=5+3', '=SUM(5,3)'], '=5>3')}
                         ${finalQ(6, 'دالة AVERAGE تستخدم لحساب؟', ['المجموع', 'المتوسط', 'العدد'], 'المتوسط')}
                         ${finalQ(7, 'لتفريق النص "A,B,C" بناءً على الفاصلة نستخدم؟', ['TEXTSPLIT', 'TEXTJOIN', 'UNIQUE'], 'TEXTSPLIT')}
                     </div>
@@ -1322,7 +1320,7 @@
                          <button id="certificate-btn" class="bg-x-primary hover:bg-teal-700 text-white text-2xl font-bold py-5 px-12 rounded-2xl shadow-xl transition transform hover:scale-105">
                             <i data-lucide="award" class="inline w-8 h-8 ml-3"></i> استلام شهادة الإتمام
                         </button>
-                        <p class="text-gray-500 dark:text-gray-400 mt-4">${userName}، تهانينا! لقد نجحت في الاختبار النهائي</p>
+                        <p class="text-gray-500 dark:text-gray-400 mt-4">${userName}، تهانينا! لقد نجحت في الاختبار </p>
                     </div>
                 </div>
             `;
@@ -1428,32 +1426,82 @@
         }
 
         // ==================== نظام الشهادة ====================
-        function generateCertificate() {
-            let name = appState.userName || 'المتدرب';
-            const changeName = confirm(`هل تريد استخدام الاسم "${name}" للشهادة؟ اضغط "موافق" لاستخدامه أو "إلغاء" لإدخال اسم مختلف.`);
-            
-            if (!changeName) {
-                name = prompt("أدخل اسمك للشهادة:", name) || name;
-            }
-            
-            document.getElementById('cert-name').textContent = name;
-            document.getElementById('cert-date').textContent = new Date().toLocaleDateString('ar-SA');
-            document.getElementById('cert-id').textContent = `XA-${Date.now().toString().slice(-6)}`;
-            
-            // عرض نموذج الشهادة
-            const modal = document.getElementById('certificate-modal');
-            modal.style.display = 'flex';
-            
-            // احتفال خاص بالشهادة
-            triggerConfettiCelebration();
-            
-            showToast(`تهانينا ${name}! لقد حصلت على شهادة إتمام الدورة`, 'success');
-        }
+// ==================== نظام الشهادة ====================
 
-        function printCertificate() {
-            window.print();
-        }
+function generateCertificate() {
+    let name = appState.userName || 'المتدرب';
+    
+    const changeName = confirm(`هل تريد استخدام الاسم "${name}" للشهادة؟ اضغط "موافق" لاستخدامه أو "إلغاء" لإدخال اسم مختلف.`);
 
+    if (!changeName) {
+        name = prompt("أدخل اسمك للشهادة:", name) || name;
+    }
+
+    // تعبئة البيانات
+    document.getElementById('cert-name').textContent = name;
+document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-GB');
+    // توليد رقم مرجعي عشوائي
+    document.getElementById('cert-id').textContent = `XA-${Date.now().toString().slice(-6)}`;
+
+    // عرض نموذج الشهادة
+    const modal = document.getElementById('certificate-modal');
+    modal.style.display = 'flex';
+
+    // احتفال خاص بالشهادة
+    if (typeof triggerConfettiCelebration === 'function') {
+        triggerConfettiCelebration();
+    }
+
+    showToast(`تهانينا ${name}! لقد حصلت على شهادة إتمام الدورة`, 'success');
+}
+
+// دالة تحميل الشهادة PDF بدلاً من الطباعة
+async function printCertificate() {
+    const { jsPDF } = window.jspdf;
+    
+    // سيدي تأكد إن هذا الـ ID هو لكرت الشهادة الأبيض فقط وليس المودال كامل
+    // يفضل تعطي الـ div الأبيض كلاس أو آيدي محدد مثل 'cert-card'
+    const element = document.getElementById('certificate-content') || document.getElementById('certificate-modal'); 
+
+    // إخفاء الأزرار مؤقتاً
+    const buttons = element.querySelectorAll('button');
+    buttons.forEach(btn => btn.style.display = 'none');
+
+    try {
+        showToast('جاري تحضير ملف PDF...', 'info');
+
+        const canvas = await html2canvas(element, {
+            scale: 2, 
+            useCORS: true 
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        
+        // 1. حساب أبعاد الصورة بالنسبة لعرض صفحة A4
+        const imgWidth = 297; // عرض A4 القياسي بالملي متر
+        const pageHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // 2. إنشاء PDF بأبعاد مخصصة (نفس أبعاد الشهادة بالضبط) لحذف الفراغ
+        const pdf = new jsPDF({
+            orientation: 'l', // عرضي
+            unit: 'mm',
+            format: [imgWidth, pageHeight] // هون السر: خلينا الطول ديناميكي
+        });
+
+        // 3. إضافة الصورة
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, pageHeight);
+        
+        pdf.save(`Certificate-${document.getElementById('cert-name').textContent}.pdf`);
+        
+        showToast('تم تحميل الشهادة بنجاح!', 'success');
+
+    } catch (err) {
+        console.error(err);
+        showToast('حدث خطأ أثناء تحميل الشهادة', 'error');
+    } finally {
+        buttons.forEach(btn => btn.style.display = '');
+    }
+}
         // ==================== وظائف مساعدة ====================
         function completeSection(sectionId) {
             appState.completedSections.add(sectionId);
@@ -1514,5 +1562,7 @@
             }
         });
     </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
