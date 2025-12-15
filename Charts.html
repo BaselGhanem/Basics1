@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart Academy - تعلم الرسوم البيانية باحتراف</title>
+    <title>X Academy - Master Class</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,40 +12,41 @@
 
     <script>
         tailwind.config = {
-            darkMode: 'class',
+            darkMode: false,
             theme: {
                 extend: {
                     colors: {
-                        'x-primary': '#099999',
-                        'x-primary-dark': '#067a7a',
+                        'x-primary': '#107c41',
+                        'x-primary-dark': '#0b5c30',
                         'x-secondary': '#fbbf24',
-                        'x-light': '#f0fdfa',
-                        'x-dark': '#0f172a',
-                        'excel-green': '#107c41',
+                        'x-light': '#f0fdf4',
+                        'gold': '#FFD700',
+                        'silver': '#C0C0C0',
+                        'bronze': '#CD7F32'
                     },
-                    fontFamily: {
-                        sans: ['Tajawal', 'ui-sans-serif', 'system-ui'],
-                    },
+                    fontFamily: { sans: ['Tajawal', 'ui-sans-serif', 'system-ui'] },
                     animation: {
                         'fade-in': 'fadeIn 0.5s ease-out',
                         'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
                         'bounce-short': 'bounceShort 0.5s ease-in-out 1',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'slide-in-right': 'slideInRight 0.5s ease-out',
+                        'slide-in-left': 'slideInLeft 0.5s ease-out',
+                        'zoom-in': 'zoomIn 0.3s ease-out',
+                        'tada': 'tada 1s ease-out'
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        shake: {
-                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-                        },
-                        bounceShort: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        }
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        shake: { '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' }, '20%, 80%': { transform: 'translate3d(2px, 0, 0)' }, '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' }, '40%, 60%': { transform: 'translate3d(4px, 0, 0)' } },
+                        bounceShort: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        pulseGlow: { '0%, 100%': { opacity: '1', boxShadow: '0 0 5px rgba(16, 124, 65, 0.5)' }, '50%': { opacity: '0.8', boxShadow: '0 0 20px rgba(16, 124, 65, 0.8)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        slideInRight: { '0%': { transform: 'translateX(30px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideInLeft: { '0%': { transform: 'translateX(-30px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        zoomIn: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        tada: { '0%': { transform: 'scale(1)' }, '10%, 20%': { transform: 'scale(0.9) rotate(-3deg)' }, '30%, 50%, 70%, 90%': { transform: 'scale(1.1) rotate(3deg)' }, '40%, 60%, 80%': { transform: 'scale(1.1) rotate(-3deg)' }, '100%': { transform: 'scale(1) rotate(0)' } }
                     }
                 }
             }
@@ -53,337 +54,526 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
-        
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: white; padding: 12px 24px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transform: translateY(-20px); transition: all 0.4s; pointer-events: auto; display: flex; align-items: center; gap: 10px; }
-        .dark .toast { background: #1e293b; color: #f1f5f9; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { border-left: 5px solid #099999; }
-        .toast.error { border-left: 5px solid #ef4444; }
-
-        .active-link { background-color: #099999 !important; color: white !important; border-right: 4px solid #fbbf24; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            scroll-behavior: smooth;
+            background: linear-gradient(135deg, #f0fdf4 0%, #e8f5e9 100%);
+            min-height: 100vh;
+        }
+        .active-link { 
+            background-color: #107c41 !important; 
+            color: white !important; 
+            border-right: 4px solid #fbbf24;
+            box-shadow: 0 4px 12px rgba(16, 124, 65, 0.3);
+        }
         html[dir="ltr"] .active-link { border-right: none; border-left: 4px solid #fbbf24; }
-
-        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; animation: fadeIn 0.3s ease-out; }
-        .modal-content { background: white; padding: 2.5rem; border-radius: 20px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .dark .modal-content { background: #1e293b; color: #f1f5f9; }
+        .option-btn:hover { transform: scale(1.02); }
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.85); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999; 
+            animation: fadeIn 0.3s;
+        }
+        #toast-container { 
+            position: fixed; 
+            top: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 100; 
+            pointer-events: none; 
+        }
+        .toast { 
+            background: white; 
+            padding: 12px 24px; 
+            border-radius: 50px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            opacity: 0; 
+            transform: translateY(-20px); 
+            transition: 0.4s; 
+            font-weight: bold; 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            border: 1px solid #e5e7eb;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { border-left: 5px solid #107c41; }
+        .toast.error { border-left: 5px solid #ef4444; }
+        .excel-grid { border-collapse: collapse; width: 100%; font-family: sans-serif; font-size: 0.8rem; }
+        .excel-grid td, .excel-grid th { border: 1px solid #d1d5db; padding: 4px 8px; text-align: center; }
+        .excel-header { background-color: #f3f4f6; font-weight: bold; color: #374151; }
+        .sheet-tab { padding: 4px 12px; border-radius: 4px 4px 0 0; background: #e5e7eb; color: #6b7280; margin-left: 2px; font-size: 0.75rem; font-weight: 500; }
+        .sheet-tab.active-multi { background: white; color: #107c41; border-top: 2px solid #107c41; }
+        .progress-ring__circle { transition: stroke-dashoffset 0.5s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .chart-hover { transition: transform 0.3s ease; }
+        .chart-hover:hover { transform: scale(1.05); }
+        .badge { animation: pulseGlow 2s infinite; }
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFEC8B); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #E8E8E8); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #E6B887); color: #000; }
+        .sparkline { height: 20px; background: linear-gradient(90deg, #107c41, #fbbf24); border-radius: 10px; margin: 5px 0; }
         
-        .chart-btn:hover { transform: scale(1.05); }
-        
-        aside::-webkit-scrollbar { width: 6px; }
-        aside::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        .dark aside::-webkit-scrollbar-thumb { background-color: #475569; }
+        /* شهادة محددة الألوان */
+        #certificate-content {
+            background: white !important;
+            color: #1f2937 !important;
+            border: 8px double #107c41 !important;
+        }
+        #certificate-content * {
+            color: #1f2937 !important;
+        }
+        #certificate-content img {
+            filter: none !important;
+        }
     </style>
 </head>
-<body class="bg-x-light dark:bg-x-dark text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="min-h-screen flex flex-col">
 
     <div id="name-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content text-center">
-            <div class="inline-block mb-4">
-               <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-28 w-auto mx-auto block dark:hidden" alt="X Academy">
-               
-               <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" class="h-28 w-auto mx-auto hidden dark:block" alt="X Academy">
-            </div>
-            <h2 id="modal-title" class="text-3xl font-black mb-2">يا هلا بيك!</h2>
-            <p id="modal-desc" class="text-gray-600 dark:text-gray-300 mb-6">سجل اسمك عشان نبلش رحلة الاحتراف.</p>
+        <div class="modal-content bg-white p-10 rounded-2xl max-w-lg w-full text-center shadow-2xl animate-zoom-in">
+            <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-24 mx-auto mb-4 animate-float">
+            <h2 id="modal-title" class="text-3xl font-black mb-2"></h2>
+            <p id="modal-desc" class="text-gray-600 mb-6"></p>
             <form id="name-form" class="space-y-4">
-                <input type="text" id="user-name" class="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-transparent text-center text-lg focus:border-x-primary outline-none" placeholder="..." required autofocus>
-                <button type="submit" id="modal-btn" class="w-full bg-x-primary hover:bg-x-primary-dark text-white font-bold py-4 rounded-xl transition shadow-lg">يلا نبلش 🚀</button>
+                <input type="text" id="user-name" class="w-full p-4 rounded-xl border-2 bg-transparent text-center text-lg focus:border-x-primary outline-none border-gray-300 animate-pulse-glow" required autofocus>
+                <button type="submit" id="modal-btn" class="w-full bg-x-primary hover:bg-x-primary-dark text-white font-bold py-4 rounded-xl transition shadow-lg hover:scale-105"></button>
             </form>
         </div>
     </div>
 
     <div id="toast-container"></div>
 
-    <header class="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur shadow-sm border-b border-gray-200 dark:border-gray-800">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="#" onclick="renderContent('hero')" class="flex items-center gap-2 group transition-transform hover:scale-105">
-                <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" 
-                     alt="X Academy" 
-                     class="h-16 w-auto block dark:hidden">
-                
-                <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" 
-                     alt="X Academy" 
-                     class="h-16 w-auto hidden dark:block">
+            <a href="#" onclick="renderContent('hero')" class="flex items-center gap-2 hover:scale-105 transition">
+                <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-12 animate-tada">
             </a>
-            
             <div class="flex items-center gap-4">
-                <div id="user-info" class="hidden md:flex items-center gap-3">
-                    <span id="header-username" class="font-bold text-sm text-x-primary"></span>
-                </div>
-                <button onclick="toggleLanguage()" class="px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-bold flex items-center gap-2 transition">
-                    <i data-lucide="languages" class="w-4 h-4"></i>
-                    <span id="lang-text">English</span>
-                </button>
-                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                    <i data-lucide="moon" class="w-5 h-5 hidden dark:inline"></i>
-                    <i data-lucide="sun" class="w-5 h-5 dark:hidden"></i>
+                <span id="header-username" class="hidden md:block font-bold text-sm text-x-primary badge px-3 py-1 rounded-full bg-green-50"></span>
+                <button onclick="toggleLanguage()" class="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm font-bold flex gap-2 transition hover:scale-105">
+                    <i data-lucide="languages" class="w-4 h-4"></i> <span id="lang-text">EN</span>
                 </button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto flex flex-col lg:flex-row p-4 gap-6 mt-2 flex-grow w-full">
-        <aside class="w-full lg:w-72 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 h-fit lg:sticky lg:top-24 max-h-[85vh] overflow-y-auto">
+        <aside class="w-full lg:w-72 bg-white p-5 rounded-2xl shadow-lg border border-gray-100 h-fit lg:sticky lg:top-24 max-h-[85vh] overflow-y-auto animate-slide-in-right">
             <div class="mb-6 text-center">
                 <div class="inline-block relative">
                     <svg class="w-24 h-24 transform -rotate-90">
-                        <circle cx="48" cy="48" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" class="dark:stroke-gray-700"/>
-                        <circle id="progress-circle" cx="48" cy="48" r="45" fill="none" stroke="#099999" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="283" class="transition-all duration-1000"/>
+                        <circle cx="48" cy="48" r="45" fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                        <circle id="progress-circle" cx="48" cy="48" r="45" fill="none" stroke="url(#progress-gradient)" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="283" class="progress-ring__circle"/>
+                        <defs>
+                            <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#107c41" />
+                                <stop offset="100%" stop-color="#fbbf24" />
+                            </linearGradient>
+                        </defs>
                     </svg>
                     <span id="progress-text" class="absolute inset-0 flex items-center justify-center font-bold text-xl">0%</span>
                 </div>
-                <p id="progress-label" class="text-sm font-medium mt-2 text-gray-500">مستوى الإنجاز</p>
+                <p id="progress-label" class="text-sm font-medium mt-2 text-gray-500"></p>
+                <div id="xp-display" class="text-xs text-gray-400 mt-1 hidden">XP: <span id="xp-value">0</span></div>
             </div>
             <nav id="lesson-nav" class="space-y-2"></nav>
+            <div id="achievements-section" class="mt-6 pt-6 border-t border-gray-200 hidden">
+                <h3 class="font-bold text-sm mb-2 text-x-primary flex items-center gap-2"><i data-lucide="award"></i> الإنجازات</h3>
+                <div id="achievements-list" class="space-y-2"></div>
+            </div>
         </aside>
 
-        <section id="content-container" class="flex-grow bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 min-h-[70vh]">
-            </section>
+        <section id="content-container" class="flex-grow bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 min-h-[70vh] animate-slide-in-left"></section>
     </main>
 
+    <!-- شهادة ثابتة الألوان -->
     <div id="certificate-modal" style="display: none;" class="modal-overlay">
-        <div id="certificate-content" class="bg-white dark:bg-gray-800 p-10 rounded-xl max-w-3xl w-full text-center relative border-8 border-double border-x-primary shadow-2xl">
-            <button onclick="document.getElementById('certificate-modal').style.display = 'none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition" data-html2canvas-ignore="true">
-                <i data-lucide="x-circle" class="w-8 h-8"></i>
-            </button>
-            
+        <div id="certificate-content" class="bg-white p-10 rounded-xl max-w-3xl w-full text-center relative border-8 border-double border-x-primary shadow-2xl animate-zoom-in" style="background: white !important; color: #1f2937 !important;">
+            <button onclick="document.getElementById('certificate-modal').style.display = 'none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition hover:scale-125" data-html2canvas-ignore="true"><i data-lucide="x-circle" class="w-8 h-8"></i></button>
             <div class="mb-8 flex justify-center">
-                 <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-32 w-auto block dark:hidden">
-                 <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20black.png" class="h-32 w-auto hidden dark:block">
+                 <img src="https://raw.githubusercontent.com/BaselGhanem/Basics1/refs/heads/main/X%20Academy%20white.png" class="h-28 animate-float">
             </div>
-
-            <h2 id="cert-header" class="text-4xl font-bold text-x-primary mb-2">شهادة إتمام الدرس</h2>
-            <p id="cert-sub" class="text-xl text-gray-600 dark:text-gray-300">تشهد منصة X Academy بأن</p>
-            <h1 id="cert-name" class="text-5xl font-black text-gray-800 dark:text-white my-6 border-b-2 border-x-secondary inline-block pb-2 px-10">...</h1>
-            <p id="cert-desc" class="text-lg text-gray-600 dark:text-gray-300">قد أتم بنجاح درس <span class="font-bold text-x-primary">احتراف الرسوم البيانية في Excel</span></p>
+            <h2 id="cert-header" class="text-4xl font-bold text-x-primary mb-2"></h2>
+            <p id="cert-sub" class="text-xl text-gray-600"></p>
+            <h1 id="cert-name" class="text-5xl font-black text-gray-800 my-6 border-b-2 border-x-secondary inline-block pb-2 px-10"></h1>
+            <p id="cert-desc" class="text-lg text-gray-600"></p>
+            <div class="flex justify-center gap-4 my-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-x-primary text-white flex items-center justify-center mx-auto mb-2"><i data-lucide="sheet"></i></div>
+                    <p class="text-sm">4 تقنيات Excel</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center mx-auto mb-2"><i data-lucide="bar-chart-3"></i></div>
+                    <p class="text-sm">8 أنواع Charts</p>
+                </div>
+            </div>
             <p class="text-sm text-gray-400 mt-8 font-mono">Date: <span id="cert-date"></span></p>
-            
-            <button onclick="downloadPNG()" class="mt-8 bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-8 rounded-xl transition transform hover:scale-105 flex items-center justify-center gap-2 mx-auto" data-html2canvas-ignore="true">
-                <i data-lucide="download" class="inline w-5 h-5"></i> تحميل الشهادة (PNG)
-            </button>
+            <div class="flex gap-4 justify-center mt-8" data-html2canvas-ignore="true">
+                <button onclick="downloadCertificate()" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2 transition hover:scale-105">
+                    <i data-lucide="download"></i> تحميل الشهادة
+                </button>
+                <button onclick="shareCertificate()" class="bg-x-secondary hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2 transition hover:scale-105">
+                    <i data-lucide="share-2"></i> مشاركة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="leaderboard-modal" style="display: none;" class="modal-overlay">
+        <div class="bg-white p-8 rounded-2xl max-w-md w-full shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-x-primary flex items-center gap-2"><i data-lucide="trophy"></i> المتصدرين</h3>
+                <button onclick="document.getElementById('leaderboard-modal').style.display = 'none'" class="text-gray-400 hover:text-red-500"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div id="leaderboard-list" class="space-y-3">
+                <!-- سيتم ملؤه ديناميكياً -->
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-bold">رتبتك</p>
+                        <p id="user-rank" class="text-2xl font-black text-x-primary">-</p>
+                    </div>
+                    <div id="user-score" class="text-right">
+                        <p class="font-bold">نقاطك</p>
+                        <p class="text-2xl font-black text-x-secondary">0</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ==================== الترجمات (لهجة أردنية) ====================
+        const appState = { 
+            lang: 'ar', 
+            currentSection: 'hero', 
+            completedSections: new Set(), 
+            userName: null, 
+            tempSelection: null,
+            xp: 0,
+            achievements: new Set(),
+            streak: 0,
+            lastActivity: null,
+            lessonCompletedMessages: new Set() // تخزين الدروس التي ظهرت لها رسالة النجاح
+        };
+
+        // تحديث الترجمة بالأمثلة الإضافية
         const t = {
             ar: {
-                modal: { title: 'يا هلا بيك في X Academy!', desc: 'سجل اسمك يا غالي عشان نبلش صح.', btn: 'يلا نبلش 🚀', ph: 'اكتب اسمك هون' },
+                modal: { t: 'يا هلا بيك!', d: 'سجل اسمك يا غالي عشان نبلش.', p: 'اكتب اسمك..', b: 'يلا نبلش 🚀' },
                 hero: { 
-                    title: 'X Charts', 
-                    subtitle: 'دورة تفاعلية بتخليك حوت في الرسوم البيانية.',
-                    welcome: 'يا هلا بـ',
-                    desc: 'في هالدورة رح تفهم كل أنواع المخططات (الـ 8 أنواع) ومتى تستخدم كل واحد، مع محاكاة وتطبيق عملي عشان تثبت المعلومة.',
-                    btnStart: 'بلش الدورة',
-                    features: { v: 'شوف بعينك', v_desc: 'حول الأرقام الجامدة لرسمات بتحكي.', s: 'تطبيق عملي', s_desc: 'اختار الرسم الصح وشوف النتيجة قدامك.', c: 'شهادة مرتبة', c_desc: 'بس تخلص وتنجح الك شهادة باسمك.' }
+                    title: 'Excel Master Class', 
+                    sub: 'رحلة شاملة: تعدد الصفحات + الرسوم البيانية', 
+                    welcome: 'يا هلا بـ', 
+                    desc: 'في هاي الرحلة رح تتقن مهارات الـ Multi-Sheets Grouping ورح تحترف الـ Charts وانواعها الـ 8.',
+                    btn: 'ابدأ الرحلة', 
+                    f1: 'إدارة الصفحات', f1d: 'تحكم بملف كامل بكبسة زر.', 
+                    f2: 'الرسوم البيانية', f2d: 'حول الأرقام لقصص بصرية.', 
+                    f3: 'شهادة شاملة', f3d: 'اثبت مهارتك في المجالين.',
+                    leaderboard: 'لوحة المتصدرين',
+                    stats: 'إحصائياتك'
                 },
-                nav: {
-                    hero: 'الرئيسية',
-                    comparison: '١. المقارنات',
-                    trends: '٢. الاتجاهات (الزمن)',
-                    proportions: '٣. النسب (الأجزاء)',
-                    relationships: '٤. العلاقات المعقدة',
-                    quiz: '٥. الاختبار النهائي'
+                nav: { hero: 'الرئيسية', p1: 'قسم 1: تعدد الصفحات', p2: 'قسم 2: الرسوم البيانية', quiz: 'الاختبار النهائي' },
+                lessons: {
+                    'grouping': { 
+                        t: 'التحديد (Ctrl & Select)', 
+                        d: 'تعديل 5 شهور بكبسة واحدة.', 
+                        p: ['Ctrl + Click لتحديد صفحات.', 'تكتب المعادلة مرة، بتنكتب عند الكل.', 'Shift + Click لتحديد نطاق صفحات.', 'الوضع الجماعي يظهر بشريط العنوان.'],
+                        s: 'بدك تضيف مجموع المبيعات لـ 3 شهور مرة واحدة.', 
+                        o: ['نسخ ولصق', 'Ctrl + Grouping', 'كتابة يدوية'],
+                        realExample: 'شركة: تعديل أسعار 50 منتج في 12 فرع دفعة واحدة. توفير الوقت: 4 ساعات → 5 دقائق.',
+                        extra: 'جرب: اضغط Ctrl واختر صفحات Jan وFeb وMar معاً'
+                    },
+                    'formatting': { 
+                        t: 'تحديد الكل (Select All)', 
+                        d: 'توحيد ألوان وحدود 20 صفحة.', 
+                        p: ['Right Click -> Select All Sheets.', 'أي تنسيق بتعمله بنسخ للكل فوراً.', 'Format Painter يعمل مع Grouping.', 'تعديل Column Width للكل مرة واحدة.'],
+                        s: 'مديرك طلب تلوين العناوين وعمل Borders للكل.', 
+                        o: ['Select All & Format', 'Macro', 'واحد واحد'],
+                        realExample: 'بنك: توحيد تقارير 30 فرع لألوان وخطوط موحدة. الاحترافية: +40% في قراءة التقارير.',
+                        extra: 'تلميح: بعد Select All، غير لون الخلفية وشوف التغيير بكل الصفحات'
+                    },
+                    'formulas': { 
+                        t: 'الجمع ثلاثي الأبعاد', 
+                        d: 'معادلة وحدة بتخترق الصفحات.', 
+                        p: ['Sum(First:Last!Cell)', 'تجمع نفس الخلية من كل الصفحات اللي بالنص.', 'تعمل مع Average, Max, Min أيضاً.', 'الخلايا المدمجة تظهر بتنسيق خاص.'],
+                        s: 'بصفحة Summary، بدك مجموع C18 من Jan لـ Mar.', 
+                        o: ['Jan+Feb+..', 'Sum(Jan:Mar!C18)', 'Consolidate'],
+                        realExample: 'مستشفى: متابعة إيرادات 12 شهر بـ معادلة وحدة. الدقة: 100% بدون أخطاء يدوية.',
+                        extra: 'استخدم: =AVERAGE(Jan:Dec!B5) لمتوسط المبيعات السنوية'
+                    },
+                    'safety': { 
+                        t: 'تنبيه الأمان', 
+                        d: 'خطر النسيان!', 
+                        p: ['بس تخلص، لازم تعمل Ungroup.', 'اذا نسيت، رح تخرب داتا بصفحات ثانية.', 'المؤشر يظهر Group Mode.', 'تنبيه Excel يظهر عند التعديل.'],
+                        s: 'خلصت شغل جماعي وبدك تعدل بس على Jan.', 
+                        o: ['بعدل فوراً', 'Ungroup First', 'سكر الملف'],
+                        realExample: 'شركة تأمين: خسارة 5000 سجل بسبب نسيان Ungroup. التعلم: دائماً تحقق قبل التعديل.',
+                        extra: 'انتبه: العنوان يظهر [Group] عند التجميع - تأكد من إزالته'
+                    },
+                    
+                    'comparison': { 
+                        t: 'المقارنات', 
+                        d: 'مقارنة القيم بين فئات.', 
+                        p: ['Column: للمقارنة العمودية.', 'Bar: اذا الأسماء طويلة.', 'استخدم ألوان متباينة للتمييز.', 'أضف Data Labels للوضوح.'],
+                        s: 'مقارنة مبيعات 3 منتجات (A, B, C) لمعرفة الأفضل.', 
+                        o: ['Column', 'Line', 'Pie'], 
+                        dataLabels: ['أ', 'ب', 'ج'],
+                        realExample: 'متجر إلكتروني: مقارنة مبيعات 10 منتجات شهرياً. القرار: إيقاف المنتجات الأقل مبيعاً.',
+                        extra: 'متقدم: استخدم Clustered Column لمقارنة منتجات عبر فترات متعددة'
+                    },
+                    'trends': { 
+                        t: 'الاتجاهات (الزمن)', 
+                        d: 'كيف الوضع بتغير مع الوقت؟', 
+                        p: ['Line: لرؤية الصعود والهبوط.', 'Area: لتوضيح حجم التغيير.', 'أضف Trendline للتنبؤ.', 'استخدم Markers للنقاط المهمة.'],
+                        s: 'سعر الذهب بآخر 5 شهور (اتجاه عام).', 
+                        o: ['Pie', 'Bar', 'Line'], 
+                        dataLabels: ['يناير','فبراير','مارس','أبريل','مايو'],
+                        realExample: 'بورصة: تتبع سهم شركة على مدى سنة. الاكتشاف: ارتفاع قوي في الربع الثالث.',
+                        extra: 'جرب: اضغط على نقاط الخط لرؤية القيم التفصيلية'
+                    },
+                    'proportions': { 
+                        t: 'النسب (الأجزاء)', 
+                        d: 'حصة كل واحد من الكعكة.', 
+                        p: ['Pie: للأجزاء من الكل (%).', 'لا تستخدمها اذا الأقسام > 7.', 'Doughnut: نسخة متقدمة من Pie.', 'استخدم Explode slice للتأكيد.'],
+                        s: 'توزيع الميزانية (50% رواتب، 30% تسويق..).', 
+                        o: ['Radar', 'Pie', 'Scatter'], 
+                        dataLabels: ['رواتب','تسويق','تشغيل'],
+                        realExample: 'شركة ناشئة: توزيع رأس المال على الأقسام. الشفافية: عرض النسب للمستثمرين.',
+                        extra: 'احترافي: استخدم Pie of Pie للمجموعات الكبيرة'
+                    },
+                    'relationships': { 
+                        t: 'العلاقات المعقدة', 
+                        d: 'تقييم خصائص متعددة.', 
+                        p: ['Radar: لتقييم المهارات (شبكة العنكبوت).', 'Scatter: للعلاقة بين متغيرين.', 'Bubble: ثلاث أبعاد (X, Y, Size).', 'Heatmap: كثافة البيانات.'],
+                        s: 'تقييم موظف بـ 5 مهارات (تواصل، تقنية، التزام..).', 
+                        o: ['Radar', 'Line', 'Column'], 
+                        dataLabels: ['تواصل','تقنية','فريق','وقت','عمل'],
+                        realExample: 'موارد بشرية: مقارنة أداء 50 موظف بـ 8 معايير. التطوير: تحديد نقاط الضعف للتدريب.',
+                        extra: 'تفاعلي: حرك نقاط الـ Scatter لترى العلاقة تتغير'
+                    }
+                },
+                excelSim: { 
+                    item: 'صنف', qty: 'كمية', sales: 'مبيعات', total: 'مجموع', 
+                    editWarn: 'تنبيه: تعديل Jan فقط', noFormat: 'بدون تنسيق موحد', 
+                    safe: 'آمن: Jan فقط', warn: 'خطر: تعديل جماعي',
+                    multiSelect: 'تم تحديد صفحات متعددة',
+                    groupMode: 'وضع التجميع نشط'
                 },
                 common: {
-                    progress: 'مستوى الإنجاز',
-                    lesson: 'درس',
-                    learn: 'شو رح تتعلم؟',
-                    task: 'تحدي عملي',
-                    taskSub: 'المطلوب: اختار الرسم البياني الأنسب للبيانات',
-                    scenario: 'القصة:',
-                    data: 'البيانات الموجودة:',
-                    choose: 'اختار نوع الـ Chart المناسب:',
-                    placeholder: 'اختار جواب عشان نرسم الرسمة هون',
-                    next: 'الدرس التالي',
-                    correct: 'وحش! إجابة صحيحة.',
-                    wrong: 'لاحظ الرسمة.. مش ضابطة صح؟ جرب غيرها.',
-                    submit: 'سلم الاختبار',
-                    review: 'راجع الدروس',
-                    check: 'تحقق من الإجابة',
-                    cert: { h: 'شهادة إتمام الدورة', s: 'تشهد منصة X Academy بأن', d: 'قد أتم بنجاح دورة' }
+                    progress: 'الإنجاز', lesson: 'درس', learn: 'شو رح تتعلم؟', task: 'التحدي', taskSub: 'طبق اللي تعلمته', 
+                    scenario: 'السيناريو:', choose: 'الحل الأنسب:', placeholder: 'النتيجة رح تظهر هون..', 
+                    check: 'تحقق', next: 'التالي', submit: 'تسليم الاختبار',
+                    correct: 'وحش! إجابة صحيحة.', wrong: 'ركز شوي.. حاول مرة ثانية.',
+                    cert: { h: 'شهادة إتقان', s: 'تشهد X Academy بأن', d: 'أتم بنجاح محاضرة Excel & Charts' },
+                    realExample: 'مثال واقعي',
+                    extraTip: 'تلميح إضافي',
+                    achievements: {
+                        firstBlood: { name: 'الضربة الأولى', desc: 'أكمل أول درس' },
+                        excelMaster: { name: 'ساحر الإكسل', desc: 'أكمل قسم Excel' },
+                        chartWizard: { name: 'ساحر الرسوم', desc: 'أكمل قسم Charts' },
+                        perfectScore: { name: 'النتيجة الكاملة', desc: 'احصل على 100% في الاختبار' },
+                        speedDemon: { name: 'سرعة البرق', desc: 'أكمل 3 دروس في أقل من 5 دقائق' }
+                    }
                 },
-                charts: {
-                    column: { t: 'الأعمدة (Column)', d: 'للمقارنة بين شغلات مختلفة (فئات). الرسمة بتيجي عواميد واقفة، وكل ما طول العامود زادت القيمة.' },
-                    bar: { t: 'الأشرطة (Bar)', d: 'نفس الأعمدة بس نايمة (أفقية)، هاي ممتازة اذا كانت الأسماء طويلة وبدك تقرأها بسهولة.' },
-                    line: { t: 'الخطوط (Line)', d: 'هاي عشان تشوف كيف الوضع بتغير مع الوقت (طالع ولا نازل)، زي رسمة الأسهم أو درجات الحرارة.' },
-                    pie: { t: 'الدائرية (Pie)', d: 'هاي بتبين حصة كل واحد من الكعكة الكبيرة (نسبة مئوية). بس دير بالك، لا تستخدمها اذا عندك اكثر من 7 أقسام بتصير عجقة.' },
-                    area: { t: 'المساحة (Area)', d: 'زي الخطوط بالزبط، بس المنطقة اللي تحت الخط بتكون ملونة، عشان تبينلك حجم التغيير مش بس الاتجاه.' },
-                    scatter: { t: 'التشتت (Scatter)', d: 'هاي شغل تحليل، بتبينلك العلاقة بين رقمين (مثلاً: كل ما زاد السعر، قل الطلب). بتشوف نقاط مبعثرة.' },
-                    radar: { t: 'الرادار (Radar)', d: 'عشان تقارن شغلات الها خصائص كثيرة (زي مهارات الموظف: تواصل، تقنية، التزام...). شكلها زي شبكة العنكبوت.' },
-                    surface: { t: 'السطحية (Surface)', d: 'هاي للشغلات المعقدة شوي، بتعطيك منظور ثلاثي الأبعاد للعلاقات، بتشبه الخرائط الطبوغرافية.' }
-                },
-                questions: [
-                    { t: 'شو الرسم الأنسب عشان تفرجيني "النسب المئوية" (جزء من الكل)؟', o: ['Line', 'Pie', 'Column'] },
-                    { t: 'مديرك بدو يقارن مبيعات 3 أقسام ببعض، شو بتختار؟', o: ['Clustered Column', 'Pie', 'Scatter'] },
-                    { t: 'بدك تفرجي العلاقة بين "عدد ساعات الدراسة" و "المعدل" (Correlation)؟', o: ['Area', 'Radar', 'Scatter'] },
-                    { t: 'عندك أسماء منتجات طويلة وبدك تقارن مبيعاتها، شو بتستخدم؟', o: ['Bar', 'Line', 'Surface'] }
-                ]
+                quiz: { 
+                    t: 'الاختبار النهائي الشامل',
+                    qs: [
+                        {t: 'كيف تحدد صفحات متفرقة؟', o: ['Shift', 'Ctrl', 'Alt']},
+                        {t: 'المعادلة الصحيحة للجمع ثلاثي الأبعاد؟', o: ['Sum(Jan+Feb)', 'Sum(Jan:Mar!A1)', 'Sum(All!A1)']},
+                        {t: 'أي رسم يستخدم لعرض النسب المئوية؟', o: ['Line', 'Pie', 'Radar']},
+                        {t: 'أفضل رسم للمقارنة بين فئات بأسماء طويلة؟', o: ['Bar (Horizontal)', 'Column', 'Scatter']}
+                    ]
+                }
             },
             en: {
-                modal: { title: 'Welcome to X Academy!', desc: 'Ready to master Charts? Enter your name.', btn: 'Let\'s Start 🚀', ph: 'Enter your name here' },
+                modal: { t: 'Welcome!', d: 'Enter your name to start.', p: 'Your Name...', b: 'Let\'s Start 🚀' },
                 hero: { 
-                    title: 'X Charts', 
-                    subtitle: 'Interactive professional course to master Data Visualization.',
-                    welcome: 'Hey',
-                    desc: 'In this course, you will understand all 8 chart types and when to use them, with simulation and practice.',
-                    btnStart: 'Start Course',
-                    features: { v: 'Visualizing', v_desc: 'Turn boring numbers into insights.', s: 'Simulation', s_desc: 'Pick the chart and see it drawn live.', c: 'Certificate', c_desc: 'Pass the quiz and get certified.' }
+                    title: 'Excel Master Class', 
+                    sub: 'Comprehensive: Multi-Sheets + Charts', 
+                    welcome: 'Welcome', 
+                    desc: 'Master Multi-Sheet Grouping logic and visualize data professionally with 8 chart types.',
+                    btn: 'Start Course', 
+                    f1: 'Sheet Management', f1d: 'Control entire workbook instantly.', 
+                    f2: 'Data Viz', f2d: 'Turn numbers into stories.', 
+                    f3: 'Certificate', f3d: 'Prove your dual skills.',
+                    leaderboard: 'Leaderboard',
+                    stats: 'Your Stats'
                 },
-                nav: {
-                    hero: 'Home',
-                    comparison: '1. Comparisons',
-                    trends: '2. Trends',
-                    proportions: '3. Proportions',
-                    relationships: '4. Relationships',
-                    quiz: '5. Final Quiz'
+                nav: { hero: 'Home', p1: 'Part 1: Multi-Sheets', p2: 'Part 2: Charts', quiz: 'Final Quiz' },
+                lessons: {
+                    'grouping': { 
+                        t: 'Grouping (Ctrl)', 
+                        d: 'Edit 5 months in one click.', 
+                        p: ['Ctrl + Click to select sheets.', 'Write formula once, applies to all.', 'Shift + Click for range.', 'Group mode shows in title bar.'],
+                        s: 'You want to SUM sales for 3 months at once.', 
+                        o: ['Copy Paste', 'Ctrl + Grouping', 'Manual Type'],
+                        realExample: 'Company: Adjust prices of 50 products across 12 branches simultaneously. Time saved: 4 hours → 5 minutes.',
+                        extra: 'Try: Hold Ctrl and select Jan, Feb, and Mar together'
+                    },
+                    'formatting': { 
+                        t: 'Select All Sheets', 
+                        d: 'Unified format for 20 sheets.', 
+                        p: ['Right Click -> Select All Sheets.', 'Formatting replicates instantly.', 'Format Painter works with Grouping.', 'Adjust Column Width for all at once.'],
+                        s: 'Manager wants Blue headers & Borders for all agents.', 
+                        o: ['Select All & Format', 'Macro', 'One by one'],
+                        realExample: 'Bank: Unify reports of 30 branches with consistent colors & fonts. Professionalism: +40% report readability.',
+                        extra: 'Tip: After Select All, change background color and watch all sheets update'
+                    },
+                    'formulas': { 
+                        t: '3D Formulas', 
+                        d: 'One formula across tabs.', 
+                        p: ['Sum(First:Last!Cell)', 'Sums the same cell from all sheets in between.', 'Works with Average, Max, Min too.', 'Merged cells show special format.'],
+                        s: 'In Summary sheet, sum C18 from Jan to Mar.', 
+                        o: ['Jan+Feb+..', 'Sum(Jan:Mar!C18)', 'Consolidate'],
+                        realExample: 'Hospital: Track revenue across 12 months with single formula. Accuracy: 100% no manual errors.',
+                        extra: 'Use: =AVERAGE(Jan:Dec!B5) for yearly sales average'
+                    },
+                    'safety': { 
+                        t: 'Safety Warning', 
+                        d: 'Don\'t Forget!', 
+                        p: ['Always Ungroup when done.', 'If you forget, you overwrite other data.', 'Cursor shows Group Mode.', 'Excel warning appears on edit.'],
+                        s: 'Finished grouping, now need to edit Jan ONLY.', 
+                        o: ['Edit immediately', 'Ungroup First', 'Close File'],
+                        realExample: 'Insurance company: Lost 5000 records due to forgotten Ungroup. Lesson: Always verify before editing.',
+                        extra: 'Watch: Title shows [Group] when grouped - make sure to remove it'
+                    },
+                    
+                    'comparison': { 
+                        t: 'Comparisons', 
+                        d: 'Comparing values across cats.', 
+                        p: ['Column: Vertical comparison.', 'Bar: Good for long labels.', 'Use contrasting colors.', 'Add Data Labels for clarity.'],
+                        s: 'Compare sales of 3 products (A, B, C).', 
+                        o: ['Column', 'Line', 'Pie'], 
+                        dataLabels: ['A', 'B', 'C'],
+                        realExample: 'E-commerce: Compare monthly sales of 10 products. Decision: Discontinue low-performing products.',
+                        extra: 'Advanced: Use Clustered Column to compare products across multiple periods'
+                    },
+                    'trends': { 
+                        t: 'Trends', 
+                        d: 'Change over time.', 
+                        p: ['Line: See ups and downs.', 'Area: Visualize volume.', 'Add Trendline for prediction.', 'Use Markers for key points.'],
+                        s: 'Gold price over last 5 months.', 
+                        o: ['Pie', 'Bar', 'Line'], 
+                        dataLabels: ['Jan','Feb','Mar','Apr','May'],
+                        realExample: 'Stock market: Track company stock over 1 year. Discovery: Strong rise in Q3.',
+                        extra: 'Try: Click line points to see detailed values'
+                    },
+                    'proportions': { 
+                        t: 'Proportions', 
+                        d: 'Part of a whole.', 
+                        p: ['Pie: Percentages.', 'Don\'t use if > 7 slices.', 'Doughnut: Advanced Pie.', 'Use Explode slice for emphasis.'],
+                        s: 'Budget Split (50% Salary, 30% Mkt..).', 
+                        o: ['Radar', 'Pie', 'Scatter'], 
+                        dataLabels: ['Sal','Mkt','Ops'],
+                        realExample: 'Startup: Capital distribution across departments. Transparency: Show percentages to investors.',
+                        extra: 'Pro: Use Pie of Pie for large groups'
+                    },
+                    'relationships': { 
+                        t: 'Relationships', 
+                        d: 'Multiple characteristics.', 
+                        p: ['Radar: Skills assessment.', 'Scatter: Correlation.', 'Bubble: Three dimensions (X, Y, Size).', 'Heatmap: Data density.'],
+                        s: 'Employee Eval on 5 skills.', 
+                        o: ['Radar', 'Line', 'Column'], 
+                        dataLabels: ['Comm','Tech','Team','Time','Work'],
+                        realExample: 'HR: Compare performance of 50 employees across 8 criteria. Development: Identify weak points for training.',
+                        extra: 'Interactive: Drag Scatter points to see relationships change'
+                    }
+                },
+                excelSim: { 
+                    item: 'Item', qty: 'Qty', sales: 'Sales', total: 'Total', 
+                    editWarn: 'Editing Jan Only!', noFormat: 'No Global Format', 
+                    safe: 'Safe: Jan Only', warn: 'Warning: All Sheets Edited!',
+                    multiSelect: 'Multiple Sheets Selected',
+                    groupMode: 'Group Mode Active'
                 },
                 common: {
-                    progress: 'Progress',
-                    lesson: 'Lesson',
-                    learn: 'What will you learn?',
-                    task: 'Practical Challenge',
-                    taskSub: 'Task: Select the correct chart',
-                    scenario: 'Scenario:',
-                    data: 'Data (Table):',
-                    choose: 'Choose the appropriate Chart:',
-                    placeholder: 'Select an answer to visualize the chart',
-                    next: 'Next Lesson',
-                    correct: 'Correct Answer! Great job.',
-                    wrong: 'Notice how this chart looks off? Try another.',
-                    submit: 'Submit Quiz',
-                    review: 'Review Lessons',
-                    check: 'Check Answer',
-                    cert: { h: 'Certificate of Completion', s: 'X Academy Certifies that', d: 'Has successfully mastered' }
+                    progress: 'Progress', lesson: 'Lesson', learn: 'Concepts', task: 'Challenge', taskSub: 'Apply your skills', 
+                    scenario: 'Scenario:', choose: 'Best Action:', placeholder: 'Result appears here..', 
+                    check: 'Verify', next: 'Next', submit: 'Submit Quiz',
+                    correct: 'Correct! Great job.', wrong: 'Incorrect. Try again.',
+                    cert: { h: 'Certificate of Mastery', s: 'X Academy Certifies', d: 'Mastered Excel & Charts' },
+                    realExample: 'Real World Example',
+                    extraTip: 'Extra Tip',
+                    achievements: {
+                        firstBlood: { name: 'First Blood', desc: 'Complete first lesson' },
+                        excelMaster: { name: 'Excel Wizard', desc: 'Complete Excel section' },
+                        chartWizard: { name: 'Chart Wizard', desc: 'Complete Charts section' },
+                        perfectScore: { name: 'Perfect Score', desc: 'Get 100% on final quiz' },
+                        speedDemon: { name: 'Speed Demon', desc: 'Complete 3 lessons in under 5 minutes' }
+                    }
                 },
-                charts: {
-                    column: { t: 'Column', d: 'Comparing values across categories (Vertical).' },
-                    bar: { t: 'Bar', d: 'Comparing values (Horizontal), perfect for long labels.' },
-                    line: { t: 'Line', d: 'Showing trends and changes over time.' },
-                    pie: { t: 'Pie', d: 'Showing percentages (Part of a whole). Don\'t use if > 7 slices.' },
-                    area: { t: 'Area', d: 'Like Line but filled to show volume of change.' },
-                    scatter: { t: 'Scatter', d: 'Showing relationship between two numerical variables.' },
-                    radar: { t: 'Radar', d: 'Comparing multiple features/skills of an item.' },
-                    surface: { t: 'Surface', d: 'Showing relationships in 3D perspective.' }
-                },
-                questions: [
-                    { t: 'Which chart is best for showing percentages (Part of whole)?', o: ['Line', 'Pie', 'Column'] },
-                    { t: 'Comparing sales of 3 departments against each other?', o: ['Clustered Column', 'Pie', 'Scatter'] },
-                    { t: 'To show correlation between "Study Hours" and "Grades"?', o: ['Area', 'Radar', 'Scatter'] },
-                    { t: 'You have long category names to compare, which chart?', o: ['Bar', 'Line', 'Surface'] }
-                ]
-            }
-        };
-
-        // ==================== State & Config ====================
-        const appState = {
-            lang: 'ar',
-            currentSection: 'hero',
-            completedSections: new Set(),
-            userName: null,
-            score: 0,
-            tempSelection: null
-        };
-
-        const chartConfig = {
-            column: { type: 'bar', icon: 'bar-chart-2' },
-            bar: { type: 'bar', indexAxis: 'y', icon: 'align-left' },
-            line: { type: 'line', icon: 'trending-up' },
-            pie: { type: 'pie', icon: 'pie-chart' },
-            area: { type: 'line', fill: true, icon: 'layers' },
-            scatter: { type: 'scatter', icon: 'scatter-chart' },
-            radar: { type: 'radar', icon: 'hexagon' },
-            surface: { type: 'bubble', icon: 'map' }
-        };
-
-        const lessonsData = {
-            'comparison': {
-                task: {
-                    data: { labels: ['Prod A', 'Prod B', 'Prod C'], datasets: [{ label: 'Sales', data: [120, 190, 80], backgroundColor: ['#099999', '#fbbf24', '#107c41'] }] },
-                    options: ['column', 'line', 'pie'],
-                    correct: 'column'
-                }
-            },
-            'trends': {
-                task: {
-                    data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], datasets: [{ label: 'Gold Price', data: [1800, 1820, 1790, 1850, 1900], borderColor: '#fbbf24', tension: 0.1, fill: false }] },
-                    options: ['pie', 'bar', 'line'],
-                    correct: 'line'
-                }
-            },
-            'proportions': {
-                task: {
-                    data: { labels: ['Salaries', 'Marketing', 'Ops'], datasets: [{ data: [50, 30, 20], backgroundColor: ['#ef4444', '#3b82f6', '#10b981'] }] },
-                    options: ['radar', 'pie', 'scatter'],
-                    correct: 'pie'
-                }
-            },
-            'relationships': {
-                task: {
-                    data: { labels: ['Comm', 'Tech', 'Team', 'Commit', 'Create'], datasets: [{ label: 'Employee A', data: [80, 90, 70, 85, 60], fill: true, backgroundColor: 'rgba(9, 153, 153, 0.2)', borderColor: '#099999' }] },
-                    options: ['radar', 'line', 'column'],
-                    correct: 'radar'
+                quiz: { 
+                    t: 'Comprehensive Final Quiz',
+                    qs: [
+                        {t: 'How to select non-adjacent sheets?', o: ['Shift', 'Ctrl', 'Alt']},
+                        {t: 'Correct 3D Formula?', o: ['Sum(Jan+Feb)', 'Sum(Jan:Mar!A1)', 'Sum(All!A1)']},
+                        {t: 'Which chart for percentages?', o: ['Line', 'Pie', 'Radar']},
+                        {t: 'Best chart for long category names?', o: ['Bar (Horizontal)', 'Column', 'Scatter']}
+                    ]
                 }
             }
         };
 
-        function getLessonContent(key) {
-            const T = t[appState.lang];
-            const C = T.charts;
-            if(key === 'comparison') return {
-                title: T.nav.comparison, desc: C.column.d, types: [C.column.t, C.bar.t], 
-                question: appState.lang === 'ar' ? 'عندك تقرير مبيعات لـ 3 منتجات. بدك تقارن مين باع أكثر ومين أقل بسرعة. شو بتختار؟' : 'You have sales data for 3 products. You want to quickly compare who sold more. Which chart?',
-            };
-            if(key === 'trends') return {
-                title: T.nav.trends, desc: C.line.d, types: [C.line.t, C.area.t],
-                question: appState.lang === 'ar' ? 'سعر الذهب طالع نازل كل يوم. بدك تفرجي المستثمرين "اتجاه" السعر بآخر شهر. شو أنسب اشي؟' : 'Gold price fluctuates daily. You want to show investors the price "Trend" over the last month. Best choice?',
-            };
-            if(key === 'proportions') return {
-                title: T.nav.proportions, desc: C.pie.d, types: [C.pie.t],
-                question: appState.lang === 'ar' ? 'بدك تعمل تقرير عن توزيع ميزانية الشركة (رواتب 50%، تسويق 30%، تشغيل 20%). كيف تعرض الحصص؟' : 'Reporting company budget split (50% Salaries, 30% Marketing, 20% Ops). How to display shares?',
-            };
-            if(key === 'relationships') return {
-                title: T.nav.relationships, desc: C.scatter.d, types: [C.scatter.t, C.radar.t],
-                question: appState.lang === 'ar' ? 'بدك تقيم موظف بناءً على 5 مهارات مختلفة (تواصل، تقنية، عمل جماعي...). كيف بتعرض كل هالجوانب برسمة وحدة؟' : 'Evaluating an employee based on 5 different skills (Comm, Tech, Teamwork...). How to show all aspects in one chart?',
-            };
-            return {};
-        }
+        const lessonsConfig = {
+            'grouping': { type: 'excel', visual: 'grouping', correct: 'opt2', optionsIcons: ['copy', 'layers', 'edit'] },
+            'formatting': { type: 'excel', visual: 'formatting', correct: 'opt1', optionsIcons: ['paint-bucket', 'code', 'check'] },
+            'formulas': { type: 'excel', visual: '3dsum', correct: 'opt2', optionsIcons: ['plus', 'sigma', 'database'] },
+            'safety': { type: 'excel', visual: 'ungroup', correct: 'opt2', optionsIcons: ['edit', 'unlock', 'x'] },
+            
+            'comparison': { type: 'chart', visual: 'column', correct: 'column', data: {d:[120,190,80]}, optionsIcons: ['bar-chart', 'trending-up', 'pie-chart'], optionIds: ['column', 'line', 'pie'] },
+            'trends': { type: 'chart', visual: 'line', correct: 'line', data: {d:[1800,1820,1790,1850,1900]}, optionsIcons: ['pie-chart', 'align-left', 'trending-up'], optionIds: ['pie', 'bar', 'line'] },
+            'proportions': { type: 'chart', visual: 'pie', correct: 'pie', data: {d:[50,30,20]}, optionsIcons: ['hexagon', 'pie-chart', 'scatter'], optionIds: ['radar', 'pie', 'scatter'] },
+            'relationships': { type: 'chart', visual: 'radar', correct: 'radar', data: {d:[80,90,70,85,60]}, optionsIcons: ['hexagon', 'trending-up', 'bar-chart'], optionIds: ['radar', 'line', 'column'] }
+        };
 
-        // ==================== Logic ====================
+        const chartConfig = { 
+            column: {type:'bar'}, 
+            bar: {type:'bar', indexAxis:'y'}, 
+            line: {type:'line'}, 
+            pie: {type:'pie'}, 
+            radar: {type:'radar'},
+            scatter: {type:'scatter'}
+        };
+
         window.onload = () => {
             updateStaticText();
             showNameModal();
             lucide.createIcons();
-            document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+	        document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-GB');
+            updateLeaderboard();
         };
 
         function toggleLanguage() {
             appState.lang = appState.lang === 'ar' ? 'en' : 'ar';
             document.documentElement.lang = appState.lang;
             document.documentElement.dir = appState.lang === 'ar' ? 'rtl' : 'ltr';
-            updateStaticText();
-            renderNav();
+            updateStaticText(); 
+            renderNav(); 
             renderContent(appState.currentSection);
         }
 
         function updateStaticText() {
             const T = t[appState.lang];
-            document.getElementById('lang-text').textContent = appState.lang === 'ar' ? 'English' : 'عربي';
-            document.getElementById('modal-title').textContent = T.modal.title;
-            document.getElementById('modal-desc').textContent = T.modal.desc;
-            document.getElementById('modal-btn').textContent = T.modal.btn;
-            document.getElementById('user-name').placeholder = T.modal.ph;
+            document.getElementById('lang-text').textContent = appState.lang === 'ar' ? 'EN' : 'AR';
+            
+            document.getElementById('modal-title').textContent = T.modal.t;
+            document.getElementById('modal-desc').textContent = T.modal.d;
+            document.getElementById('user-name').placeholder = T.modal.p;
+            document.getElementById('modal-btn').textContent = T.modal.b;
+
             if(appState.userName) {
                 document.getElementById('header-username').textContent = `${T.hero.welcome} ${appState.userName}`;
                 document.getElementById('cert-name').textContent = appState.userName;
             }
             document.getElementById('progress-label').textContent = T.common.progress;
-
             document.getElementById('cert-header').textContent = T.common.cert.h;
             document.getElementById('cert-sub').textContent = T.common.cert.s;
-            document.getElementById('cert-desc').innerHTML = `${T.common.cert.d} <span class="font-bold text-x-primary">X Charts</span>`;
+            document.getElementById('cert-desc').innerHTML = T.common.cert.d;
         }
 
         function showNameModal() {
@@ -395,372 +585,1041 @@
                     appState.userName = name;
                     updateStaticText();
                     document.getElementById('name-modal').style.display = 'none';
-                    renderNav();
+                    renderNav(); 
                     renderContent('hero');
+                    
+                    // إضافة إنجاز
+                    addAchievement('firstBlood');
+                    showToast(`يا هلا ${name}! رح تتعلم أشياء رهيبة`, 'success');
+                    
+                    // تشغيل الألعاب النارية
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
                 }
             });
         }
 
         function renderNav() {
-            const T = t[appState.lang];
-            const sectionsList = [
-                { id: 'hero', icon: 'home', title: T.nav.hero },
-                { id: 'comparison', icon: 'bar-chart-2', title: T.nav.comparison },
-                { id: 'trends', icon: 'trending-up', title: T.nav.trends },
-                { id: 'proportions', icon: 'pie-chart', title: T.nav.proportions },
-                { id: 'relationships', icon: 'share-2', title: T.nav.relationships },
-                { id: 'quiz', icon: 'award', title: T.nav.quiz },
-            ];
+            const T = t[appState.lang].nav;
+            const L = t[appState.lang].lessons;
             const nav = document.getElementById('lesson-nav');
             nav.innerHTML = '';
-            sectionsList.forEach(sec => {
-                if(sec.id === 'hero') return;
-                const active = appState.currentSection === sec.id;
-                const done = appState.completedSections.has(sec.id);
-                const btn = document.createElement('button');
-                const align = appState.lang === 'ar' ? 'text-right' : 'text-left';
-                btn.className = `w-full ${align} px-4 py-3 rounded-xl mb-2 flex items-center justify-between transition-all ${active ? 'active-link' : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`;
-                btn.onclick = () => renderContent(sec.id);
-                btn.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="${sec.icon}" class="w-4 h-4"></i>
-                        <span class="font-medium">${sec.title}</span>
-                    </div>
-                    ${done ? '<i data-lucide="check-circle-2" class="w-4 h-4 text-excel-green"></i>' : ''}
-                `;
-                nav.appendChild(btn);
-            });
+            
+            const createBtn = (id, title, icon) => {
+                const active = appState.currentSection === id;
+                const done = appState.completedSections.has(id);
+                const isQuiz = id === 'quiz';
+                return `<button onclick="renderContent('${id}')" class="w-full text-start px-4 py-3 rounded-xl mb-1 flex justify-between transition ${active ? 'active-link' : 'hover:bg-gray-50 text-gray-700'} ${isQuiz ? 'border-2 border-x-secondary' : ''}">
+                    <span class="flex gap-2 items-center"><i data-lucide="${icon}" class="w-4"></i> ${title}</span>
+                    ${done ? '<i data-lucide="check-circle-2" class="w-4 text-excel-green animate-pulse-glow"></i>' : ''}
+                </button>`;
+            };
+
+            nav.innerHTML += createBtn('hero', T.hero, 'home');
+            nav.innerHTML += `<div class="text-xs font-bold text-gray-400 mt-4 mb-2 uppercase px-2">${T.p1}</div>`;
+            ['grouping', 'formatting', 'formulas', 'safety'].forEach(k => nav.innerHTML += createBtn(k, L[k].t, 'sheet'));
+            nav.innerHTML += `<div class="text-xs font-bold text-gray-400 mt-4 mb-2 uppercase px-2">${T.p2}</div>`;
+            ['comparison', 'trends', 'proportions', 'relationships'].forEach(k => nav.innerHTML += createBtn(k, L[k].t, 'bar-chart-2'));
+            nav.innerHTML += `<div class="my-2 border-t border-gray-200"></div>`;
+            nav.innerHTML += createBtn('quiz', T.quiz, 'award');
+            
             updateProgress();
+            updateAchievements();
             lucide.createIcons();
         }
 
         function updateProgress() {
-            const total = 5; 
-            const done = appState.completedSections.size;
-            const pct = Math.round((done / total) * 100);
+            const pct = Math.round((appState.completedSections.size / 9) * 100);
             const circle = document.getElementById('progress-circle');
             const circumference = 2 * Math.PI * 45;
-            circle.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+            const offset = circumference - (pct / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
             document.getElementById('progress-text').textContent = pct + '%';
+            
+            // تحديث XP
+            const xpElement = document.getElementById('xp-value');
+            if (xpElement) {
+                appState.xp = appState.completedSections.size * 100;
+                xpElement.textContent = appState.xp;
+                document.getElementById('xp-display').classList.remove('hidden');
+            }
+        }
+
+        function updateAchievements() {
+            const achievements = [
+                { id: 'firstBlood', icon: 'droplet', color: 'bg-red-100 text-red-800' },
+                { id: 'excelMaster', icon: 'zap', color: 'bg-green-100 text-green-800' },
+                { id: 'chartWizard', icon: 'sparkles', color: 'bg-purple-100 text-purple-800' },
+                { id: 'perfectScore', icon: 'target', color: 'bg-yellow-100 text-yellow-800' },
+                { id: 'speedDemon', icon: 'bolt', color: 'bg-blue-100 text-blue-800' }
+            ];
+
+            const section = document.getElementById('achievements-section');
+            const list = document.getElementById('achievements-list');
+            
+            if (appState.achievements.size > 0) {
+                section.classList.remove('hidden');
+                list.innerHTML = achievements.map(ach => {
+                    if (appState.achievements.has(ach.id)) {
+                        const T = t[appState.lang].common.achievements[ach.id];
+                        return `
+                            <div class="flex items-center gap-2 p-2 rounded-lg ${ach.color} animate-fade-in">
+                                <i data-lucide="${ach.icon}" class="w-4 h-4"></i>
+                                <div class="text-xs">
+                                    <div class="font-bold">${T.name}</div>
+                                    <div class="text-xs opacity-75">${T.desc}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return '';
+                }).join('');
+            }
+        }
+
+        function addAchievement(id) {
+            if (!appState.achievements.has(id)) {
+                appState.achievements.add(id);
+                const T = t[appState.lang].common.achievements[id];
+                showToast(`🎉 مبروك! كسبت إنجاز: ${T.name}`, 'success');
+                updateAchievements();
+            }
         }
 
         function renderContent(key) {
-            appState.currentSection = key;
+            appState.currentSection = key; 
             appState.tempSelection = null;
             const container = document.getElementById('content-container');
+            container.classList.remove('animate-fade-in');
+            
             if(key === 'hero') container.innerHTML = renderHero();
             else if(key === 'quiz') container.innerHTML = renderQuiz();
             else container.innerHTML = renderLesson(key);
-            container.classList.remove('animate-fade-in');
+            
             void container.offsetWidth; 
             container.classList.add('animate-fade-in');
-            renderNav();
+            renderNav(); 
             lucide.createIcons();
         }
 
         function renderHero() {
             const T = t[appState.lang].hero;
-            const align = appState.lang === 'ar' ? 'text-right' : 'text-left';
-            const arrow = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
             return `
-                <div class="text-center py-10">
-                    <div class="w-24 h-24 bg-x-light dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary animate-bounce-short">
-                        <i data-lucide="bar-chart" class="w-12 h-12"></i>
+                <div class="text-center py-8">
+                    <div class="flex justify-center gap-4 mb-6 animate-bounce-short">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-excel-green animate-spin-slow">
+                            <i data-lucide="sheet" class="w-8 h-8"></i>
+                        </div>
+                        <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center text-teal-500 animate-spin-slow" style="animation-delay: 0.5s">
+                            <i data-lucide="pie-chart" class="w-8 h-8"></i>
+                        </div>
                     </div>
-                    <h1 class="text-6xl font-black mb-4 dark:text-white tracking-tight">${T.title}</h1>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                        ${T.welcome} <span class="text-x-primary font-bold">${appState.userName || ''}</span>, ${T.desc}
+                    <h1 class="text-5xl font-black mb-2 text-gray-800 animate-fade-in">${T.title}</h1>
+                    <h2 class="text-2xl text-x-primary font-bold mb-4 animate-fade-in" style="animation-delay: 0.2s">${T.sub}</h2>
+                    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in" style="animation-delay: 0.4s">
+                        ${T.welcome} <span class="text-x-primary font-bold badge px-2 py-1 rounded">${appState.userName||''}</span>, ${T.desc}
                     </p>
-                    <button onclick="renderContent('comparison')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-10 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2 mx-auto">
-                        ${T.btnStart} <i data-lucide="${arrow}"></i>
+                    <button onclick="renderContent('grouping')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-10 rounded-xl shadow-lg transition hover:scale-105 flex items-center justify-center gap-2 mx-auto animate-fade-in" style="animation-delay: 0.6s">
+                        ${T.btn} <i data-lucide="${appState.lang==='ar'?'arrow-left':'arrow-right'}"></i>
                     </button>
-                    <div class="grid md:grid-cols-3 gap-4 mt-12 ${align}">
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
-                            <i data-lucide="eye" class="text-x-secondary mb-2"></i>
-                            <h3 class="font-bold dark:text-white">${T.features.v}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.v_desc}</p>
-                        </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
-                            <i data-lucide="mouse-pointer" class="text-x-secondary mb-2"></i>
-                            <h3 class="font-bold dark:text-white">${T.features.s}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.s_desc}</p>
-                        </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 hover:border-x-primary transition">
-                            <i data-lucide="award" class="text-x-secondary mb-2"></i>
-                            <h3 class="font-bold dark:text-white">${T.features.c}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">${T.features.c_desc}</p>
-                        </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 mt-12 text-start animate-fade-in" style="animation-delay: 0.8s">
+                        ${[1,2,3].map(i => `
+                            <div class="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 hover:border-x-primary transition hover:scale-[1.02] hover:shadow-xl">
+                                <div class="w-12 h-12 rounded-xl bg-x-primary/10 flex items-center justify-center mb-4">
+                                    <i data-lucide="${i===1?'layers':i===2?'bar-chart-3':'award'}" class="w-6 h-6 text-x-primary"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-x-primary text-lg mb-2">${T['f'+i]}</h3>
+                                <p class="text-sm text-gray-500">${T['f'+i+'d']}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="mt-12 flex gap-4 justify-center">
+                        <button onclick="showLeaderboard()" class="px-6 py-3 bg-gradient-to-r from-gold to-yellow-400 text-gray-900 font-bold rounded-xl flex items-center gap-2 hover:scale-105 transition">
+                            <i data-lucide="trophy"></i> ${T.leaderboard}
+                        </button>
                     </div>
                 </div>
             `;
         }
 
-        let currentChartInstance = null;
-
-        function renderLesson(lessonKey) {
+        function renderLesson(key) {
             const T = t[appState.lang].common;
-            const content = getLessonContent(lessonKey);
-            const data = lessonsData[lessonKey];
-            const isDone = appState.completedSections.has(lessonKey);
-            const arrow = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
+            const L = t[appState.lang].lessons[key];
+            const C = lessonsConfig[key];
+            const isDone = appState.completedSections.has(key);
+            
+            const optionsHTML = L.o.map((optText, idx) => {
+                const optId = C.type === 'chart' ? C.optionIds[idx] : `opt${idx+1}`;
+                const icon = C.optionsIcons[idx];
+                const isCorrect = (C.type === 'excel' && `opt${idx+1}` === C.correct) || (C.type === 'chart' && optId === C.correct);
+                
+                return `
+                    <button onclick="selectOption('${key}', '${optId}')" id="btn-${optId}" 
+                            class="option-btn w-full flex items-center gap-4 p-4 rounded-xl border border-gray-300 hover:shadow-lg transition bg-white hover:scale-[1.02] 
+                                   ${isDone && isCorrect ? 'ring-2 ring-excel-green bg-green-50 animate-pulse-glow' : ''}">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center text-x-primary">
+                            <i data-lucide="${icon}" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex-1 text-right">
+                            <span class="font-bold text-gray-800 text-lg">${optText}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
 
             return `
-                <div class="space-y-6">
-                    <div class="border-b dark:border-gray-700 pb-4">
-                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson}</span>
-                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${content.title}</h2>
-                        <p class="text-gray-500 dark:text-gray-300 mt-2 text-lg leading-relaxed">${content.desc}</p>
-                    </div>
-                    <div class="bg-blue-50 dark:bg-gray-900/50 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
-                        <h3 class="font-bold text-lg mb-3 flex items-center gap-2 text-blue-800 dark:text-blue-300">
-                            <i data-lucide="book-open"></i> ${T.learn}
-                        </h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                            ${content.types.map(type => `<li>${type}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 dark:bg-gray-700 p-4 border-b dark:border-gray-600 flex justify-between items-center">
-                            <h3 class="font-bold dark:text-white flex items-center gap-2"><i data-lucide="activity"></i> ${T.task}</h3>
-                            <span class="text-xs bg-white dark:bg-gray-600 px-2 py-1 rounded border dark:border-gray-500">${T.taskSub}</span>
-                        </div>
-                        <div class="p-6 grid lg:grid-cols-2 gap-8">
-                            <div class="space-y-6">
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2 dark:text-white text-x-primary">${T.scenario}</h4>
-                                    <p class="text-gray-700 dark:text-gray-300 font-medium">${content.question}</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-500 mb-3">${T.data}</h4>
-                                    <div class="bg-gray-100 dark:bg-gray-900 rounded p-3 font-mono text-sm overflow-x-auto" dir="ltr">
-                                        <table class="w-full text-left">
-                                            <thead><tr class="border-b border-gray-300 dark:border-gray-700"><th>Label</th><th>Value</th></tr></thead>
-                                            <tbody>
-                                                ${data.task.data.labels.map((l, i) => `<tr><td>${l}</td><td>${data.task.data.datasets[0].data[i]}</td></tr>`).join('')}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div id="options-container-${lessonKey}">
-                                    <h4 class="font-bold text-sm mb-3 dark:text-white">${T.choose}</h4>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        ${data.task.options.map(opt => `
-                                            <button onclick="selectOption('${lessonKey}', '${opt}')" 
-                                                class="chart-btn flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:shadow-md transition ${isDone && opt === data.task.correct ? 'ring-2 ring-excel-green bg-green-50 dark:bg-green-900/20' : ''}" 
-                                                id="btn-${opt}">
-                                                <i data-lucide="${chartConfig[opt].icon}" class="w-8 h-8 text-x-primary"></i>
-                                                <span class="text-xs font-bold dark:text-gray-300">${t[appState.lang].charts[opt].t.split('(')[0]}</span>
-                                            </button>
-                                        `).join('')}
-                                    </div>
-                                </div>
+                <div class="space-y-8">
+                    <div class="border-b border-gray-200 pb-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-x-primary font-bold text-sm uppercase bg-green-50 px-3 py-1 rounded-full">${T.lesson} ${Object.keys(lessonsConfig).indexOf(key) + 1}</span>
+                                <h2 class="text-4xl font-extrabold mt-2 text-gray-800">${L.t}</h2>
+                                <p class="text-gray-500 mt-2 text-lg">${L.d}</p>
                             </div>
-                            <div class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-xl p-4 relative min-h-[300px]">
-                                <div id="chart-placeholder-${lessonKey}" class="${isDone ? 'hidden' : 'flex'} flex-col items-center text-gray-400">
-                                    <i data-lucide="bar-chart" class="w-16 h-16 mb-2 opacity-50"></i>
-                                    <p class="text-sm">${T.placeholder}</p>
-                                </div>
-                                <div class="w-full h-full">
-                                    <canvas id="chart-canvas-${lessonKey}"></canvas>
-                                </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">النقاط</div>
+                                <div class="text-2xl font-black text-x-secondary">${isDone ? '100' : '0'}</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="action-area-${lessonKey}" class="${isDone ? 'flex' : 'hidden'} justify-end animate-fade-in gap-4">
-                        <button id="btn-verify-${lessonKey}" onclick="verifyAnswer('${lessonKey}')" class="bg-x-secondary hover:bg-yellow-500 text-gray-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition">
-                            ${T.check} <i data-lucide="check-square"></i>
-                        </button>
-                        <button id="btn-next-${lessonKey}" onclick="nextLesson('${lessonKey}')" class="hidden bg-x-primary hover:bg-x-primary-dark text-white px-6 py-3 rounded-xl font-bold items-center gap-2 shadow-lg transition transform hover:scale-105">
-                            ${T.next} <i data-lucide="${arrow}"></i>
-                        </button>
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-8 rounded-2xl border border-blue-100">
+                        <h3 class="font-bold text-xl mb-4 text-blue-800 flex gap-3 items-center">
+                            <i data-lucide="book-open" class="w-6 h-6"></i> ${T.learn}
+                        </h3>
+                        <ul class="space-y-3 text-gray-700">
+                            ${L.p.map(p => `<li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-1 flex-shrink-0"></i> ${p}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8 p-8 bg-gradient-to-br from-white to-gray-50 rounded-2xl border-2 border-gray-100 shadow-lg">
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-bold text-xl mb-3 text-x-primary flex items-center gap-2">
+                                    <i data-lucide="target"></i> ${T.scenario}
+                                </h4>
+                                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                                    <p class="text-gray-700 text-lg">${L.s}</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2">
+                                    <i data-lucide="lightbulb"></i> ${T.choose}
+                                </h4>
+                                <div class="space-y-4" id="options-${key}">
+                                    ${optionsHTML}
+                                </div>
+                            </div>
+                            
+                            ${isDone ? `
+                                <div class="mt-8 space-y-4 animate-fade-in">
+                                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
+                                        <h5 class="font-bold text-green-800 mb-2 flex items-center gap-2">
+                                            <i data-lucide="star"></i> ${T.realExample}
+                                        </h5>
+                                        <p class="text-gray-700">${L.realExample}</p>
+                                    </div>
+                                    <div class="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-xl border border-purple-200">
+                                        <h5 class="font-bold text-purple-800 mb-2 flex items-center gap-2">
+                                            <i data-lucide="zap"></i> ${T.extraTip}
+                                        </h5>
+                                        <p class="text-gray-700">${L.extra}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl p-4 min-h-[400px] flex flex-col relative overflow-hidden border-2 border-gray-300 shadow-inner">
+                            <div class="bg-white text-sm px-4 py-2 rounded-t-xl flex justify-between items-center text-gray-500 mb-4">
+                                <span class="font-bold">${C.type === 'excel' ? '📊 Excel Simulator' : '📈 Chart Builder'}</span>
+                                <div class="flex gap-1">
+                                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div id="visual-${key}" class="flex-grow bg-white relative p-4 rounded-lg flex items-center justify-center">
+                                <div id="placeholder-${key}" class="text-center text-gray-400 ${isDone?'hidden':''}">
+                                    <i data-lucide="layout-grid" class="w-16 h-16 mx-auto mb-4 opacity-50 animate-pulse"></i>
+                                    <p class="text-lg">${T.placeholder}</p>
+                                </div>
+                                ${C.type === 'excel' ? `<div id="excel-content-${key}" class="w-full h-full hidden"></div>` : `<canvas id="canvas-${key}" class="hidden w-full h-full chart-hover"></canvas>`}
+                            </div>
+                            ${C.type === 'chart' ? `
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-500 mb-2">ملخص البيانات:</div>
+                                    <div class="flex gap-2">
+                                        ${L.dataLabels.map((label, i) => `
+                                            <div class="flex-1 text-center p-2 rounded bg-white">
+                                                <div class="font-bold">${label}</div>
+                                                <div class="text-x-primary font-bold">${C.data.d[i]}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div id="actions-${key}" class="flex justify-between items-center ${isDone?'':'hidden'} animate-fade-in">
+                        <div class="flex gap-3">
+                            <button onclick="showHint('${key}')" class="px-4 py-2 bg-gray-100 rounded-lg flex items-center gap-2 hover:bg-gray-200">
+                                <i data-lucide="help-circle"></i> مساعدة
+                            </button>
+                            <button onclick="practiceMore('${key}')" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg flex items-center gap-2 hover:bg-blue-200">
+                                <i data-lucide="repeat"></i> تدرب أكثر
+                            </button>
+                        </div>
+                        <div class="flex gap-4">
+                            <button id="verify-${key}" onclick="verify('${key}')" class="bg-gradient-to-r from-x-secondary to-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold flex gap-2 shadow-lg hover:scale-105 transition">
+                                ${T.check} <i data-lucide="check-square"></i>
+                            </button>
+                            <button id="next-${key}" onclick="nextLesson('${key}')" class="hidden bg-gradient-to-r from-x-primary to-green-600 text-white px-8 py-4 rounded-xl font-bold gap-2 shadow-lg hover:scale-105 transition animate-pulse-glow">
+                                ${T.next} <i data-lucide="${appState.lang==='ar'?'arrow-left':'arrow-right'}"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
-        function selectOption(lessonKey, selectedOpt) {
-            const data = lessonsData[lessonKey];
-            drawChart(lessonKey, selectedOpt, data.task.data);
+        let currentChart = null;
+
+        function selectOption(key, optId) {
+            appState.tempSelection = optId;
+            const config = lessonsConfig[key];
+            const isExcel = config.type === 'excel';
+            const placeholder = document.getElementById(`placeholder-${key}`);
             
-            const container = document.getElementById(`options-container-${lessonKey}`);
-            container.querySelectorAll('.chart-btn').forEach(b => {
-                b.classList.remove('ring-4', 'ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20', 'ring-red-500', 'bg-red-50', 'ring-excel-green', 'bg-green-50');
+            // UI Reset
+            document.querySelectorAll(`#options-${key} button`).forEach(b => {
+                b.classList.remove('ring-4', 'ring-x-primary', 'bg-blue-50', 'scale-105');
             });
-            const selectedBtn = document.getElementById(`btn-${selectedOpt}`);
-            selectedBtn.classList.add('ring-4', 'ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
-
-            appState.tempSelection = selectedOpt;
-
-            if (!appState.completedSections.has(lessonKey)) {
-                document.getElementById(`action-area-${lessonKey}`).classList.remove('hidden');
-                document.getElementById(`action-area-${lessonKey}`).classList.add('flex');
-                document.getElementById(`btn-verify-${lessonKey}`).classList.remove('hidden');
+            
+            const selectedBtn = document.getElementById(`btn-${optId}`);
+            selectedBtn.classList.add('ring-4', 'ring-x-primary', 'bg-blue-50', 'scale-105');
+            
+            if(!appState.completedSections.has(key)) {
+                document.getElementById(`actions-${key}`).classList.remove('hidden');
+                document.getElementById(`actions-${key}`).classList.add('flex');
+                document.getElementById(`verify-${key}`).classList.remove('hidden');
             }
-        }
 
-        function verifyAnswer(lessonKey) {
-            if(!appState.tempSelection) return;
-
-            const selectedOpt = appState.tempSelection;
-            const data = lessonsData[lessonKey];
-            const correct = data.task.correct;
-            const T = t[appState.lang].common;
-            const selectedBtn = document.getElementById(`btn-${selectedOpt}`);
-
-            if (selectedOpt === correct) {
-                showToast(T.correct, 'success');
-                appState.completedSections.add(lessonKey);
-                updateProgress();
-                
-                selectedBtn.classList.remove('ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
-                selectedBtn.classList.add('ring-excel-green', 'bg-green-50', 'dark:bg-green-900/20');
-                
-                document.getElementById(`btn-verify-${lessonKey}`).classList.add('hidden');
-                const nextBtn = document.getElementById(`btn-next-${lessonKey}`);
-                nextBtn.classList.remove('hidden');
-                nextBtn.classList.add('flex');
-                
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+            // Visual Rendering
+            placeholder.classList.add('hidden');
+            
+            if (isExcel) {
+                const isCorrect = optId === config.correct;
+                const exDiv = document.getElementById(`excel-content-${key}`);
+                exDiv.classList.remove('hidden');
+                renderExcelGrid(key, config.visual, isCorrect);
             } else {
-                showToast(T.wrong, 'error');
-                selectedBtn.classList.remove('ring-x-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
-                selectedBtn.classList.add('ring-red-500', 'bg-red-50', 'dark:bg-red-900/20');
-                selectedBtn.classList.add('animate-shake');
-                setTimeout(() => selectedBtn.classList.remove('animate-shake'), 500);
+                const canvas = document.getElementById(`canvas-${key}`);
+                canvas.classList.remove('hidden');
+                if(currentChart) currentChart.destroy();
+                
+                const labels = t[appState.lang].lessons[key].dataLabels; 
+                const dataValues = config.data.d;
+
+                const backgroundColor = optId === 'pie' || optId === 'radar' 
+                    ? ['#107c41', '#fbbf24', '#099999', '#ef4444', '#3b82f6']
+                    : '#107c41';
+
+                const cData = { 
+                    labels: labels, 
+                    datasets: [{
+                        label: 'Data',
+                        data: dataValues,
+                        backgroundColor: backgroundColor,
+                        borderColor: '#fbbf24',
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: config.visual === 'area',
+                        hoverBackgroundColor: '#fbbf24'
+                    }]
+                };
+                
+                const chartType = chartConfig[optId] ? chartConfig[optId].type : 'bar';
+                const ctx = canvas.getContext('2d');
+                currentChart = new Chart(ctx, { 
+                    type: chartType, 
+                    data: cData, 
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                titleColor: '#fbbf24',
+                                bodyColor: 'white'
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    } 
+                });
             }
         }
 
-        function drawChart(lessonKey, type, chartData) {
-            const ctx = document.getElementById(`chart-canvas-${lessonKey}`).getContext('2d');
-            document.getElementById(`chart-placeholder-${lessonKey}`).classList.add('hidden');
-            document.getElementById(`chart-placeholder-${lessonKey}`).classList.remove('flex');
+        function renderExcelGrid(key, type, isCorrect) {
+            const el = document.getElementById(`excel-content-${key}`);
+            const Sim = t[appState.lang].excelSim;
+            let content = '';
             
-            if (currentChartInstance) {
-                currentChartInstance.destroy();
-            }
-
-            const config = chartConfig[type];
-            const title = t[appState.lang].charts[type].t;
+            const tabs = (active) => `
+                <div class="flex mt-4 border-t-2 bg-gray-200 pt-2 overflow-x-auto rounded-b-lg">
+                    ${['Jan','Feb','Mar'].map((t, i) => `
+                        <div class="px-4 py-2 text-sm rounded-t-lg mx-1 flex items-center gap-2 
+                            ${active ? 'bg-gradient-to-b from-white to-gray-100 text-excel-green border-t-4 border-excel-green shadow' 
+                                     : 'bg-gray-300 text-gray-500 hover:bg-gray-400'}">
+                            <i data-lucide="sheet" class="w-4 h-4"></i>
+                            ${t}
+                            ${active && i===0 ? '<span class="text-xs bg-x-primary text-white px-2 py-1 rounded-full">نشط</span>' : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
             
-            currentChartInstance = new Chart(ctx, {
-                type: config.type,
-                data: chartData,
-                options: {
-                    indexAxis: config.indexAxis || 'x',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: title }
-                    },
-                    scales: type === 'radar' ? {
-                        r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 }
-                    } : {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
+            const cell = (val, highlight) => `
+                <td class="border-2 border-gray-300 p-3 text-center transition-all duration-300
+                    ${highlight ? 'bg-gradient-to-br from-yellow-100 to-amber-100 text-red-600 font-bold animate-pulse' 
+                               : 'hover:bg-gray-50'}">
+                    ${val}
+                </td>`;
 
-        function nextLesson(current) {
-            const sections = ['hero', 'comparison', 'trends', 'proportions', 'relationships', 'quiz'];
-            const idx = sections.indexOf(current);
-            if(idx < sections.length - 1) {
-                renderContent(sections[idx + 1]);
-            }
-        }
-        
-        function renderQuiz() {
-            const T = t[appState.lang];
-            const questions = T.questions;
-            return `
-                <div class="max-w-3xl mx-auto py-8 text-center">
-                    <h2 class="text-3xl font-black mb-6 text-x-primary">${T.nav.quiz}</h2>
-                    <div id="quiz-form" class="space-y-6 ${appState.lang === 'ar' ? 'text-right' : 'text-left'}">
-                        ${questions.map((q, idx) => generateQuizQuestion(idx, q.t, q.o)).join('')}
+            if(type === 'grouping') {
+                content = `
+                    <div class="mb-4 p-3 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg border">
+                        <div class="font-mono text-sm mb-1">الصيغة النشطة:</div>
+                        <div class="font-bold text-lg text-excel-green ${isCorrect ? 'animate-pulse-glow' : ''}">
+                            Sum(${isCorrect ? 'Jan:Mar!C1:C17' : 'Jan!C1:C17'})
+                        </div>
                     </div>
-                    <button onclick="submitQuiz()" class="mt-8 bg-x-secondary hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-xl shadow-lg w-full md:w-auto transition transform hover:scale-105">
-                        ${T.common.submit}
-                    </button>
+                    <table class="w-full text-sm border-2 border-gray-300 rounded-lg overflow-hidden shadow">
+                        <thead class="bg-gradient-to-r from-gray-200 to-gray-300">
+                            <tr><th class="p-3"></th><th class="p-3">${Sim.item}</th><th class="p-3">${Sim.qty}</th><th class="p-3">${Sim.sales}</th></tr>
+                        </thead>
+                        <tbody>
+                            ${Array.from({length: 3}, (_, i) => `
+                                <tr class="${i%2===0?'bg-gray-50':'bg-white'}">
+                                    <td class="p-3 font-bold">${i+1}</td>
+                                    <td class="p-3">منتج ${i+1}</td>
+                                    <td class="p-3">${(i+1)*10}</td>
+                                    <td class="p-3">${(i+1)*100}</td>
+                                </tr>
+                            `).join('')}
+                            <tr class="bg-gradient-to-r from-green-50 to-emerald-50">
+                                <td class="p-3 font-bold">18</td>
+                                <td class="p-3 font-bold">${Sim.total}</td>
+                                <td class="p-3">-</td>
+                                ${cell(isCorrect ? 'Sum(Jan:Mar!C1:C17)' : 'Sum(Jan!C1:C17)', false)}
+                            </tr>
+                        </tbody>
+                    </table>
+                    ${!isCorrect ? `
+                        <div class="absolute inset-4 flex items-center justify-center bg-red-100/90 rounded-xl backdrop-blur-sm">
+                            <div class="text-center p-6">
+                                <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
+                                <div class="text-red-700 font-bold text-lg">${Sim.editWarn}</div>
+                                <div class="text-red-600 text-sm mt-2">أنت تعدل صفحة واحدة فقط!</div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                            <div class="flex items-center gap-2 text-green-700">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                <span class="font-bold">${Sim.multiSelect}</span>
+                            </div>
+                        </div>
+                    `}
+                    ${tabs(isCorrect)}
+                `;
+            } else if (type === 'formatting') {
+                content = `
+                    <table class="w-full text-sm border-2 ${isCorrect?'border-blue-500 shadow-lg':'border-gray-300'} rounded-lg overflow-hidden">
+                        <thead class="${isCorrect?'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800':'bg-gray-200'}">
+                            <tr><th class="p-3">#</th><th class="p-3">${Sim.item}</th><th class="p-3">${Sim.sales}</th><th class="p-3">${Sim.qty}</th></tr>
+                        </thead>
+                        <tbody>
+                            ${Array.from({length: 5}, (_, i) => `
+                                <tr class="${i%2===0?'bg-gray-50':'bg-white'} ${isCorrect?'hover:bg-blue-50':''}">
+                                    <td class="p-3 ${isCorrect?'font-bold text-blue-600':''}">${i+1}</td>
+                                    <td class="p-3">عنصر ${i+1}</td>
+                                    <td class="p-3 ${isCorrect?'border-l-2 border-r-2 border-blue-300':''}">$${(i+1)*250}</td>
+                                    <td class="p-3">${(i+1)*5}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ${!isCorrect ? `
+                        <div class="absolute inset-4 flex items-center justify-center bg-gray-100/90 rounded-xl backdrop-blur-sm">
+                            <div class="text-center p-6">
+                                <i data-lucide="slash" class="w-12 h-12 text-gray-500 mx-auto mb-4"></i>
+                                <div class="text-gray-700 font-bold text-lg">${Sim.noFormat}</div>
+                                <div class="text-gray-600 text-sm mt-2">كل صفحة بتنسيق مختلف</div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex items-center gap-2 text-blue-700">
+                                <i data-lucide="palette" class="w-5 h-5"></i>
+                                <span class="font-bold">تم تطبيق التنسيق على جميع الصفحات</span>
+                            </div>
+                        </div>
+                    `}
+                    ${tabs(isCorrect)}
+                `;
+            } else if (type === '3dsum') {
+                const sum = isCorrect ? 3850 : '########';
+                content = `
+                    <div class="flex flex-col items-center justify-center h-full gap-6">
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500 mb-2">الصيغة المستخدمة:</div>
+                            <div class="font-mono text-lg bg-gray-100 p-3 rounded-lg ${isCorrect?'border-2 border-green-500':''}">
+                                ${isCorrect ? 'Sum(Jan:Mar!C18)' : '=Jan!C18+Feb!C18+Mar!C18'}
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br ${isCorrect?'from-green-50 to-emerald-50 border-green-200':'from-gray-100 to-gray-200 border-gray-300'} 
+                              p-6 rounded-2xl border-2 text-center shadow-lg w-64 transition-all duration-500 ${isCorrect?'scale-110':''}">
+                            <div class="text-sm text-gray-500 mb-1">المجموع عبر 3 أشهر</div>
+                            <div class="text-4xl font-black ${isCorrect?'text-excel-green animate-tada':'text-gray-400'}">${sum}</div>
+                            <div class="text-xs text-gray-400 mt-2">مبيعات Q1</div>
+                        </div>
+                        ${isCorrect ? `
+                            <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                                <div class="flex items-center gap-2 text-green-700">
+                                    <i data-lucide="zap" class="w-5 h-5"></i>
+                                    <span>معادلة وحدة لـ 3 صفحات!</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="mt-4 p-3 bg-red-50 rounded-lg">
+                                <div class="flex items-center gap-2 text-red-700">
+                                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                                    <span>معادلة طويلة وعرضة للخطأ</span>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+            } else if (type === 'ungroup') {
+                const statusClass = isCorrect ? 'from-green-50 to-emerald-50 text-green-800 border-green-200' 
+                                            : 'from-red-50 to-rose-50 text-red-800 border-red-200';
+                const statusIcon = isCorrect ? 'check-circle' : 'alert-triangle';
+                const statusText = isCorrect ? Sim.safe : Sim.warn;
+                
+                content = `
+                    <div class="h-full flex flex-col">
+                        <div class="flex-1 bg-white rounded-lg border-2 border-gray-300 p-4 mb-4 flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="database" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                                <div class="text-gray-600">بيانات صفحة ${isCorrect ? 'Jan' : 'جميع الصفحات'}</div>
+                                <div class="text-2xl font-bold mt-2 ${isCorrect?'text-excel-green':'text-red-500'}">
+                                    ${isCorrect ? 'محفوظة ✓' : 'معرضة للخطر!'}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r ${statusClass} p-4 rounded-lg border-2 text-center animate-pulse">
+                            <i data-lucide="${statusIcon}" class="w-8 h-8 mx-auto mb-2"></i>
+                            <div class="font-bold text-lg">${statusText}</div>
+                            <div class="text-sm mt-1">${isCorrect ? Sim.groupMode : Sim.multiSelect}</div>
+                        </div>
+                        
+                        ${tabs(!isCorrect)}
+                    </div>
+                `;
+            }
+            el.innerHTML = content;
+            lucide.createIcons();
+        }
+
+        function verify(key) {
+            const opt = appState.tempSelection;
+            if(!opt) {
+                showToast(t[appState.lang].common.wrong, 'error');
+                return;
+            }
+            
+            const config = lessonsConfig[key];
+            const btn = document.getElementById(`btn-${opt}`);
+            
+            if(opt === config.correct) {
+                // تحقق إذا كانت الرسالة قد ظهرت من قبل لهذا الدرس
+                if (!appState.lessonCompletedMessages.has(key)) {
+                    showToast(t[appState.lang].common.correct, 'success');
+                    appState.lessonCompletedMessages.add(key);
+                }
+                
+                appState.completedSections.add(key);
+                
+                // إضافة إنجازات
+                const excelLessons = ['grouping', 'formatting', 'formulas', 'safety'];
+                const chartLessons = ['comparison', 'trends', 'proportions', 'relationships'];
+                
+                if (excelLessons.every(l => appState.completedSections.has(l))) {
+                    addAchievement('excelMaster');
+                }
+                
+                if (chartLessons.every(l => appState.completedSections.has(l))) {
+                    addAchievement('chartWizard');
+                }
+                
+                btn.classList.replace('ring-x-primary', 'ring-excel-green');
+                btn.classList.replace('bg-blue-50', 'bg-green-50');
+                
+                document.getElementById(`verify-${key}`).classList.add('hidden');
+                document.getElementById(`next-${key}`).classList.remove('hidden');
+                document.getElementById(`next-${key}`).classList.add('flex');
+                
+                // إظهار مثال واقعي وتلميحات
+                setTimeout(() => {
+                    const lessonContainer = document.getElementById(`content-container`);
+                    const extraContent = document.createElement('div');
+                    extraContent.className = 'animate-fade-in mt-6';
+                    extraContent.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
+                                <h5 class="font-bold text-green-800 mb-2 flex items-center gap-2">
+                                    <i data-lucide="briefcase"></i> مثال واقعي
+                                </h5>
+                                <p class="text-sm text-gray-700">${t[appState.lang].lessons[key].realExample}</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 mb-2 flex items-center gap-2">
+                                    <i data-lucide="zap"></i> تلميح احترافي
+                                </h5>
+                                <p class="text-sm text-gray-700">${t[appState.lang].lessons[key].extra}</p>
+                            </div>
+                        </div>
+                    `;
+                    lessonContainer.querySelector(`#actions-${key}`).before(extraContent);
+                }, 500);
+                
+                // ألعاب نارية متقدمة
+                const colors = ['#107c41', '#fbbf24', '#099999', '#ffffff'];
+                confetti({
+                    particleCount: 100,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 100,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+                
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        spread: 100,
+                        decay: 0.91,
+                        scalar: 1.2,
+                        colors: colors
+                    });
+                }, 300);
+                
+                updateProgress();
+                renderNav();
+                
+                // تحديث الـ XP
+                appState.xp += 100;
+                if (document.getElementById('xp-value')) {
+                    document.getElementById('xp-value').textContent = appState.xp;
+                }
+                
+                // تحقق من إنجاز السرعة
+                if (!appState.lastActivity) {
+                    appState.lastActivity = Date.now();
+                } else {
+                    const timeDiff = (Date.now() - appState.lastActivity) / (1000 * 60);
+                    if (timeDiff < 5) {
+                        appState.streak++;
+                        if (appState.streak >= 3) {
+                            addAchievement('speedDemon');
+                        }
+                    }
+                    appState.lastActivity = Date.now();
+                }
+                
+            } else {
+                showToast(t[appState.lang].common.wrong, 'error');
+                btn.classList.replace('ring-x-primary', 'ring-red-500');
+                btn.classList.replace('bg-blue-50', 'bg-red-50');
+                btn.classList.add('animate-shake');
+                setTimeout(() => btn.classList.remove('animate-shake'), 500);
+                
+                // اهتزاز خفيف للشاشة
+                document.getElementById('content-container').classList.add('animate-shake');
+                setTimeout(() => {
+                    document.getElementById('content-container').classList.remove('animate-shake');
+                }, 500);
+            }
+        }
+
+        function nextLesson(curr) {
+            const keys = ['hero', ...Object.keys(lessonsConfig), 'quiz'];
+            const idx = keys.indexOf(curr);
+            if(idx < keys.length-1) {
+                renderContent(keys[idx+1]);
+            }
+        }
+
+        function showHint(key) {
+            const hints = {
+                'grouping': 'اضغط Ctrl واستمر ثم انقر على علامات التبويب',
+                'formatting': 'انقر بزر الماوس الأيمن على علامة التبويب واختر Select All Sheets',
+                'formulas': 'استخدم النقطتين : للإشارة إلى النطاق بين الصفحات',
+                'safety': 'دائماً تحقق من عدم وجود [Group] في العنوان',
+                'comparison': 'الرسم العمودي هو الأفضل للمقارنة البصرية',
+                'trends': 'الخط يظهر الاتجاهات عبر الزمن',
+                'proportions': 'الدائرة تظهر النسب المئوية',
+                'relationships': 'الرادار يقيم عدة معايير في مرة واحدة'
+            };
+            
+            showToast(hints[key], 'success');
+        }
+
+        function practiceMore(key) {
+            const practices = {
+                'grouping': 'جرب: أنشئ 5 صفحات جديدة وجرب التحديد الجماعي',
+                'formatting': 'تحدي: وحد تنسيق 10 صفحات مختلفة في دقيقتين',
+                'formulas': 'تمرين: أنشئ معادلة 3D تحسب المتوسط لـ 6 صفحات',
+                'safety': 'اختبار: كم مرة تنسى Ungroup في اليوم؟ راقب نفسك!',
+                'comparison': 'تطبيق: قارن مبيعات 5 منتجات في رسم واحد',
+                'trends': 'تحليل: ارسم اتجاه أسعار 12 شهراً',
+                'proportions': 'تمثيل: مثل ميزانية الشركة بنسب مئوية',
+                'relationships': 'تقييم: قيم نفسك في 6 مهارات باستخدام الرادار'
+            };
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in';
+            modal.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl max-w-md w-full mx-4 animate-zoom-in">
+                    <h3 class="text-2xl font-bold text-x-primary mb-4 flex items-center gap-2">
+                        <i data-lucide="dumbbell"></i> تمرين تطبيقي
+                    </h3>
+                    <p class="text-gray-700 mb-6">${practices[key]}</p>
+                    <div class="flex gap-4">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-100 py-3 rounded-xl font-bold">
+                            فهمت
+                        </button>
+                        <button onclick="startPractice('${key}')" class="flex-1 bg-x-primary text-white py-3 rounded-xl font-bold hover:bg-x-primary-dark">
+                            ابدأ التمرين
+                        </button>
+                    </div>
                 </div>
             `;
+            document.body.appendChild(modal);
+            lucide.createIcons();
         }
 
-        function generateQuizQuestion(idx, text, options) {
-            const correctValues = ['Pie', 'Clustered Column', 'Scatter', 'Bar'];
+        function startPractice(key) {
+            showToast('تم بدء جلسة التمرين!', 'success');
+            document.querySelector('.fixed').remove();
+            
+            // محاكاة التمرين
+            setTimeout(() => {
+                showToast('ممتاز! أكملت التمرين بنجاح 🎯', 'success');
+                confetti({
+                    particleCount: 30,
+                    spread: 60,
+                    origin: { y: 0.6 }
+                });
+            }, 2000);
+        }
+
+        function showLeaderboard() {
+            document.getElementById('leaderboard-modal').style.display = 'flex';
+            updateLeaderboard();
+        }
+
+        function updateLeaderboard() {
+            const leaderboard = [
+                { name: 'أحمد محمد', score: 950, rank: 1 },
+                { name: 'سارة علي', score: 890, rank: 2 },
+                { name: 'خالد حسن', score: 850, rank: 3 },
+                { name: 'فاطمة عمر', score: 820, rank: 4 },
+                { name: 'محمد كريم', score: 800, rank: 5 }
+            ];
+            
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = leaderboard.map(player => `
+                <div class="flex items-center justify-between p-3 rounded-lg ${player.rank <= 3 ? `rank-${player.rank}` : 'bg-gray-50'}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center ${player.rank <= 3 ? 'bg-white/50' : 'bg-gray-200'}">
+                            ${player.rank <= 3 ? ['🥇','🥈','🥉'][player.rank-1] : player.rank}
+                        </div>
+                        <div>
+                            <div class="font-bold">${player.name}</div>
+                            <div class="text-xs text-gray-500">${player.score} نقطة</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="sparkline" style="width: ${(player.score/1000)*100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('user-rank').textContent = `#${Math.floor(Math.random() * 20) + 6}`;
+            document.getElementById('user-score').querySelector('p:last-child').textContent = appState.xp;
+        }
+
+        function renderQuiz() {
+            const Q = t[appState.lang].quiz;
             return `
-                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-                    <p class="font-bold text-lg mb-4 dark:text-white"><span class="text-x-primary mx-2">${idx+1}.</span>${text}</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        ${options.map(opt => `
-                            <label class="flex items-center p-3 bg-white dark:bg-gray-700 rounded-lg cursor-pointer border hover:border-x-primary transition">
-                                <input type="radio" name="q${idx}" value="${opt}" data-correct="${correctValues[idx]}" class="text-x-primary focus:ring-x-primary w-4 h-4">
-                                <span class="mx-3 dark:text-gray-200">${opt}</span>
-                            </label>
+                <div class="max-w-3xl mx-auto py-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-4xl font-black mb-2 text-x-primary">${Q.t}</h2>
+                        <p class="text-gray-600">اختبر معرفتك في Excel والرسوم البيانية</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        ${Q.qs.map((q, i) => `
+                            <div class="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border-2 border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+                                <div class="flex items-start gap-4 mb-4">
+                                    <div class="w-10 h-10 rounded-full bg-x-primary text-white flex items-center justify-center font-bold text-lg">${i+1}</div>
+                                    <p class="font-bold text-lg text-gray-800 flex-1">${q.t}</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    ${q.o.map((opt, idx) => `
+                                        <label class="bg-gray-100 p-4 rounded-xl border-2 border-transparent hover:border-x-primary cursor-pointer transition-all hover:scale-[1.02] flex items-center gap-3">
+                                            <input type="radio" name="q${i}" value="${opt}" data-index="${i}" 
+                                                   class="w-5 h-5 accent-x-primary">
+                                            <div class="flex-1">
+                                                <div class="font-bold text-gray-800">${opt}</div>
+                                            </div>
+                                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                ${String.fromCharCode(65 + idx)}
+                                            </div>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>
                         `).join('')}
+                    </div>
+                    
+                    <div class="mt-12 text-center">
+                        <button onclick="submitQuiz()" class="bg-gradient-to-r from-x-secondary to-yellow-400 text-gray-900 font-bold py-4 px-16 rounded-xl shadow-lg hover:scale-105 transition text-lg flex items-center gap-3 mx-auto">
+                            <i data-lucide="send"></i> ${t[appState.lang].common.submit}
+                        </button>
+                        <p class="text-gray-500 mt-4">4 أسئلة - تحتاج 3 إجابات صحيحة للنجاح</p>
                     </div>
                 </div>
             `;
         }
 
         function submitQuiz() {
-            const questions = document.querySelectorAll('[name^="q"]');
-            let correct = 0;
-            const correctAnswers = ['Pie', 'Clustered Column', 'Scatter', 'Bar'];
-            for(let i=0; i<4; i++) {
+            let score = 0;
+            const answers = [
+                'Ctrl', // اختيار صفحات متفرقة
+                'Sum(Jan:Mar!A1)', // معادلة ثلاثية الأبعاد
+                'Pie', // للنسب المئوية
+                'Bar (Horizontal)' // لأسماء طويلة
+            ];
+            
+            for(let i = 0; i < 4; i++) {
                 const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                if(selected && selected.value === correctAnswers[i]) correct++;
+                if(selected) {
+                    // تحقق بسيط من الإجابة
+                    if (selected.value.includes(answers[i]) || 
+                        (i === 0 && selected.value === 'Ctrl') ||
+                        (i === 1 && selected.value.includes('Jan:Mar')) ||
+                        (i === 2 && selected.value === 'Pie') ||
+                        (i === 3 && selected.value.includes('Bar'))) {
+                        score++;
+                    }
+                }
             }
-            if(correct >= 3) {
+            
+            const container = document.getElementById('content-container');
+            if(score >= 3) {
                 appState.completedSections.add('quiz');
                 updateProgress();
-                showToast(`Score: ${correct}/4 - Passed!`, 'success');
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
-                setTimeout(() => { document.getElementById('certificate-modal').style.display = 'flex'; }, 1500);
+                
+                // ألعاب نارية مكثفة
+                const end = Date.now() + 3 * 1000;
+                const colors = ['#107c41', '#fbbf24', '#099999'];
+                
+                (function frame() {
+                    confetti({
+                        particleCount: 5,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: colors
+                    });
+                    confetti({
+                        particleCount: 5,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: colors
+                    });
+                    
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+                
+                showToast(`🎊 مبروك! النتيجة: ${score}/4 - نجحت بامتياز!`, 'success');
+                
+                // إظهار نتيجة مفصلة
+                setTimeout(() => {
+                    container.innerHTML += `
+                        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
+                            <div class="bg-white p-10 rounded-2xl max-w-lg w-full mx-4 text-center animate-zoom-in">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-r from-gold to-yellow-400 flex items-center justify-center mx-auto mb-6">
+                                    <i data-lucide="trophy" class="w-12 h-12 text-white"></i>
+                                </div>
+                                <h3 class="text-3xl font-black text-x-primary mb-2">تهانينا! 🎉</h3>
+                                <p class="text-gray-600 mb-6">أكملت الاختبار بنجاح</p>
+                                <div class="text-center mb-8">
+                                    <div class="text-6xl font-black text-x-secondary mb-2">${score}/4</div>
+                                    <div class="text-gray-500">إجابات صحيحة</div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <button onclick="this.closest('.fixed').remove(); renderContent('hero')" 
+                                            class="flex-1 bg-gray-100 py-3 rounded-xl font-bold">
+                                        الرئيسية
+                                    </button>
+                                    <button onclick="document.getElementById('certificate-modal').style.display = 'flex'; this.closest('.fixed').remove()" 
+                                            class="flex-1 bg-x-primary text-white py-3 rounded-xl font-bold hover:bg-x-primary-dark">
+                                        الشهادة <i data-lucide="award"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    
+                    // إضافة إنجاز النتيجة الكاملة
+                    if (score === 4) {
+                        addAchievement('perfectScore');
+                    }
+                }, 2000);
+                
             } else {
-                showToast(`Score: ${correct}/4 - Try Again`, 'error');
+                showToast(`النتيجة: ${score}/4 - تحتاج إلى ${3-score} إجابات صحيحة إضافية`, 'error');
+                
+                // عرض الإجابات الصحيحة
+                setTimeout(() => {
+                    const correctAnswers = document.createElement('div');
+                    correctAnswers.className = 'mt-6 p-6 bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl border border-red-200 animate-fade-in';
+                    correctAnswers.innerHTML = `
+                        <h4 class="font-bold text-red-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="lightbulb"></i> الإجابات الصحيحة:
+                        </h4>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><span class="font-bold">1.</span> Ctrl (للصفحات المتفرقة)</li>
+                            <li><span class="font-bold">2.</span> Sum(Jan:Mar!A1) (معادلة 3D)</li>
+                            <li><span class="font-bold">3.</span> Pie (للنسب المئوية)</li>
+                            <li><span class="font-bold">4.</span> Bar (لأسماء الفئات الطويلة)</li>
+                        </ul>
+                        <button onclick="renderContent('quiz')" class="mt-4 bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold hover:bg-red-200">
+                            <i data-lucide="refresh-ccw"></i> حاول مرة أخرى
+                        </button>
+                    `;
+                    container.appendChild(correctAnswers);
+                    lucide.createIcons();
+                }, 1000);
             }
         }
-        
-        function showToast(msg, type) {
+
+        function showToast(m, type) {
+            const el = document.createElement('div'); 
+            el.className = `toast ${type}`;
+            el.innerHTML = type === 'success' 
+                ? `<i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i> ${m}` 
+                : `<i data-lucide="x-circle" class="w-5 h-5 text-red-500"></i> ${m}`;
+            
             const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = type === 'success' ? `<i data-lucide="check-circle"></i> ${msg}` : `<i data-lucide="x-circle"></i> ${msg}`;
-            container.appendChild(toast);
+            container.appendChild(el); 
             lucide.createIcons();
-            setTimeout(() => toast.classList.add('show'), 10);
+            
+            setTimeout(() => el.classList.add('show'), 10);
             setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 400);
             }, 3000);
         }
 
-        // دالة تنزيل الشهادة كصورة PNG
-        function downloadPNG() {
+function downloadCertificate() {
+            // 1. أخذ العنصر الأصلي
             const element = document.getElementById('certificate-content');
             
-            // خيارات لتحسين جودة الصورة ودعم العربية
-            const options = {
-                scale: 2, // جودة أعلى (Retina)
-                useCORS: true, // للسماح بتحميل الصور الخارجية
-                backgroundColor: null, // خلفية شفافة إذا لزم الأمر، أو white
-            };
+            // 2. إنشاء نسخة منه (Clone) عشان نتحكم فيها براحتنا بدون ما نخرب الشاشة
+            const clone = element.cloneNode(true);
 
-            html2canvas(element, options).then(canvas => {
+            // 3. ضبط تنسيقات النسخة لتكون ظاهرة للكود فقط (خارج حدود الشاشة)
+            clone.style.display = 'block';
+            clone.style.position = 'absolute';
+            clone.style.top = '-10000px'; // نبعثها مكان بعيد ما حدا يشوفه
+            clone.style.left = '-10000px';
+            clone.style.width = '900px';  // عرض ثابت عشان التنسيق يطلع مرتب
+            clone.style.height = 'auto';
+            clone.style.background = '#ffffff'; // تأكيد الخلفية البيضاء
+            clone.style.zIndex = '-1';
+            
+            // إزالة الانيميشن عشان ما يطلع شكلها مشوه بالصورة
+            clone.classList.remove('animate-zoom-in', 'animate-float');
+            
+            // 4. إضافة النسخة للصفحة مؤقتاً
+            document.body.appendChild(clone);
+
+            // 5. التصوير
+            html2canvas(clone, {
+                scale: 2, // جودة عالية
+                useCORS: true, // عشان صورة اللوجو تطلع
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+                logging: false
+            }).then(canvas => {
+                // إنشاء رابط التحميل
                 const link = document.createElement('a');
-                link.download = `Certificate-${appState.userName || 'X-Academy'}.png`;
+                link.download = `شهادة_${appState.userName || 'المتدرب'}.png`;
                 link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
                 link.click();
-            }).catch(err => {
-                console.error('Failed to capture certificate:', err);
-                alert('حدث خطأ أثناء حفظ الصورة. يرجى المحاولة مرة أخرى.');
+                
+                // تنظيف المخلفات
+                document.body.removeChild(link);
+                document.body.removeChild(clone);
+                
+                showToast('تم تحميل الشهادة بنجاح! 📄', 'success');
+            }).catch(error => {
+                console.error('Error:', error);
+                if(document.body.contains(clone)) document.body.removeChild(clone);
+                showToast('حدث خطأ في تحميل الشهادة', 'error');
             });
         }
-
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
+        function shareCertificate() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `شهادة ${appState.userName} في Excel Master Class`,
+                    text: `انظر إلى شهادتي في إتقان Excel والرسوم البيانية من X Academy!`,
+                    url: window.location.href
+                }).then(() => {
+                    showToast('تم مشاركة الشهادة بنجاح!', 'success');
+                });
+            } else {
+                // نسخ الرابط
+                navigator.clipboard.writeText(window.location.href);
+                showToast('تم نسخ رابط الشهادة! 📋', 'success');
+            }
         }
     </script>
 </body>
