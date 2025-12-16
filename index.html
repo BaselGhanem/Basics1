@@ -3,1688 +3,779 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Academy - دورة Excel الاحترافية</title>
+    <title>X Academy - Professional Excel Course</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        'x-primary': '#099999',
-                        'x-primary-dark': '#067a7a',
-                        'x-secondary': '#fbbf24',
-                        'x-light': '#f0fdfa',
-                        'x-dark': '#0f172a',
-                        'excel-green': '#107c41',
-                        'excel-header': '#f3f2f1',
-                        'dark-cell': '#1e293b',
-                        'dark-text': '#f1f5f9',
-                        'dark-input': '#334155',
+                        'x-primary': '#107c41',      /* لون إكسل الرسمي */
+                        'x-dark': '#0b5c30',
+                        'x-accent': '#fbbf24',       /* لون ذهبي */
+                        'bg-soft': '#f8fafc',
+                        'grid-line': '#e2e8f0'
                     },
-                    fontFamily: {
-                        arabic: ['Tajawal', 'sans-serif'],
-                        mono: ['Consolas', 'Monaco', 'Courier New', 'monospace'],
-                    },
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-                        'bounce-short': 'bounceShort 0.5s ease-in-out 1',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'slide-in': 'slideIn 0.5s ease-out',
+                        'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both'
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        shake: {
-                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-                        },
-                        bounceShort: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        }
+                        pop: { '0%': { transform: 'scale(0.9)' }, '100%': { transform: 'scale(1)' } },
+                        slideIn: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        shake: { '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' }, '20%, 80%': { transform: 'translate3d(2px, 0, 0)' }, '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' }, '40%, 60%': { transform: 'translate3d(4px, 0, 0)' } }
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
-        .ltr-formula { direction: ltr; font-family: 'Consolas', monospace; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; }
         
-        /* Excel Grid Styles */
+        /* تنسيقات الإكسل الخاصة */
         .excel-grid {
             display: grid;
-            grid-template-columns: 40px repeat(2, 1fr);
-            gap: 1px;
-            background-color: #e5e7eb;
             border: 1px solid #d1d5db;
+            background-color: #fff;
+            overflow: hidden;
+            border-radius: 6px;
         }
-        .dark .excel-grid {
-            background-color: #475569;
-            border-color: #64748b;
-        }
-        
+        .excel-row { display: flex; }
         .excel-cell {
-            background-color: white;
-            padding: 8px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            min-height: 40px;
             position: relative;
-            color: #1f2937;
         }
-        .dark .excel-cell {
-            background-color: #1e293b;
-            color: #f1f5f9;
-        }
-        
-        .excel-header-col {
-            background-color: #f3f2f1;
-            font-weight: bold;
+        .excel-header {
+            background-color: #f3f4f6;
+            font-weight: 700;
             color: #4b5563;
+            justify-content: center;
         }
-        .dark .excel-header-col {
-            background-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        .excel-header-row {
-            background-color: #f3f2f1;
-            font-weight: bold;
-            color: #4b5563;
-        }
-        .dark .excel-header-row {
-            background-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        .active-cell {
-            border: 2px solid #107c41 !important;
-            z-index: 10;
-        }
-        
-        .formula-bar {
-            border: 1px solid #d1d5db;
-            background: white;
-            padding: 4px 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            color: #1f2937;
-        }
-        .dark .formula-bar {
-            background: #1e293b;
-            border-color: #475569;
-            color: #f1f5f9;
-        }
-        
-        .cell-input {
+        /* Formula Bar Input */
+        .formula-input {
             width: 100%;
             height: 100%;
-            border: none;
+            position: absolute;
+            inset: 0;
+            border: 2px solid #107c41;
             outline: none;
             text-align: center;
             font-family: 'Consolas', monospace;
             direction: ltr;
-            background-color: white;
-            color: #1f2937;
+            background-color: #f0fdf4;
+            font-weight: bold;
+            color: #166534;
+            box-shadow: 0 0 0 4px rgba(16, 124, 65, 0.1);
+            z-index: 10;
         }
-        .dark .cell-input {
-            background-color: #334155;
-            color: #f1f5f9;
-        }
-        .cell-input:focus { 
-            background-color: #f0fdfa; 
-        }
-        .dark .cell-input:focus { 
-            background-color: #0f766e; 
-        }
-        
-        /* Toast */
-        #toast-container { 
-            position: fixed; 
-            top: 20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 100; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            pointer-events: none;
-        }
-        .toast { 
-            background: white; 
-            padding: 12px 24px; 
-            border-radius: 50px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            font-weight: bold; 
-            opacity: 0; 
-            transform: translateY(-20px); 
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            pointer-events: auto;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #1f2937;
-        }
-        .dark .toast {
-            background: #1e293b;
-            color: #f1f5f9;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { border-left: 5px solid #099999; }
-        .dark .toast.success { color: #5eead4; }
-        .toast.error { border-left: 5px solid #ef4444; }
-        .dark .toast.error { color: #fca5a5; }
-        .toast.info { border-left: 5px solid #fbbf24; }
-        .dark .toast.info { color: #fde68a; }
-        
-        /* Navigation */
-        .active-link {
-            background-color: #099999 !important;
-            color: white !important;
-            box-shadow: 0 4px 10px rgba(9, 153, 153, 0.3);
-            border-right: 4px solid #fbbf24;
-        }
-        /* Fix for LTR active link border */
-        html[dir="ltr"] .active-link {
-            border-right: none;
-            border-left: 4px solid #fbbf24;
+        .formula-input.error {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #991b1b;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
         }
 
-        .excel-input-box {
-            border: 2px solid #cbd5e1;
-            transition: all 0.3s ease;
-            background-color: white;
-            color: #1f2937;
+        /* Toast Notification */
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: white; padding: 12px 24px; rounded: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex; align-items: center; gap: 12px;
+            border-radius: 12px; font-weight: bold; z-index: 9999;
+            opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-        .dark .excel-input-box {
-            background-color: #334155;
-            border-color: #475569;
-            color: #f1f5f9;
-        }
-        .excel-input-box:focus {
-            border-color: #099999;
-            box-shadow: 0 0 0 3px rgba(9, 153, 153, 0.2);
-            outline: none;
-        }
-        .dark .excel-input-box:focus {
-            box-shadow: 0 0 0 3px rgba(9, 153, 153, 0.4);
-        }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: fadeIn 0.5s ease-out 0.1s both;
-            color: #1f2937;
-        }
-        
-        .dark .modal-content {
-            background: #1e293b;
-            color: #f1f5f9;
-        }
-        
-        /* Certificate Modal */
-        #certificate-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        
-        /* Dark Mode Tweaks */
-        .dark .bg-gray-50 { background-color: #1e293b !important; }
-        .dark .bg-gray-100 { background-color: #334155 !important; }
-        .dark .bg-gray-200 { background-color: #475569 !important; }
-        .dark .text-gray-600 { color: #cbd5e1 !important; }
-        .dark .text-gray-700 { color: #e2e8f0 !important; }
-        .dark .text-gray-800 { color: #f1f5f9 !important; }
-        .dark .text-gray-900 { color: #f8fafc !important; }
-        .dark .border-gray-200 { border-color: #334155 !important; }
-        .dark .border-gray-300 { border-color: #475569 !important; }
-        
-        .dark #result-overlay-sum, .dark #result-overlay-avg, .dark #result-overlay-max, .dark #result-overlay-min {
-            color: white !important;
-            background-color: #107c41 !important;
-        }
-        
-        .excel-number {
-            font-weight: bold;
-            font-family: 'Consolas', monospace;
-        }
-        .dark .excel-number {
-            color: #fbbf24;
-        }
-        
-        .dark { color-scheme: dark; }
-        .dark input, .dark textarea, .dark select {
-            background-color: #334155;
-            color: #f1f5f9;
-            border-color: #475569;
-        }
-        .dark input::placeholder { color: #94a3b8; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { border-right: 6px solid #107c41; color: #065f46; }
+        .toast.error { border-right: 6px solid #ef4444; color: #991b1b; }
+
+        .active-nav { background-color: #107c41; color: white; box-shadow: 0 4px 12px rgba(16, 124, 65, 0.3); }
+        .code-block { font-family: 'Consolas', monospace; direction: ltr; background: #f1f5f9; padding: 2px 6px; rounded: 4px; color: #0f172a; border: 1px solid #cbd5e1; }
     </style>
 </head>
-<body class="bg-x-light dark:bg-x-dark text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="min-h-screen flex flex-col">
 
-    <div id="name-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="text-center mb-8">
-                <div class="inline-block p-3 bg-x-primary/10 rounded-full mb-4">
-                    <i data-lucide="user-plus" class="w-12 h-12 text-x-primary"></i>
-                </div>
-                <h2 id="modal-title" class="text-3xl font-black text-gray-800 dark:text-white mb-2">يا هلا بيك في X Academy!</h2>
-                <p id="modal-subtitle" class="text-gray-600 dark:text-gray-300">بالله عليك تحط اسمك عشان نبلش صح</p>
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full text-center animate-pop relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-x-primary to-x-accent"></div>
+            <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary shadow-sm">
+                <i data-lucide="user-check" class="w-10 h-10"></i>
             </div>
-            
-            <form id="name-form" class="space-y-6">
-                <div>
-                    <label id="modal-label" for="user-name" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">شو اسمك يا غالي؟</label>
-                    <input 
-                        type="text" 
-                        id="user-name" 
-                        class="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 outline-none transition text-center text-lg"
-                        placeholder="اكتب اسمك هون"
-                        required
-                        autofocus
-                    >
-                    <p id="modal-hint" class="text-sm text-gray-500 dark:text-gray-400 mt-2">رح نستخدم اسمك بالترحيب والشهادة آخر شي</p>
-                </div>
-                
-                <div class="flex gap-3">
-                    <button 
-                        id="modal-btn"
-                        type="submit" 
-                        class="flex-1 bg-x-primary hover:bg-x-primary-dark text-white font-bold py-4 px-6 rounded-xl transition transform hover:scale-105 flex items-center justify-center gap-2"
-                    >
-                        <i data-lucide="rocket" class="w-5 h-5"></i>
-                        يلا نبلش
-                    </button>
-                </div>
-                
-                <p id="modal-footer" class="text-center text-sm text-gray-500 dark:text-gray-400">
-                    بكبسة الزر هاي انت موافق على <a href="#" class="text-x-primary hover:underline">شروطنا</a>
-                </p>
+            <h2 class="text-3xl font-black text-gray-800 mb-2">حياك الله يا معلم!</h2>
+            <p class="text-gray-500 mb-8 leading-relaxed">عشان نبلش شغل المعلمين ونطلعلك شهادة مرتبة آخر الدورة، اكتب اسمك الحلو.</p>
+            <form id="login-form" class="space-y-4">
+                <input type="text" id="username-input" class="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-center font-bold text-lg focus:border-x-primary focus:bg-white focus:ring-4 focus:ring-green-50 outline-none transition-all" placeholder="الاسم هنا..." required autocomplete="off">
+                <button type="submit" class="w-full bg-x-primary hover:bg-x-dark text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    <span>يلا نبلش الرحلة</span> <i data-lucide="arrow-left"></i>
+                </button>
             </form>
         </div>
     </div>
 
-    <div id="toast-container"></div>
+    <div id="toast-box" class="toast"></div>
 
-    <header class="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur shadow-sm border-b border-gray-200 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="#" onclick="renderContent('hero')" class="flex items-center gap-2 group">
-                <div class="bg-excel-green text-white p-1.5 rounded-lg shadow-sm group-hover:rotate-12 transition-transform">
-                    <i data-lucide="sheet" class="w-6 h-6"></i>
-                </div>
-                <span class="text-2xl font-black tracking-tight text-gray-800 dark:text-white">X <span class="text-x-primary">Academy</span></span>
-            </a>
-            <div class="flex items-center gap-4">
-                <div id="user-info" class="hidden md:flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-x-primary text-white flex items-center justify-center font-bold">
-                        <span id="user-initial">?</span>
-                    </div>
-                    <div>
-                        <div class="text-sm font-bold text-gray-700 dark:text-gray-200" id="header-username">هلا والله!</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400" id="user-progress">قاطع: 0%</div>
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="renderPage('home')">
+                    <div class="bg-gradient-to-br from-x-primary to-emerald-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-lg font-black text-xl">X</div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-xl text-gray-800 tracking-tight leading-none">Academy</span>
+                        <span class="text-xs font-bold text-x-primary tracking-wide">Professional Edition</span>
                     </div>
                 </div>
-                <button id="lang-toggle" onclick="toggleLanguage()" class="px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-bold">
-                    English
-                </button>
-                <button id="dark-mode-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i data-lucide="moon" class="w-5 h-5 hidden dark:inline"></i>
-                    <i data-lucide="sun" class="w-5 h-5 dark:hidden"></i>
-                </button>
+
+                <div class="flex items-center gap-4">
+                    <div id="user-display" class="hidden md:flex items-center gap-2 bg-green-50 px-4 py-1.5 rounded-full border border-green-100">
+                        <i data-lucide="user" class="w-4 h-4 text-x-primary"></i>
+                        <span id="header-name" class="font-bold text-sm text-x-primary">زائر</span>
+                    </div>
+                    <button onclick="toggleLang()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-600 transition">
+                        <i data-lucide="globe" class="w-4 h-4"></i> <span id="lang-btn">EN</span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto flex flex-col lg:flex-row p-4 gap-6 mt-2 flex-grow w-full">
-        <aside class="w-full lg:w-72 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 h-fit lg:sticky lg:top-24">
-            <div class="mb-6 text-center">
-                <div class="inline-block relative">
-                    <svg class="w-24 h-24 transform -rotate-90">
-                        <circle cx="48" cy="48" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" class="dark:stroke-gray-700"/>
-                        <circle id="progress-circle" cx="48" cy="48" r="45" fill="none" stroke="#099999" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="283" class="transition-all duration-1000"/>
+    <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col lg:flex-row p-4 gap-6 mt-4">
+        
+        <aside class="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 h-fit lg:sticky lg:top-24 flex flex-col gap-6">
+            <div class="flex flex-col items-center justify-center relative py-2">
+                <div class="relative w-28 h-28">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="56" cy="56" r="48" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+                        <circle id="progress-ring" cx="56" cy="56" r="48" fill="none" stroke="#107c41" stroke-width="8" stroke-dasharray="301" stroke-dashoffset="301" stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
                     </svg>
-                    <span id="progress-text" class="absolute inset-0 flex items-center justify-center font-bold text-xl dark:text-white">0%</span>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="progress-percent" class="text-2xl font-black text-gray-800">0%</span>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">إنجاز</span>
+                    </div>
                 </div>
-                <p id="progress-label" class="text-sm font-medium mt-2 text-gray-500 dark:text-gray-400">إنجازك</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" id="user-welcome">سجل اسمك لنبلش</p>
             </div>
-            <nav id="lesson-nav" class="space-y-2"></nav>
+
+            <nav id="nav-menu" class="space-y-2 flex-grow"></nav>
+
+            <div class="pt-4 border-t border-gray-100 text-center">
+                <p class="text-xs text-gray-400 font-medium">Developed by X Academy Team</p>
+            </div>
         </aside>
 
-        <section id="content-container" class="flex-grow bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 min-h-[70vh]">
-            </section>
-    </main>
+        <main id="content-area" class="flex-grow bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[70vh] p-8 animate-slide-in relative overflow-hidden">
+            </main>
 
-    <footer class="mt-auto py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-        &copy; <span id="year"></span> X Academy | شغل مرتب ومتعوب عليه
-    </footer>
+    </div>
 
-    <div id="certificate-modal">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl max-w-3xl w-full text-center relative border-8 border-double border-x-primary">
-            <button onclick="document.getElementById('certificate-modal').style.display = 'none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500">
-                <i data-lucide="x-circle" class="w-8 h-8"></i>
-            </button>
-            <div class="mb-6">
-                <i data-lucide="award" class="w-24 h-24 text-x-secondary mx-auto"></i>
+    <div id="cert-modal" class="fixed inset-0 bg-black/80 z-[100] hidden justify-center items-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl p-1 relative shadow-2xl animate-pop">
+            <button onclick="document.getElementById('cert-modal').classList.add('hidden')" class="absolute top-4 right-4 z-50 bg-gray-100 p-2 rounded-full hover:bg-red-100 hover:text-red-600 transition"><i data-lucide="x"></i></button>
+            
+            <div id="cert-canvas" class="bg-white p-16 text-center border-8 border-double border-x-primary relative overflow-hidden" dir="rtl">
+                <div class="absolute top-0 left-0 w-32 h-32 bg-x-primary opacity-5 rounded-br-full"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 bg-x-primary opacity-5 rounded-tl-full"></div>
+
+                <div class="relative z-10">
+                    <div class="flex justify-center items-center gap-3 mb-8">
+                        <div class="bg-x-primary text-white w-12 h-12 rounded-lg flex items-center justify-center font-black text-2xl shadow-md">X</div>
+                        <h2 class="text-3xl font-black text-gray-800">X Academy</h2>
+                    </div>
+
+                    <h1 class="text-5xl font-black text-x-primary mb-4">شهادة إتمام دورة</h1>
+                    <p class="text-xl text-gray-500 font-medium mb-10">Mastering Excel Basics & Formulas</p>
+
+                    <p class="text-2xl text-gray-700 mb-4">نشهد بأن</p>
+                    <div id="cert-user-name" class="text-6xl font-black text-gray-900 mb-8 pb-4 border-b-4 border-x-accent inline-block px-10">اسم الطالب</div>
+                    
+                    <p class="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-12">
+                        قد أتم بنجاح كافة متطلبات الدورة التدريبية المتخصصة في المعادلات، المنطق الشرطي، معالجة النصوص، والتحليل الرقمي.
+                    </p>
+
+                    <div class="flex justify-between items-end border-t border-gray-200 pt-8 mt-8">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-400 font-bold mb-1">التاريخ</p>
+                            <p id="cert-date" class="text-lg font-bold text-gray-800 font-mono">2025/10/10</p>
+                        </div>
+                        <div class="flex gap-2">
+                             <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><i data-lucide="award" class="w-8 h-8"></i></div>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-sm text-gray-400 font-bold mb-1">المدرب</p>
+                            <p class="text-lg font-bold text-gray-800 font-mono">Basel Ghanem</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h2 id="cert-title-text" class="text-4xl font-bold text-x-primary mb-2">شهادة إتمام الدورة</h2>
-            <p id="cert-body-text" class="text-xl text-gray-600 dark:text-gray-300">تشهد منصة X Academy بأن</p>
-            <h1 id="cert-name" class="text-5xl font-black text-gray-800 dark:text-white my-6 border-b-2 border-x-secondary inline-block pb-2 px-10">المتدرب</h1>
-            <p id="cert-course-text" class="text-lg text-gray-600 dark:text-gray-300">قد أتم بنجاح <span class="font-bold text-x-primary">المعادلات الأساسية في Excel </span></p>
-            <p id="cert-grade-text" class="text-gray-500 dark:text-gray-400 mt-4">بتقدير ممتاز وإتقان كامل لجميع الدوال والمهارات العملية</p>
-            <p class="text-sm text-gray-400 dark:text-gray-500 mt-8 font-mono">Date: <span id="cert-date"></span></p>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">Ref: XA-<span id="cert-id"></span></p>
-            <button onclick="printCertificate()" class="mt-6 bg-x-primary hover:bg-x-primary-dark text-white font-bold py-2 px-6 rounded-lg">
-                <i data-lucide="printer" class="inline w-4 h-4 ml-2"></i> Print / Save
-            </button>
+
+            <div class="p-4 bg-gray-50 rounded-b-2xl flex justify-center gap-4">
+                <button onclick="downloadCert()" class="bg-x-primary hover:bg-x-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2 transition">
+                    <i data-lucide="download"></i> تحميل الشهادة 
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        // ==================== الترجمات (لهجة أردنية + إنجليزي) ====================
-      // ==================== الترجمات (لهجة أردنية + إنجليزي) ====================
-        const t = {
+        // --- State Management ---
+        const state = {
+            lang: 'ar',
+            user: null,
+            currentView: 'home',
+            completed: new Set(),
+            score: 0
+        };
+
+        // --- Data Content (The "Full Fat" Content) ---
+        const content = {
             ar: {
-                heroTitle: "هلا والله بـ",
-                heroSub: "المنصة معمولة عشان تتعلم <span class='font-bold text-x-primary'>صح</span> بنظام محاكاة واقعي، مش حكي جرايد.",
-                btnStart: "بلش الرحلة التعليمية",
-                btnSim: "محاكاة Excel دغري",
-                cardZap: "نتائج طيارة",
-                cardZapDesc: "جرب المعادلات وشوف النتيجة كأنك فاتح اكسل.",
-                cardTarget: "تطبيق عنجد",
-                cardTargetDesc: "أمثلة من الواقع، مش 1+1.",
-                cardRefresh: "تعلم من كيسك",
-                cardRefreshDesc: "اغلط عادي، النظام بصلحلك عشان تفهم.",
-                
-                lesson1: "الدرس الأول",
-                lesson1Title: "العمليات الحسابية في Excel",
-                lesson1Desc: "خلينا نبلش بالجمع والطرح والقصص البسيطة.",
-                noteTitle: "ركز معي شوي",
-                noteBody: "أي معادلة بالاكسل لازم تبلش بـ <span class='font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-100'>=</span>. يعني بدك تجمع 5 و 3 بتكتب <span class='font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-100'>=5+3</span>.",
-                backBtn: "ارجع لورا",
-                completeBtn: "خلصت الدرس",
-                add: "الجمع", sub: "الطرح", mul: "الضرب", div: "القسمة",
-
-                lesson2: "الدرس الثاني",
-                lesson2Title: "المنطق والمعادلات الشرطية",
-                lesson2Desc: "كيف تخلي الاكسل يفهم ويقرر لحاله.",
-                logicInfo: "دوال المنطق",
-                ifFunc: "بتفحص شرط، اذا صح بتعطيك اشي، واذا غلط بتعطيك اشي ثاني.",
-                andOrFunc: "تجميع شروط مع بعض (يا كلهم صح / يا واحد منهم صح).",
-                prevBtn: "الدرس اللي قبله",
-                gt: "أكبر من", lt: "أصغر من", eq: "يساوي", ne: "لا يساوي", gte: "أكبر أو يساوي", lte: "أصغر أو يساوي",
-
-                lesson3: "الدرس الثالث",
-                lesson3Title: "دوال المصفوفات (Spill)",
-                lesson3Desc: "دوال جديدة وذكية بتعبي خلايا لحالها.",
-                splitTitle: "١. دالة TEXTSPLIT (تكسير النص)",
-                splitDesc: "بتقسم النص بناءً على فاصلة أو مسافة.",
-                enterText: "اكتب النص هون:",
-                resSplit: "النتيجة (مقسمة):",
-                uniqueTitle: "٢. دالة UNIQUE (الفريد)",
-                uniqueDesc: "بتشيل التكرار وبتعطيك الصافي.",
-                inputRep: "المدخلات (مع تكرار):",
-                resUnique: "النتيجة (بدون تكرار):",
-
-                lesson4: "الدرس الرابع",
-                lesson4Title: "الدوال التجميعية",
-                lesson4Desc: "هون الجد، رح تطبق بايدك على محاكاة اكسل.",
-                sumTitle: "١. دالة الجمع (SUM)",
-                sumDesc: "بتجمعلك الخلايا اللي بدك اياهم.",
-                sumHint: "اكتب =SUM(B1:B4) في الخلية الصفراء وشيك.",
-                avgTitle: "٢. دالة المتوسط (AVERAGE)",
-                avgDesc: "بتحسبلك المعدل.",
-                avgHint: "بدنا متوسط عمود B.",
-                maxTitle: "٣. دالة القيمة القصوى (MAX)",
-                maxDesc: "بتطلعلك أكبر رقم.",
-                maxHint: "شو أكبر رقم بالقائمة؟",
-                minTitle: "٤. دالة القيمة الدنيا (MIN)",
-                minDesc: "بتطلعلك أصغر رقم.",
-                minHint: "استخدم MIN لتلاقي أصغر اشي.",
-                checkBtn: "شيك عالجواب",
-                doneBtn: "تم",
-                allDone: "وحش! خلصت كل التدريبات.",
-                waitDone: "كمل التدريبات عشان تخلص الدرس.",
-                excellent: "كفو! جبتها صح.",
-                mustComplete: "لازم تخلص كل شي فوق بالأول.",
-                completeLesson4: "إكمال درس التجميع",
-
-                quizTitle: "الاختبار النهائي",
-                quizSub: "يا ، فرجينا شطارتك باللي تعلمته.",
-                submitQuiz: "سلم الاختبار",
-                review: "راجع الدروس",
-                getCert: "استلام الشهادة",
-                congrats: "يا عيني عليك! نجحت.",
-                passMsg: "ناجح",
-                failMsg: "راسب",
-                
-                toastWelcome: "هلا والله ! نورتنا",
-                toastSuccess: "يا عيني عليك! جوابك صح",
-                toastError: "في غلط، جرب مرة ثانية",
-                toastInfo: "معلومة ع الماشي",
-                
                 nav: {
-                    start: "البداية",
-                    l1: "١. العمليات الحسابية",
-                    l2: "٢. المنطق الشرطي",
-                    l3: "٣. دوال المصفوفات",
-                    l4: "٤. الدوال التجميعية",
-                    quiz: "٥. الاختبار النهائي"
+                    home: 'الرئيسية',
+                    math: '1. العمليات الحسابية',
+                    logic: '2. المنطق الشرطي (IF)',
+                    text: '3. معالجة النصوص',
+                    agg: '4. التحليل والتجميع',
+                    quiz: 'الاختبار النهائي'
                 },
-
-                modal: {
-                    title: "يا هلا بيك في X Academy!",
-                    sub: "بالله عليك تحط اسمك عشان نبلش صح",
-                    label: "شو اسمك يا غالي؟",
-                    ph: "اكتب اسمك هون",
-                    hint: "رح نستخدم اسمك بالترحيب والشهادة آخر شي",
-                    btn: "يلا نبلش",
-                    footer: "بكبسة الزر هاي انت موافق على شروطنا"
+                home: {
+                    title: 'دورة الإكسل الاحترافية',
+                    desc: 'تعلم الإكسل الحقيقي عن طريق الممارسة. لا توجد خيارات متعددة هنا، أنت ستكتب المعادلات بيدك وكأنك في البرنامج تماماً.',
+                    cards: [
+                        {icon: 'cpu', t: 'محاكاة ذكية', d: 'نظام يفهم معادلاتك مهما كتبتها'},
+                        {icon: 'target', t: 'أمثلة عملية', d: 'سيناريوهات من سوق العمل'},
+                        {icon: 'award', t: 'شهادة معتمدة', d: 'تصدر فور إتمام الاختبار'}
+                    ],
+                    btn: 'ابدأ الدرس الأول'
                 },
-                header: {
-                    hello: "هلا والله!",
-                    prog: "قاطع: "
+                lessons: {
+                    math: {
+                        title: 'الدرس الأول: العمليات الحسابية والأولويات',
+                        desc: 'أساس الإكسل هو الرياضيات. أهم قاعدة: "الضرب والقسمة أقوى من الجمع والطرح".',
+                        examples: [
+                            { code: '=5+10', txt: 'جمع بسيط' },
+                            { code: '=A1*B1', txt: 'ضرب قيم خليتين (دائماً استخدم أسماء الخلايا)' },
+                            { code: '=(10+2)*5', txt: 'الأقواس تجبر الإكسل يجمع أولاً (12) ثم يضرب بـ 5 = 60' },
+                            { code: '=10+2*5', txt: 'بدون أقواس، الضرب أولاً (10) ثم الجمع = 20' }
+                        ],
+                        challenge: {
+                            q: 'لديك الراتب الأساسي (500) والعلاوة (100) والضريبة (50). احسب "صافي الراتب" في الخلية B4.',
+                            hint: 'المعادلة: (الراتب + العلاوة) - الضريبة.',
+                            data: { A1:'الراتب', B1:500, A2:'العلاوة', B2:100, A3:'الضريبة', B3:50, A4:'الصافي', B4:null },
+                            target: 'B4',
+                            valid: ['=B1+B2-B3', '=(B1+B2)-B3']
+                        }
+                    },
+                    logic: {
+                        title: 'الدرس الثاني: المنطق واتخاذ القرار (IF)',
+                        desc: 'دالة IF هي الدماغ المفكر. الهيكلية: IF(الشرط, لو تحقق, لو لم يتحقق).',
+                        examples: [
+                            { code: '=IF(A1>50,"Pass","Fail")', txt: 'إذا العلامة أكبر من 50 اكتب ناجح، غير هيك راسب' },
+                            { code: '=IF(B2="Yes",100,0)', txt: 'التعامل مع النصوص لازم يكون بين علامات اقتباس ""' },
+                            { code: '=IF(C1<0,"Negative","Positive")', txt: 'فحص الأرقام السالبة والموجبة' }
+                        ],
+                        challenge: {
+                            q: 'الموظف "سعيد" حقق مبيعات 12000. التارجت المطلوب 10000. في الخلية B3، اكتب معادلة: اذا المبيعات (B2) أكبر أو تساوي 10000، اكتب "Bonus"، غير هيك اكتب "No".',
+                            hint: 'تذكر: النصوص مثل "Bonus" لازم تكون بين " ".',
+                            data: { A1:'الموظف', B1:'سعيد', A2:'المبيعات', B2:12000, A3:'الحالة', B3:null },
+                            target: 'B3',
+                            valid: ['=IF(B2>=10000,"Bonus","No")', '=IF(B2>9999,"Bonus","No")']
+                        }
+                    },
+                    text: {
+                        title: 'الدرس الثالث: التعامل مع النصوص',
+                        desc: 'تنظيف البيانات وفصل الأسماء مهارة أساسية.',
+                        examples: [
+                            { code: '=TEXTSPLIT(A1, " ")', txt: 'فصل النص بناءً على المسافة (Space)' },
+                            { code: '=UPPER(A1)', txt: 'تحويل النص لأحرف كبيرة (إنجليزي)' },
+                            { code: '=TRIM(A1)', txt: 'إزالة المسافات الزائدة من النص' }
+                        ],
+                        challenge: {
+                            q: 'الاسم الكامل "Basel Ghanem" موجود في B1. استخدم دالة لفصل الاسم الأول في الخلية B2 بناءً على المسافة.',
+                            hint: 'استخدم دالة TEXTSPLIT والفاصل هو " " (مسافة).',
+                            data: { A1:'الاسم الكامل', B1:'Basel Ghanem', A2:'الاسم الأول', B2:null },
+                            target: 'B2',
+                            valid: ['=TEXTSPLIT(B1," ")']
+                        }
+                    },
+                    agg: {
+                        title: 'الدرس الرابع: التجميع والتحليل',
+                        desc: 'تلخيص البيانات الكبيرة برقم واحد مفيد.',
+                        examples: [
+                            { code: '=SUM(A1:A100)', txt: 'جمع كل الأرقام في العمود' },
+                            { code: '=AVERAGE(B1:B10)', txt: 'حساب المعدل (الوسط الحسابي)' },
+                            { code: '=MAX(C1:C50)', txt: 'إيجاد أكبر قيمة (أعلى راتب مثلاً)' },
+                            { code: '=COUNT(D1:D10)', txt: 'عد الخلايا التي تحتوي أرقاماً فقط' }
+                        ],
+                        challenge: {
+                            q: 'احسب مجموع المبيعات للأشهر الثلاثة (من B1 إلى B3) وضع النتيجة في B4.',
+                            hint: 'استخدم دالة SUM للنطاق.',
+                            data: { A1:'يناير', B1:150, A2:'فبراير', B2:200, A3:'مارس', B3:350, A4:'المجموع', B4:null },
+                            target: 'B4',
+                            valid: ['=SUM(B1:B3)']
+                        }
+                    }
                 },
-                progressLabel: "إنجازك",
-                sideWelcome: "سجل اسمك لنبلش",
-                resultLabel: "النتيجة:",
-                cert: {
-                    title: "شهادة إتمام الدورة",
-                    body: "تشهد منصة X Academy بأن",
-                    course: "قد أتم بنجاح <span class='font-bold text-x-primary'>المعادلات الأساسية في Excel </span>",
-                    grade: "بتقدير ممتاز وإتقان كامل لجميع الدوال والمهارات العملية"
-                },
-                // الأسئلة بالعربي
-                questions: [
-                    { text: 'أي دالة تستخدم لجمع نطاق من الخلايا؟', options: ['SUM', 'ADD', 'PLUS'], correct: 'SUM' },
-                    { text: 'نتيجة =MAX(10, 50, 20) هي؟', options: ['10', '50', '20'], correct: '50' },
-                    { text: 'للبدء بأي معادلة في Excel يجب كتابة؟', options: ['=', '#', '/'], correct: '=' },
-                    { text: 'دالة UNIQUE تعيد؟', options: ['القيم المكررة', 'القيم الفريدة', 'مجموع القيم'], correct: 'القيم الفريدة' },
-                    { text: 'ما نتيجة =10/0 في Excel؟', options: ['0', '10', '#DIV/0!'], correct: '#DIV/0!' },
-                    { text: 'أي من الانواع التالية يعتبر معادلة منطقية ؟', options: ['=5>3', '=5+3', '=SUM(5,3)'], correct: '=5>3' },
-                    { text: 'دالة AVERAGE تستخدم لحساب؟', options: ['المجموع', 'المتوسط', 'العدد'], correct: 'المتوسط' },
-                    { text: 'لتفريق النص "A,B,C" بناءً على الفاصلة نستخدم؟', options: ['TEXTSPLIT', 'TEXTJOIN', 'UNIQUE'], correct: 'TEXTSPLIT' }
-                ]
+                quiz: {
+                    title: 'اختبار المعلمين النهائي',
+                    q_list: [
+                        { q: 'للبدء بأي معادلة في إكسل، ما هو الرمز الأول؟', options: ['/', '=', '#'], a: '=' },
+                        { q: 'أي دالة تستخدم لحساب المتوسط الحسابي؟', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
+                        { 
+  q: 'في دالة IF، كيف نكتب النصوص؟', 
+  options: ['بدون شيء', 'بين أقواس', 'بين تنصيص'], 
+  a: 'بين تنصيص' 
+}
+,
+                        { q: 'النتيجة لـ =10+2*5 هي:', options: ['60', '20', '12'], a: '20' }
+                    ],
+                    btn: 'ابعث الإجابة'
+                }
             },
             en: {
-                heroTitle: "Welcome ",
-                heroSub: "This platform is designed for <span class='font-bold text-x-primary'>real</span> learning using simulation, not just theory.",
-                btnStart: "Start Journey",
-                btnSim: "Excel Simulation",
-                cardZap: "Instant Results",
-                cardZapDesc: "Try formulas and see results instantly.",
-                cardTarget: "Practical Application",
-                cardTargetDesc: "Real-world examples.",
-                cardRefresh: "Learn from Mistakes",
-                cardRefreshDesc: "Make mistakes, the system will guide you.",
-
-                lesson1: "Lesson One",
-                lesson1Title: "Basic Calculations in Excel",
-                lesson1Desc: "Let's start with addition, subtraction, and basics.",
-                noteTitle: "Important Note",
-                noteBody: "Every Excel formula must start with <span class='font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-100'>=</span>. E.g., to add 5 and 3, type <span class='font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-100'>=5+3</span>.",
-                backBtn: "Go Back",
-                completeBtn: "Complete Lesson",
-                add: "Addition", sub: "Subtraction", mul: "Multiplication", div: "Division",
-
-                lesson2: "Lesson Two",
-                lesson2Title: "Logic & Conditional Formulas",
-                lesson2Desc: "How to make Excel decide for itself.",
-                logicInfo: "Logic Functions",
-                ifFunc: "Checks a condition; returns one value if true, another if false.",
-                andOrFunc: "Combine conditions (All true / One true).",
-                prevBtn: "Previous Lesson",
-                gt: "Greater than", lt: "Less than", eq: "Equals", ne: "Not equal", gte: "Greater/Equal", lte: "Less/Equal",
-
-                lesson3: "Lesson Three",
-                lesson3Title: "Array Functions (Spill)",
-                lesson3Desc: "Modern functions that fill cells automatically.",
-                splitTitle: "1. TEXTSPLIT Function",
-                splitDesc: "Splits text based on a delimiter.",
-                enterText: "Enter text:",
-                resSplit: "Result (Split):",
-                uniqueTitle: "2. UNIQUE Function",
-                uniqueDesc: "Removes duplicates.",
-                inputRep: "Inputs (with duplicates):",
-                resUnique: "Result (Unique):",
-
-                lesson4: "Lesson Four",
-                lesson4Title: "Aggregate Functions",
-                lesson4Desc: "Now for the real deal, apply what you learned in the simulation.",
-                sumTitle: "1. SUM Function",
-                sumDesc: "Adds up the cells you select.",
-                sumHint: "Type =SUM(B1:B4) in the yellow cell and check.",
-                avgTitle: "2. AVERAGE Function",
-                avgDesc: "Calculates the mean.",
-                avgHint: "We want the average of column B.",
-                maxTitle: "3. MAX Function",
-                maxDesc: "Finds the largest number.",
-                maxHint: "What is the largest number in the list?",
-                minTitle: "4. MIN Function",
-                minDesc: "Finds the smallest number.",
-                minHint: "Use MIN to find the lowest value.",
-                checkBtn: "Check Answer",
-                doneBtn: "Done",
-                allDone: "Awesome! All tasks completed.",
-                waitDone: "Complete tasks to finish lesson.",
-                excellent: "Great job! That's correct.",
-                mustComplete: "You must complete all tasks above first.",
-                completeLesson4: "Complete Aggregate Lesson",
-
-                quizTitle: "Final Quiz",
-                quizSub: ", show us your skills.",
-                submitQuiz: "Submit Quiz",
-                review: "Review Lessons",
-                getCert: "Get Certificate",
-                congrats: "Congratulations! You passed.",
-                passMsg: "Passed",
-                failMsg: "Failed",
-                
-                toastWelcome: "Welcome ! Glad to have you.",
-                toastSuccess: "Excellent! Correct answer.",
-                toastError: "Incorrect, try again.",
-                toastInfo: "Quick Info",
-                
-                nav: {
-                    start: "Home",
-                    l1: "1. Basic Ops",
-                    l2: "2. Logic Ops",
-                    l3: "3. Array Funcs",
-                    l4: "4. Aggregate Funcs",
-                    quiz: "5. Final Quiz"
+                nav: { home: 'Home', math: '1. Math Ops', logic: '2. Logic (IF)', text: '3. Text Funcs', agg: '4. Aggregation', quiz: 'Final Quiz' },
+                home: {
+                    title: 'Professional Excel Course',
+                    desc: 'Learn by doing. No multiple choice here; you type the actual formulas just like real Excel.',
+                    cards: [
+                        {icon: 'cpu', t: 'Smart Simulation', d: 'Parses your formulas dynamically'},
+                        {icon: 'target', t: 'Real Examples', d: 'Business scenarios'},
+                        {icon: 'award', t: 'Certificate', d: 'Instant certification upon completion'}
+                    ],
+                    btn: 'Start First Lesson'
                 },
-
-                modal: {
-                    title: "Welcome to X Academy!",
-                    sub: "Please enter your name to start properly",
-                    label: "What is your name?",
-                    ph: "Enter your name here",
-                    hint: "We will use this for your certificate",
-                    btn: "Let's Start",
-                    footer: "By clicking, you agree to our terms"
+                lessons: {
+                    math: {
+                        title: 'Lesson 1: Math & Order of Ops',
+                        desc: 'Multiplication/Division happen before Addition/Subtraction.',
+                        examples: [
+                            { code: '=5+10', txt: 'Simple Add' },
+                            { code: '=A1*B1', txt: 'Multiply Cells (Best Practice)' },
+                            { code: '=(10+2)*5', txt: 'Parentheses first: 12*5 = 60' },
+                            { code: '=10+2*5', txt: 'Mult first: 10+10 = 20' }
+                        ],
+                        challenge: {
+                            q: 'Calculate Net Salary in B4: (Salary + Bonus) - Tax.',
+                            hint: 'Formula: (B1 + B2) - B3',
+                            data: { A1:'Salary', B1:500, A2:'Bonus', B2:100, A3:'Tax', B3:50, A4:'Net', B4:null },
+                            target: 'B4',
+                            valid: ['=B1+B2-B3', '=(B1+B2)-B3']
+                        }
+                    },
+                    logic: {
+                        title: 'Lesson 2: Logic (IF)',
+                        desc: 'IF(Condition, Value if True, Value if False).',
+                        examples: [
+                            { code: '=IF(A1>50,"Pass","Fail")', txt: 'Pass if > 50' },
+                            { code: '=IF(B2="Yes",100,0)', txt: 'Text must be in quotes' }
+                        ],
+                        challenge: {
+                            q: 'Target is 10000. If Sales (B2) >= 10000, write "Bonus", else "No" in B3.',
+                            hint: 'Remember quotes for "Bonus".',
+                            data: { A1:'Emp', B1:'John', A2:'Sales', B2:12000, A3:'Status', B3:null },
+                            target: 'B3',
+                            valid: ['=IF(B2>=10000,"Bonus","No")']
+                        }
+                    },
+                    text: {
+                        title: 'Lesson 3: Text Functions',
+                        desc: 'Cleaning and splitting text.',
+                        examples: [
+                            { code: '=TEXTSPLIT(A1, " ")', txt: 'Split by space' },
+                            { code: '=UPPER(A1)', txt: 'Convert to uppercase' }
+                        ],
+                        challenge: {
+                            q: 'Split the full name in B1 using the space delimiter into B2.',
+                            hint: 'Use TEXTSPLIT function.',
+                            data: { A1:'Full Name', B1:'Basel Ghanem', A2:'First Name', B2:null },
+                            target: 'B2',
+                            valid: ['=TEXTSPLIT(B1," ")']
+                        }
+                    },
+                    agg: {
+                        title: 'Lesson 4: Aggregation',
+                        desc: 'Summarizing data.',
+                        examples: [
+                            { code: '=SUM(A1:A10)', txt: 'Sum range' },
+                            { code: '=AVERAGE(B1:B10)', txt: 'Average' },
+                            { code: '=MAX(C1:C10)', txt: 'Max value' }
+                        ],
+                        challenge: {
+                            q: 'Sum the values from B1 to B3 into B4.',
+                            hint: 'Use SUM function.',
+                            data: { A1:'Jan', B1:150, A2:'Feb', B2:200, A3:'Mar', B3:350, A4:'Total', B4:null },
+                            target: 'B4',
+                            valid: ['=SUM(B1:B3)']
+                        }
+                    }
                 },
-                header: {
-                    hello: "Hello!",
-                    prog: "Progress: "
-                },
-                progressLabel: "Progress",
-                sideWelcome: "Register to start",
-                resultLabel: "Result:",
-                cert: {
-                    title: "Certificate of Completion",
-                    body: "X Academy certifies that",
-                    course: "Has successfully completed <span class='font-bold text-x-primary'>Basic Excel Formulas</span>",
-                    grade: "With excellent grade and mastery of all skills"
-                },
-                // English Questions
-                questions: [
-                    { text: 'Which function is used to sum a range of cells?', options: ['SUM', 'ADD', 'PLUS'], correct: 'SUM' },
-                    { text: 'The result of =MAX(10, 50, 20) is?', options: ['10', '50', '20'], correct: '50' },
-                    { text: 'To start any formula in Excel, you must type?', options: ['=', '#', '/'], correct: '=' },
-                    { text: 'The UNIQUE function returns?', options: ['Duplicate values', 'Unique values', 'Sum of values'], correct: 'Unique values' },
-                    { text: 'What is the result of =10/0 in Excel?', options: ['0', '10', '#DIV/0!'], correct: '#DIV/0!' },
-                    { text: 'Which of the following is a logical formula?', options: ['=5>3', '=5+3', '=SUM(5,3)'], correct: '=5>3' },
-                    { text: 'The AVERAGE function calculates?', options: ['Total', 'Arithmetic Mean', 'Count'], correct: 'Arithmetic Mean' },
-                    { text: 'To split the text "A,B,C" based on the delimiter, we use?', options: ['TEXTSPLIT', 'TEXTJOIN', 'UNIQUE'], correct: 'TEXTSPLIT' }
-                ]
-            }
-        };
-        // ==================== الحالة العامة للتطبيق ====================
-        const appState = {
-            darkMode: false,
-            lang: 'ar', // 'ar' (Jordanian) or 'en'
-            currentSection: 'hero',
-            completedSections: new Set(),
-            quizScore: 0,
-            userName: null,
-            userInitial: '?',
-            completedExcelTasks: {
-                'sum': false,
-                'avg': false,
-                'max': false,
-                'min': false
+                quiz: {
+                    title: 'Final Quiz',
+                    q_list: [
+                        { q: 'Formulas start with:', options: ['+', '=', '#'], a: '=' },
+                        { q: 'Function for average:', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
+                        { q: 'Text in formulas needs:', options: ['Nothing', 'Brackets', 'Quotes ""'], a: 'Quotes ""' },
+                        { q: 'Result of =10+2*5:', options: ['60', '20', '12'], a: '20' }
+                    ],
+                    btn: 'Submit Answers'
+                }
             }
         };
 
-        // ==================== تعريف الدروس ====================
-        const sections = {
-            'hero': { 
-                get title() { return t[appState.lang].nav.start }, 
-                render: renderHero, 
-                next: 'basic_ops',
-                icon: 'home'
-            },
-            'basic_ops': { 
-                get title() { return t[appState.lang].nav.l1 }, 
-                render: renderBasicOps, 
-                next: 'logical_ops',
-                icon: 'plus'
-            },
-            'logical_ops': { 
-                get title() { return t[appState.lang].nav.l2 }, 
-                render: renderLogicalOps, 
-                next: 'array_formulas',
-                icon: 'code'
-            },
-            'array_formulas': { 
-                get title() { return t[appState.lang].nav.l3 }, 
-                render: renderArrayFormulas, 
-                next: 'aggregate_funcs',
-                icon: 'grid'
-            },
-            'aggregate_funcs': { 
-                get title() { return t[appState.lang].nav.l4 }, 
-                render: renderAggregateFuncs, 
-                next: 'final_quiz',
-                icon: 'bar-chart'
-            },
-            'final_quiz': { 
-                get title() { return t[appState.lang].nav.quiz }, 
-                render: renderFinalQuiz, 
-                next: null,
-                icon: 'award'
-            }
-        };
+        // --- Core Functions ---
 
-        // ==================== التهيئة الأولية ====================
-        window.onload = () => {
-            document.getElementById('year').textContent = new Date().getFullYear();
-            lucide.createIcons();
-            showNameModal();
-            
-            const savedDarkMode = localStorage.getItem('darkMode');
-            if (savedDarkMode === 'true') {
-                appState.darkMode = true;
-                document.documentElement.classList.add('dark');
-                updateDarkModeButton();
-            }
-        };
-
-        function toggleLanguage() {
-            appState.lang = appState.lang === 'ar' ? 'en' : 'ar';
-            
-            // Update HTML dir and lang attributes
-            const html = document.documentElement;
-            html.lang = appState.lang;
-            html.dir = appState.lang === 'ar' ? 'rtl' : 'ltr';
-            
-            // Update toggle button text
-            document.getElementById('lang-toggle').textContent = appState.lang === 'ar' ? 'English' : 'عربي';
-
-            // Update static UI elements
-            updateStaticUI();
-            
-            // Re-render current content
-            renderContent(appState.currentSection);
-            generateNavLinks(); // Update nav titles
-        }
-
-        function updateStaticUI() {
-            const T = t[appState.lang];
-            
-            // Modal
-            document.getElementById('modal-title').textContent = T.modal.title;
-            document.getElementById('modal-subtitle').textContent = T.modal.sub;
-            document.getElementById('modal-label').textContent = T.modal.label;
-            document.getElementById('user-name').placeholder = T.modal.ph;
-            document.getElementById('modal-hint').textContent = T.modal.hint;
-            document.getElementById('modal-btn').innerHTML = `<i data-lucide="rocket" class="w-5 h-5"></i> ${T.modal.btn}`;
-            document.getElementById('modal-footer').textContent = T.modal.footer;
-
-            // Header/Sidebar
-            if(appState.userName) {
-                 document.getElementById('header-username').textContent = `${T.header.hello} ${appState.userName}`;
-                 document.getElementById('user-progress').textContent = `${T.header.prog}${Math.round((appState.completedSections.size / 5) * 100)}%`;
-            }
-            document.getElementById('progress-label').textContent = T.progressLabel;
-            
-            // Certificate
-            document.getElementById('cert-title-text').textContent = T.cert.title;
-            document.getElementById('cert-body-text').textContent = T.cert.body;
-            document.getElementById('cert-course-text').innerHTML = T.cert.course;
-            document.getElementById('cert-grade-text').textContent = T.cert.grade;
-            
-            lucide.createIcons();
-        }
-
-        function showNameModal() {
-            const modal = document.getElementById('name-modal');
+        function init() {
+            // Check auth
+            const modal = document.getElementById('auth-modal');
             modal.style.display = 'flex';
-            updateStaticUI(); // Ensure correct lang on load
             lucide.createIcons();
-            
-            const form = document.getElementById('name-form');
-            const newForm = form.cloneNode(true);
-            form.parentNode.replaceChild(newForm, form);
 
-            newForm.addEventListener('submit', function(e) {
+            document.getElementById('login-form').addEventListener('submit', (e) => {
                 e.preventDefault();
-                constnameInput = document.getElementById('user-name');
-                const userName = document.getElementById('user-name').value.trim();
-                
-                if (userName && userName.length > 0) {
-                    appState.userName = userName;
-                    appState.userInitial = userName.charAt(0).toUpperCase();
-                    
+                const name = document.getElementById('username-input').value.trim();
+                if(name) {
+                    state.user = name;
+                    document.getElementById('header-name').textContent = name;
+                    document.getElementById('cert-user-name').textContent = name;
                     modal.style.display = 'none';
-                    initializeApp();
-                    
-                    setTimeout(() => {
-                        const T = t[appState.lang];
-                        showToast(`${T.toastWelcome.replace('', userName)}`, 'success');
-                    }, 500);
-                } else {
-                    document.getElementById('user-name').classList.add('animate-shake');
-                    setTimeout(() => document.getElementById('user-name').classList.remove('animate-shake'), 500);
-                    document.getElementById('user-name').focus();
+                    renderSidebar();
+                    renderPage('home');
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 }
             });
         }
 
-        function initializeApp() {
-            updateUserUI();
-            generateNavLinks();
-            renderContent(appState.currentSection);
-            document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
-            updateProgress();
+        function toggleLang() {
+            state.lang = state.lang === 'ar' ? 'en' : 'ar';
+            document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = state.lang;
+            document.getElementById('lang-btn').textContent = state.lang === 'ar' ? 'EN' : 'عربي';
+            renderSidebar();
+            renderPage(state.currentView);
         }
 
-        function toggleDarkMode() {
-            appState.darkMode = !appState.darkMode;
-            localStorage.setItem('darkMode', appState.darkMode);
-            document.documentElement.classList.toggle('dark');
-            updateDarkModeButton();
-            lucide.createIcons();
-            setTimeout(() => lucide.createIcons(), 100);
-        }
-
-        function updateDarkModeButton() {
-            const button = document.getElementById('dark-mode-toggle');
-            if (appState.darkMode) {
-                button.innerHTML = '<i data-lucide="sun" class="w-5 h-5"></i>';
-            } else {
-                button.innerHTML = '<i data-lucide="moon" class="w-5 h-5"></i>';
-            }
-            lucide.createIcons();
-        }
-
-        function updateUserUI() {
-            if (appState.userName) {
-                const T = t[appState.lang];
-                document.getElementById('header-username').textContent = `${T.header.hello} ${appState.userName}`;
-                document.getElementById('user-initial').textContent = appState.userInitial;
-                document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('user-info').classList.add('flex');
-                document.getElementById('user-welcome').textContent = `${T.header.hello} ${appState.userName}`;
-            }
-        }
-
-        function renderContent(sectionId) {
-            appState.currentSection = sectionId;
-            const container = document.getElementById('content-container');
-            
-            container.classList.remove('animate-fade-in');
-            void container.offsetWidth;
-            container.classList.add('animate-fade-in');
-
-            container.innerHTML = sections[sectionId].render();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (sectionId === 'basic_ops') {
-                bindCalcInputs('.basic-calc-input', calculateBasicOps);
-                calculateBasicOps();
-            } else if (sectionId === 'logical_ops') {
-                bindCalcInputs('.logic-calc-input', calculateLogicalOps);
-                calculateLogicalOps();
-            } else if (sectionId === 'array_formulas') {
-                bindCalcInputs('.array-calc-input', calculateArrayFormulas);
-                calculateArrayFormulas();
-            } else if (sectionId === 'aggregate_funcs') {
-                bindExcelInputs();
-            }
-            
-            updateNavLinks();
-            lucide.createIcons();
-        }
-
-        function bindCalcInputs(selector, calcFunc) {
-            document.querySelectorAll(selector).forEach(input => {
-                input.addEventListener('input', calcFunc);
-            });
-        }
-
-        function generateNavLinks() {
-            const nav = document.getElementById('lesson-nav');
+        function renderSidebar() {
+            const T = content[state.lang].nav;
+            const nav = document.getElementById('nav-menu');
             nav.innerHTML = '';
-            
-            Object.keys(sections).forEach(id => {
-                if(id === 'hero') return;
-                const section = sections[id];
-                const isCompleted = appState.completedSections.has(id);
-                const isActive = appState.currentSection === id;
-                
-                const link = document.createElement('button');
-                // Removed 'text-right' to allow LTR/RTL switch
-                link.className = `w-full px-4 py-3 rounded-xl transition-all mb-1 flex items-center justify-between group ${isActive ? 'active-link' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`;
-                link.onclick = () => renderContent(id);
-                
-                // Direction icon flip for RTL/LTR
-                const arrowIcon = appState.lang === 'ar' ? 'chevron-left' : 'chevron-right';
 
-                link.innerHTML = `
+            const items = [
+                { id: 'home', txt: T.home, icon: 'home' },
+                { id: 'math', txt: T.math, icon: 'calculator' },
+                { id: 'logic', txt: T.logic, icon: 'git-branch' },
+                { id: 'text', txt: T.text, icon: 'type' },
+                { id: 'agg', txt: T.agg, icon: 'sigma' },
+                { id: 'quiz', txt: T.quiz, icon: 'award' }
+            ];
+
+            items.forEach(item => {
+                const isDone = state.completed.has(item.id);
+                const isActive = state.currentView === item.id;
+                
+                const btn = document.createElement('button');
+                btn.className = `w-full px-4 py-3 rounded-xl flex items-center justify-between transition-all duration-200 group ${isActive ? 'active-nav' : 'hover:bg-gray-50 text-gray-600'}`;
+                btn.onclick = () => renderPage(item.id);
+                btn.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="p-2 rounded-lg ${isActive ? 'text-white' : 'bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-500'} group-hover:text-x-primary transition-colors">
-                            <i data-lucide="${section.icon}" class="w-4 h-4"></i>
-                        </div>
-                        <span class="text-sm font-medium">${section.title}</span>
+                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                        <span class="font-bold text-sm">${item.txt}</span>
                     </div>
-                    ${isCompleted ? '<i data-lucide="check-circle-2" class="w-4 h-4 text-x-primary fill-current"></i>' : `<i data-lucide="${arrowIcon}" class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 dark:text-gray-500"></i>`}
+                    ${isDone ? `<i data-lucide="check-circle" class="w-5 h-5 text-green-500 ${isActive ? 'text-white' : ''}"></i>` : ''}
                 `;
-                
-                nav.appendChild(link);
+                nav.appendChild(btn);
             });
-        }
-
-        function updateNavLinks() {
-            // Re-generate to handle language changes properly
-            generateNavLinks();
+            lucide.createIcons();
+            updateProgress();
         }
 
         function updateProgress() {
-            const trackable = Object.keys(sections).filter(k => k !== 'hero');
-            const completed = trackable.filter(k => appState.completedSections.has(k)).length;
-            const percentage = Math.round((completed / trackable.length) * 100);
+            const total = 5; // 4 lessons + 1 quiz
+            const current = state.completed.size;
+            const pct = Math.round((current/total) * 100);
             
-            const circle = document.getElementById('progress-circle');
-            const circumference = 2 * Math.PI * 45;
-            const offset = circumference - (percentage / 100) * circumference;
-            
-            if (circle) circle.style.strokeDashoffset = offset;
-            
-            const textEl = document.getElementById('progress-text');
-            if (textEl) textEl.textContent = `${percentage}%`;
-            
-            const progressText = document.getElementById('user-progress');
-            if (progressText) progressText.textContent = `${t[appState.lang].header.prog}${percentage}%`;
+            document.getElementById('progress-percent').textContent = pct + '%';
+            // Circumference of radius 48 is ~301
+            document.getElementById('progress-ring').style.strokeDashoffset = 301 - (301 * pct / 100);
         }
 
-        // ==================== Render Functions (Localized) ====================
-        function renderHero() {
-            const T = t[appState.lang];
-            const userName = appState.userName || 'المتدرب';
-            const arrowIcon = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
-            
-            return `
-                <div class="text-center py-12">
-                    <div class="w-24 h-24 bg-x-light dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary animate-pulse-slow">
-                        <i data-lucide="trending-up" class="w-12 h-12"></i>
-                    </div>
-                    <h1 class="text-4xl md:text-5xl font-black mb-4 text-gray-900 dark:text-white">${T.heroTitle} <span class="text-x-primary">${userName}</span> 👑</h1>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                        ${T.heroSub}
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                        <button onclick="renderContent('basic_ops')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
-                             ${T.btnStart} <i data-lucide="${arrowIcon}"></i>
-                        </button>
-                        <button onclick="skipToExcelSimulation()" class="bg-excel-green hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
-                            <i data-lucide="table" class="w-5 h-5"></i> ${T.btnSim}
-                        </button>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-3 gap-6 mt-16 ${appState.lang === 'ar' ? 'text-right' : 'text-left'}">
-                        ${featureCard('zap', T.cardZap, T.cardZapDesc)}
-                        ${featureCard('target', T.cardTarget, T.cardTargetDesc)}
-                        ${featureCard('refresh-ccw', T.cardRefresh, T.cardRefreshDesc)}
-                    </div>
-                </div>
-            `;
-        }
-        
-        function featureCard(icon, title, desc) {
-            return `
-                <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 hover:shadow-lg transition border border-transparent hover:border-x-primary">
-                    <i data-lucide="${icon}" class="w-8 h-8 text-x-secondary mb-3"></i>
-                    <h3 class="font-bold text-lg mb-2 dark:text-white">${title}</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">${desc}</p>
-                </div>
-            `;
-        }
+        function renderPage(viewId) {
+            state.currentView = viewId;
+            renderSidebar(); // Update active state
+            const area = document.getElementById('content-area');
+            const T = content[state.lang];
 
-        function renderBasicOps() {
-            const T = t[appState.lang];
-            const backArrow = appState.lang === 'ar' ? 'arrow-right' : 'arrow-left';
-            
-            return `
-                <div class="space-y-8">
-                    <div class="border-b dark:border-gray-700 pb-4">
-                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson1}</span>
-                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${T.lesson1Title}</h2>
-                        <p class="text-gray-500 dark:text-gray-300 mt-2">${T.lesson1Desc}</p>
-                    </div>
-                    
-                    <div class="grid lg:grid-cols-2 gap-6">
-                        ${calcCard('add', '+', T.add, '150', '50', (a,b)=>a+b)}
-                        ${calcCard('sub', '-', T.sub, '200', '30', (a,b)=>a-b)}
-                        ${calcCard('mul', '*', T.mul, '10', '5', (a,b)=>a*b)}
-                        ${calcCard('div', '/', T.div, '100', '4', (a,b)=>b==0?'#DIV/0!':(a/b).toFixed(2))}
-                    </div>
+            // Reset Animation
+            area.classList.remove('animate-slide-in');
+            void area.offsetWidth;
+            area.classList.add('animate-slide-in');
 
-                    <div class="mt-10 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                        <h3 class="font-bold text-lg mb-4 text-x-primary flex items-center gap-2">
-                            <i data-lucide="lightbulb"></i> ${T.noteTitle}
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            ${T.noteBody}
-                        </p>
-                    </div>
-                    
-                    <div class="flex justify-between mt-8">
-                        <button onclick="renderContent('hero')" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-x-primary flex items-center gap-2">
-                            <i data-lucide="${backArrow}"></i> ${T.backBtn}
-                        </button>
-                        <button onclick="completeSection('basic_ops')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-2 px-6 rounded-lg flex items-center gap-2">
-                            ${T.completeBtn} <i data-lucide="check-circle"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function calcCard(id, op, title, defA, defB, fn) {
-            const result = fn(parseFloat(defA), parseFloat(defB));
-            return `
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center">
-                    <h3 class="font-bold text-gray-500 dark:text-gray-400 mb-4">${title} (${op})</h3>
-                    <div class="flex items-center gap-2 text-xl font-bold font-mono" style="direction: ltr;">
-                        <input type="number" id="${id}-a" value="${defA}" class="basic-calc-input excel-input-box w-20 text-center rounded p-2 bg-gray-50 dark:bg-gray-700 dark:text-white">
-                        <span class="text-x-primary dark:text-teal-300">${op}</span>
-                        <input type="number" id="${id}-b" value="${defB}" class="basic-calc-input excel-input-box w-20 text-center rounded p-2 bg-gray-50 dark:bg-gray-700 dark:text-white">
-                        <span class="text-gray-700 dark:text-gray-300">=</span>
-                        <span id="${id}-res" class="text-x-primary dark:text-teal-300 bg-teal-50 dark:bg-teal-900/30 px-3 py-1 rounded min-w-[3rem] text-center excel-number">${result}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function calculateBasicOps() {
-            const ops = [
-                {id: 'add', fn: (a,b)=>a+b}, 
-                {id: 'sub', fn: (a,b)=>a-b},
-                {id: 'mul', fn: (a,b)=>a*b}, 
-                {id: 'div', fn: (a,b)=>b==0?'#DIV/0!':(a/b).toFixed(1)}
-            ];
-            ops.forEach(o => {
-                const a = +document.getElementById(`${o.id}-a`)?.value || 0;
-                const b = +document.getElementById(`${o.id}-b`)?.value || 0;
-                const resEl = document.getElementById(`${o.id}-res`);
-                if (resEl) {
-                    resEl.textContent = o.fn(a,b);
-                    resEl.classList.add('excel-number');
-                }
-            });
-        }
-
-        function renderLogicalOps() {
-            const T = t[appState.lang];
-            const backArrow = appState.lang === 'ar' ? 'arrow-right' : 'arrow-left';
-            return `
-                <div class="space-y-8">
-                    <div class="border-b dark:border-gray-700 pb-4">
-                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson2}</span>
-                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${T.lesson2Title}</h2>
-                        <p class="text-gray-500 dark:text-gray-300 mt-2">${T.lesson2Desc}</p>
-                    </div>
-                    
-                    <div class="grid gap-4">
-                        ${logicRow('gt', '>', T.gt, 60, 50)}
-                        ${logicRow('lt', '<', T.lt, 20, 50)}
-                        ${logicRow('eq', '=', T.eq, 50, 50)}
-                        ${logicRow('ne', '<>', T.ne, 10, 50)}
-                        ${logicRow('gte', '>=', T.gte, 50, 50)}
-                        ${logicRow('lte', '<=', T.lte, 40, 50)}
-                    </div>
-
-                    <div class="mt-10 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                        <h3 class="font-bold text-lg mb-4 text-x-primary flex items-center gap-2">
-                            <i data-lucide="info"></i> ${T.logicInfo}
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
-                                <h4 class="font-bold text-excel-green dark:text-green-400">IF</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">${T.ifFunc}</p>
-                                <code class="text-xs font-mono bg-gray-100 dark:bg-gray-900 p-2 mt-2 block rounded text-gray-800 dark:text-gray-100 ltr-formula">=IF(A1>10, "Yes", "No")</code>
-                            </div>
-                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
-                                <h4 class="font-bold text-excel-green dark:text-green-400">AND / OR</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">${T.andOrFunc}</p>
-                                <code class="text-xs font-mono bg-gray-100 dark:bg-gray-900 p-2 mt-2 block rounded text-gray-800 dark:text-gray-100 ltr-formula">=IF(AND(A1>10, B1<5), "OK", "NO")</code>
-                            </div>
+            if (viewId === 'home') {
+                const H = T.home;
+                area.innerHTML = `
+                    <div class="text-center max-w-3xl mx-auto py-10">
+                        <div class="inline-block p-4 bg-green-50 rounded-3xl mb-6 shadow-sm">
+                            <i data-lucide="sheet" class="w-16 h-16 text-x-primary"></i>
                         </div>
-                    </div>
-                    
-                    <div class="flex justify-between mt-8">
-                        <button onclick="renderContent('basic_ops')" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-x-primary flex items-center gap-2">
-                            <i data-lucide="${backArrow}"></i> ${T.prevBtn}
-                        </button>
-                        <button onclick="completeSection('logical_ops')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-2 px-6 rounded-lg flex items-center gap-2">
-                            ${T.completeBtn} <i data-lucide="check-circle"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function logicRow(id, sym, title, v1, v2) {
-            const a = v1, b = v2;
-            let result = false;
-            if(id=='gt') result=a>b; 
-            else if(id=='lt') result=a<b; 
-            else if(id=='eq') result=a==b; 
-            else if(id=='ne') result=a!=b;
-            else if(id=='gte') result=a>=b;
-            else if(id=='lte') result=a<=b;
-            
-            return `
-                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <span class="text-sm font-bold w-32 dark:text-gray-300">${title}</span>
-                    <div class="flex items-center gap-2 font-mono" id="logic-${id}" style="direction: ltr;">
-                        <input type="number" class="logic-calc-input excel-input-box w-16 text-center rounded p-1 dark:text-white" value="${v1}">
-                        <span class="text-x-secondary font-bold text-lg">${sym}</span>
-                        <input type="number" class="logic-calc-input excel-input-box w-16 text-center rounded p-1 dark:text-white" value="${v2}">
-                    </div>
-                    <span class="logic-res font-bold text-xs px-3 py-1 rounded ${result ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}">${result ? 'TRUE' : 'FALSE'}</span>
-                </div>
-            `;
-        }
-        
-        function calculateLogicalOps() {
-            const rows = document.querySelectorAll('[id^="logic-"]');
-            rows.forEach(row => {
-                const id = row.id.split('-')[1];
-                const inputs = row.querySelectorAll('input');
-                const resSpan = row.parentElement.querySelector('.logic-res');
-                const a = +inputs[0].value;
-                const b = +inputs[1].value;
-                let r = false;
-                
-                if(id=='gt') r=a>b; 
-                else if(id=='lt') r=a<b; 
-                else if(id=='eq') r=a==b; 
-                else if(id=='ne') r=a!=b;
-                else if(id=='gte') r=a>=b;
-                else if(id=='lte') r=a<=b;
-                
-                resSpan.textContent = r ? 'TRUE' : 'FALSE';
-                resSpan.className = `logic-res font-bold text-xs px-3 py-1 rounded ${r ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`;
-            });
-        }
-
-        function renderArrayFormulas() {
-            const T = t[appState.lang];
-            const backArrow = appState.lang === 'ar' ? 'arrow-right' : 'arrow-left';
-            const arrowIcon = appState.lang === 'ar' ? 'arrow-left' : 'arrow-right';
-            const textAlign = appState.lang === 'ar' ? 'text-right' : 'text-left';
-
-            return `
-                <div class="space-y-8">
-                    <div class="border-b dark:border-gray-700 pb-4">
-                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson3}</span>
-                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${T.lesson3Title}</h2>
-                        <p class="text-gray-500 dark:text-gray-300 mt-2">${T.lesson3Desc}</p>
-                    </div>
-
-                    <div class="bg-blue-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-blue-100 dark:border-gray-700">
-                        <h3 class="font-bold text-lg mb-4 text-x-primary flex items-center gap-2">
-                            <i data-lucide="split"></i> ${T.splitTitle}
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">${T.splitDesc}</p>
-                        <div class="flex flex-col md:flex-row gap-4 items-center">
-                            <div class="w-full md:w-1/2">
-                                <label class="block text-sm font-medium mb-2 dark:text-gray-300">${T.enterText}</label>
-                                <input type="text" id="split-in" value="أحمد علي محمد" class="array-calc-input excel-input-box w-full p-3 rounded-lg ${textAlign} dark:text-white" placeholder="...">
-                            </div>
-                            <i data-lucide="${arrowIcon}" class="text-gray-400 hidden md:block dark:text-gray-500"></i>
-                            <div class="w-full md:w-1/2">
-                                <label class="block text-sm font-medium mb-2 dark:text-gray-300">${T.resSplit}</label>
-                                <div id="split-res" class="flex gap-2 flex-wrap p-3 bg-white dark:bg-gray-800 rounded-lg min-h-[3rem]"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-green-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-green-100 dark:border-gray-700">
-                        <h3 class="font-bold text-lg mb-4 text-x-primary flex items-center gap-2">
-                            <i data-lucide="filter"></i> ${T.uniqueTitle}
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">${T.uniqueDesc}</p>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2 dark:text-gray-300">${T.inputRep}</label>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                <input type="text" class="array-calc-input excel-input-box u-in p-2 rounded text-center text-sm dark:text-white" value="Apple">
-                                <input type="text" class="array-calc-input excel-input-box u-in p-2 rounded text-center text-sm dark:text-white" value="Banana">
-                                <input type="text" class="array-calc-input excel-input-box u-in p-2 rounded text-center text-sm dark:text-white" value="Apple">
-                                <input type="text" class="array-calc-input excel-input-box u-in p-2 rounded text-center text-sm dark:text-white" value="Orange">
-                            </div>
-                        </div>
-                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                            <label class="block text-sm font-medium mb-2 text-green-600 dark:text-green-400">${T.resUnique}</label>
-                            <div id="unique-res" class="flex gap-2 flex-wrap font-bold text-green-700 dark:text-green-400 min-h-[2rem]"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-between mt-8">
-                        <button onclick="renderContent('logical_ops')" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-x-primary flex items-center gap-2">
-                            <i data-lucide="${backArrow}"></i> ${T.prevBtn}
-                        </button>
-                        <button onclick="completeSection('array_formulas')" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-2 px-6 rounded-lg flex items-center gap-2">
-                            ${T.completeBtn} <i data-lucide="check-circle"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function calculateArrayFormulas() {
-            // Split
-            const txt = document.getElementById('split-in')?.value;
-            const resDiv = document.getElementById('split-res');
-            if (resDiv && txt) {
-                resDiv.innerHTML = txt.split(' ').map(w => 
-                    `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded text-sm">${w}</span>`
-                ).join('');
-            }
-            
-            // Unique
-            const inputs = Array.from(document.querySelectorAll('.u-in')).map(i=>i.value.trim());
-            const unique = [...new Set(inputs.filter(x => x))];
-            const uniqueRes = document.getElementById('unique-res');
-            if (uniqueRes) {
-                uniqueRes.innerHTML = unique.map(w => 
-                    `<span class="border border-green-500 dark:border-green-700 px-3 py-1 rounded bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400">${w}</span>`
-                ).join('');
-            }
-        }
-
-        function renderAggregateFuncs() {
-            const T = t[appState.lang];
-            const backArrow = appState.lang === 'ar' ? 'arrow-right' : 'arrow-left';
-            
-            return `
-                <div class="space-y-10">
-                    <div class="border-b dark:border-gray-700 pb-4">
-                        <span class="text-x-primary font-bold tracking-wider text-sm uppercase">${T.lesson4}</span>
-                        <h2 class="text-3xl font-extrabold mt-1 dark:text-white">${T.lesson4Title}</h2>
-                        <p class="text-gray-500 dark:text-gray-300 mt-2">${T.lesson4Desc}</p>
-                    </div>
-
-                    ${renderExcelTrainingCard({
-                        id: 'sum',
-                        title: T.sumTitle,
-                        desc: T.sumDesc + ' <span class="ltr-formula bg-gray-100 dark:bg-gray-700 px-1 rounded text-gray-800 dark:text-gray-100">=SUM(Range)</span>',
-                        data: [10, 20, 30, 40],
-                        targetCell: 'B5',
-                        expectedFormula: '=SUM(B1:B4)',
-                        hint: T.sumHint
-                    })}
-
-                    ${renderExcelTrainingCard({
-                        id: 'avg',
-                        title: T.avgTitle,
-                        desc: T.avgDesc + ' <span class="ltr-formula bg-gray-100 dark:bg-gray-700 px-1 rounded text-gray-800 dark:text-gray-100">=AVERAGE(Range)</span>',
-                        data: [100, 200, 300, 0],
-                        targetCell: 'B5',
-                        expectedFormula: '=AVERAGE(B1:B4)',
-                        hint: T.avgHint
-                    })}
-
-                    ${renderExcelTrainingCard({
-                        id: 'max',
-                        title: T.maxTitle,
-                        desc: T.maxDesc + ' <span class="ltr-formula bg-gray-100 dark:bg-gray-700 px-1 rounded text-gray-800 dark:text-gray-100">=MAX(Range)</span>',
-                        data: [15, 99, 4, 60],
-                        targetCell: 'B5',
-                        expectedFormula: '=MAX(B1:B4)',
-                        hint: T.maxHint
-                    })}
-                    
-                    ${renderExcelTrainingCard({
-                        id: 'min',
-                        title: T.minTitle,
-                        desc: T.minDesc + ' <span class="ltr-formula bg-gray-100 dark:bg-gray-700 px-1 rounded text-gray-800 dark:text-gray-100">=MIN(Range)</span>',
-                        data: [15, 99, 4, 60],
-                        targetCell: 'B5',
-                        expectedFormula: '=MIN(B1:B4)',
-                        hint: T.minHint
-                    })}
-
-                    <div id="aggregate-complete-section" class="mt-12 pt-8 border-t-2 border-dashed border-gray-200 dark:border-gray-700 ${Object.values(appState.completedExcelTasks).every(v => v) ? '' : 'opacity-50 pointer-events-none grayscale'} transition-all duration-500">
-                        <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-x-primary">
-                            <i data-lucide="${Object.values(appState.completedExcelTasks).every(v => v) ? 'check-circle' : 'lock'}" class="w-6 h-6"></i> 
-                            ${Object.values(appState.completedExcelTasks).every(v => v) ? T.allDone : T.waitDone}
-                        </h3>
-                        <p class="mb-6 text-gray-600 dark:text-gray-300">
-                            ${Object.values(appState.completedExcelTasks).every(v => v) 
-                                ? T.excellent 
-                                : T.mustComplete}
-                        </p>
+                        <h1 class="text-5xl font-black text-gray-900 mb-6">${H.title}</h1>
+                        <p class="text-xl text-gray-500 mb-12 leading-relaxed">${H.desc}</p>
                         
-                        <div class="flex justify-between mt-8">
-                            <button onclick="renderContent('array_formulas')" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-x-primary flex items-center gap-2">
-                                <i data-lucide="${backArrow}"></i> ${T.prevBtn}
-                            </button>
-                            <button onclick="completeAggregateSection()" class="bg-x-primary hover:bg-x-primary-dark text-white font-bold py-2 px-6 rounded-lg flex items-center gap-2 ${Object.values(appState.completedExcelTasks).every(v => v) ? '' : 'opacity-50 cursor-not-allowed'}" ${Object.values(appState.completedExcelTasks).every(v => v) ? '' : 'disabled'}>
-                                ${T.completeLesson4} <i data-lucide="check-circle"></i>
-                            </button>
+                        <div class="grid md:grid-cols-3 gap-6 mb-12 text-start">
+                            ${H.cards.map(c => `
+                                <div class="p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-green-200 hover:shadow-md transition">
+                                    <i data-lucide="${c.icon}" class="w-8 h-8 text-x-primary mb-3"></i>
+                                    <h3 class="font-bold text-lg text-gray-800 mb-1">${c.t}</h3>
+                                    <p class="text-sm text-gray-500">${c.d}</p>
+                                </div>
+                            `).join('')}
                         </div>
-                    </div>
-                </div>
-            `;
-        }
 
-        function renderExcelTrainingCard(config) {
-            const T = t[appState.lang];
-            let rowsHtml = '';
-            config.data.forEach((val, idx) => {
-                rowsHtml += `
-                    <div class="excel-header-row excel-cell">${idx + 1}</div>
-                    <div class="excel-cell text-gray-400 dark:text-gray-500 select-none bg-gray-50 dark:bg-gray-900">Item ${idx+1}</div>
-                    <div class="excel-cell font-mono font-bold text-gray-700 dark:text-yellow-300 excel-number" id="${config.id}-B${idx+1}">${val}</div>
+                        <button onclick="renderPage('math')" class="bg-x-primary hover:bg-x-dark text-white text-lg font-bold py-4 px-12 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 flex items-center gap-2 mx-auto">
+                            ${H.btn} <i data-lucide="${state.lang === 'ar' ? 'arrow-left' : 'arrow-right'}"></i>
+                        </button>
+                    </div>
                 `;
-            });
+            } else if (viewId === 'quiz') {
+                renderQuiz(area, T.quiz);
+            } else {
+                renderLesson(area, T.lessons[viewId], viewId);
+            }
+            lucide.createIcons();
+        }
 
-            rowsHtml += `
-                <div class="excel-header-row excel-cell">5</div>
-                <div class="excel-cell font-bold text-x-primary dark:text-teal-300 bg-yellow-50 dark:bg-yellow-900/30">${T.resultLabel}</div>
-                <div class="excel-cell p-0 relative">
-                    <input type="text" 
-                           id="input-${config.id}" 
-                           class="cell-input active-cell placeholder-gray-300 dark:placeholder-gray-500 bg-white dark:bg-gray-800 text-gray-800 dark:text-white" 
-                           placeholder="..."
-                           data-expected="${config.expectedFormula}"
-                           data-range="B1:B4"
-                           data-type="${config.id}" 
-                           onkeypress="handleEnter(event, '${config.id}')"
-                           ${appState.completedExcelTasks[config.id] ? 'disabled' : ''}>
-                    <div id="result-overlay-${config.id}" class="absolute inset-0 flex items-center justify-center font-bold text-white bg-excel-green hidden z-20 rounded"></div>
+        function renderLesson(container, data, lessonId) {
+            // Build Examples HTML
+            const examplesHTML = data.examples.map(ex => `
+                <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="bg-white p-1.5 rounded border border-gray-300 font-mono text-xs font-bold text-x-primary shrink-0" dir="ltr">${ex.code}</div>
+                    <p class="text-sm text-gray-700 pt-0.5 font-medium">${ex.txt}</p>
                 </div>
-            `;
+            `).join('');
 
-            return `
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden group hover:border-x-primary transition-colors" id="card-${config.id}">
-                    <div class="p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2 flex items-center gap-2">
-                            <i data-lucide="table" class="w-5 h-5 text-x-primary"></i> ${config.title}
-                            ${appState.completedExcelTasks[config.id] ? '<i data-lucide="check-circle" class="w-5 h-5 text-green-500 dark:text-green-400 ml-auto"></i>' : ''}
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">${config.desc}</p>
-                        <div class="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded inline-block">
-                            💡 ${config.hint}
-                        </div>
+            // Build Challenge Grid
+            let gridRows = '';
+            for(let i=1; i<=4; i++) {
+                gridRows += `
+                    <tr class="h-10">
+                        <td class="bg-gray-100 text-gray-500 font-bold text-xs border border-gray-300 text-center w-8">${i}</td>
+                        <td class="border border-gray-200 bg-white text-center text-sm px-2 text-gray-600">${data.challenge.data['A'+i] || ''}</td>
+                        <td class="border border-gray-200 bg-white text-center text-sm font-bold text-gray-800 relative p-0">
+                            ${'B'+i === data.challenge.target 
+                                ? `<input id="user-formula" class="formula-input" placeholder="fx..." autocomplete="off">` 
+                                : (data.challenge.data['B'+i] !== null ? data.challenge.data['B'+i] : '')}
+                        </td>
+                    </tr>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="max-w-5xl mx-auto">
+                    <div class="mb-8 border-b border-gray-100 pb-6">
+                        <span class="bg-green-100 text-x-dark px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block">تعلم ومارس</span>
+                        <h2 class="text-3xl font-black text-gray-900 mb-3">${data.title}</h2>
+                        <p class="text-lg text-gray-500">${data.desc}</p>
                     </div>
 
-                    <div class="p-6">
-                        <div class="formula-bar dark:bg-gray-900 dark:border-gray-700" style="direction: ltr;">
-                            <span class="text-gray-400 italic">fx</span>
-                            <div class="h-4 w-[1px] bg-gray-300 mx-2"></div>
-                            <span id="formula-display-${config.id}" class="text-sm font-mono text-gray-600 dark:text-gray-300 w-full text-left"></span>
-                        </div>
-
-                        <div class="excel-grid rounded-lg overflow-hidden shadow-inner dir-ltr" style="direction: ltr;">
-                            <div class="excel-cell excel-header-col dark:bg-gray-700"></div>
-                            <div class="excel-cell excel-header-col dark:bg-gray-700">A</div>
-                            <div class="excel-cell excel-header-col dark:bg-gray-700">B</div>
+                    <div class="grid lg:grid-cols-2 gap-10">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="book" class="text-x-primary"></i> شرح وأمثلة</h3>
+                            <div class="space-y-3 mb-6">
+                                ${examplesHTML}
+                            </div>
                             
-                            ${rowsHtml}
+                            <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                                <h4 class="font-bold text-blue-800 mb-2 text-sm flex items-center gap-2"><i data-lucide="info" class="w-4"></i> التحدي المطلوب</h4>
+                                <p class="text-gray-700 text-sm leading-relaxed">${data.challenge.q}</p>
+                                <div class="mt-3 text-xs bg-white p-2 rounded border border-blue-200 text-blue-600 inline-block font-bold">
+                                    💡 تلميح: ${data.challenge.hint}
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mt-4 flex justify-end">
-                            <button id="btn-${config.id}" onclick="validateExcelTask('${config.id}')" class="${appState.completedExcelTasks[config.id] ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 cursor-default' : 'bg-gray-900 dark:bg-gray-700 text-white hover:bg-x-primary'} px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2" ${appState.completedExcelTasks[config.id] ? 'disabled' : ''}>
-                                ${appState.completedExcelTasks[config.id] ? `<i data-lucide="check-circle" class="w-4 h-4"></i> ${T.doneBtn}` : `<i data-lucide="play" class="w-4 h-4"></i> ${T.checkBtn}`}
-                            </button>
+                        <div class="bg-gray-100 p-1 rounded-2xl shadow-inner border border-gray-200">
+                            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-300">
+                                <div class="bg-gray-50 border-b border-gray-300 flex items-center px-2 py-1 gap-2">
+                                    <div class="flex gap-1">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                                    </div>
+                                    <div class="h-4 w-px bg-gray-300 mx-2"></div>
+                                    <span class="text-xs font-bold text-gray-400 italic font-serif">fx</span>
+                                    <div id="formula-bar-mirror" class="flex-grow bg-white border border-gray-200 h-6 rounded text-xs px-2 flex items-center font-mono text-gray-500"></div>
+                                </div>
+
+                                <div class="flex bg-gray-100 border-b border-gray-300">
+                                    <div class="w-8 border-r border-gray-300"></div>
+                                    <div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 border-r border-gray-300">A</div>
+                                    <div class="flex-1 text-center text-xs font-bold text-gray-500 py-1">B</div>
+                                </div>
+
+                                <table class="w-full border-collapse">
+                                    ${gridRows}
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-between items-center px-2">
+                                <span id="feedback-msg" class="text-sm font-bold text-gray-500">بانتظار الإجابة...</span>
+                                <button onclick="checkAnswer('${lessonId}')" class="bg-gray-800 hover:bg-black text-white px-6 py-2 rounded-lg font-bold text-sm shadow-md transition">تحقق</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-        }
 
-        // ==================== منطق محاكاة Excel ====================
-        function bindExcelInputs() {
-            document.querySelectorAll('.cell-input').forEach(input => {
+            // Input Mirroring logic
+            const input = document.getElementById('user-formula');
+            const mirror = document.getElementById('formula-bar-mirror');
+            if(input){
                 input.addEventListener('input', (e) => {
-                    const id = e.target.id.split('-')[1];
-                    const display = document.getElementById(`formula-display-${id}`);
-                    if (display) display.textContent = e.target.value;
+                    mirror.textContent = e.target.value;
                 });
-            });
+                input.addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter') checkAnswer(lessonId);
+                });
+            }
         }
 
-        function handleEnter(e, id) {
-            if(e.key === 'Enter') validateExcelTask(id);
-        }
-
-        function validateExcelTask(id) {
-            const T = t[appState.lang];
-            if (appState.completedExcelTasks[id]) return;
+        function checkAnswer(lessonId) {
+            const input = document.getElementById('user-formula');
+            const feedback = document.getElementById('feedback-msg');
+            const lessonData = content[state.lang].lessons[lessonId].challenge;
             
-            const input = document.getElementById(`input-${id}`);
-            const userFormula = input.value.trim().toUpperCase().replace(/\s/g, '');
-            const expected = input.dataset.expected.toUpperCase().replace(/\s/g, '');
-            const card = document.getElementById(`card-${id}`);
+            // Normalize: Remove spaces, Uppercase
+            const userVal = input.value.replace(/\s/g, '').toUpperCase();
+            const validAnswers = lessonData.valid.map(v => v.replace(/\s/g, '').toUpperCase());
 
-            if (userFormula === expected) {
-                const result = calculateRealResult(id);
-                const overlay = document.getElementById(`result-overlay-${id}`);
-                overlay.textContent = result;
-                overlay.classList.remove('hidden');
-                overlay.classList.add('animate-fade-in');
-
+            if (validAnswers.includes(userVal)) {
+                // Success
+                input.classList.remove('error');
+                input.style.backgroundColor = '#dcfce7';
+                input.style.color = '#15803d';
                 input.disabled = true;
-                const btn = document.getElementById(`btn-${id}`);
-                btn.className = "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 px-6 py-2 rounded-lg font-bold cursor-default flex items-center gap-2";
-                btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${T.doneBtn}`;
                 
-                appState.completedExcelTasks[id] = true;
+                feedback.textContent = "كفو! إجابة صحيحة ✅";
+                feedback.className = "text-sm font-bold text-green-600";
                 
-                confetti({
-                    particleCount: 30,
-                    spread: 60,
-                    origin: { y: 0.7 },
-                    colors: ['#107c41', '#fbbf24']
-                });
+                state.completed.add(lessonId);
+                updateProgress();
+                confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
+                showToast("إجابة صحيحة! استمر", "success");
 
-                showToast(T.toastSuccess, 'success');
-                checkAllExcelTasksCompleted();
-                
+                // Determine Next Step
+                const keys = Object.keys(content[state.lang].lessons);
+                const currIdx = keys.indexOf(lessonId);
+                if (currIdx < keys.length - 1) {
+                    setTimeout(() => renderPage(keys[currIdx + 1]), 1500);
+                } else {
+                    setTimeout(() => renderPage('quiz'), 1500);
+                }
+
             } else {
-                card.classList.add('animate-shake');
-                input.classList.add('bg-red-50', 'text-red-600', 'dark:bg-red-900', 'dark:text-red-300');
-                showToast(T.toastError, 'error');
-                
-                setTimeout(() => {
-                    card.classList.remove('animate-shake');
-                    input.classList.remove('bg-red-50', 'text-red-600', 'dark:bg-red-900', 'dark:text-red-300');
-                    if (!appState.completedExcelTasks[id]) input.focus();
-                }, 1000);
+                // Error
+                input.classList.add('error');
+                input.classList.add('animate-shake');
+                setTimeout(() => input.classList.remove('animate-shake'), 500);
+                feedback.textContent = "خطأ.. تأكد من الصيغة ❌";
+                feedback.className = "text-sm font-bold text-red-600";
+                showToast("خطأ في المعادلة", "error");
             }
         }
 
-        function calculateRealResult(id) {
-            const rangeIds = [1, 2, 3, 4];
-            const values = rangeIds.map(idx => {
-                const val = document.getElementById(`${id}-B${idx}`)?.textContent;
-                return parseFloat(val) || 0;
-            });
-
-            if (id === 'sum') return values.reduce((a, b) => a + b, 0);
-            if (id === 'avg') return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
-            if (id === 'max') return Math.max(...values);
-            if (id === 'min') return Math.min(...values);
-            return 'Err';
-        }
-
-        function checkAllExcelTasksCompleted() {
-            const T = t[appState.lang];
-            const allCompleted = Object.values(appState.completedExcelTasks).every(v => v);
-            if (allCompleted) {
-                const completeSection = document.getElementById('aggregate-complete-section');
-                completeSection.classList.remove('opacity-50', 'pointer-events-none', 'grayscale');
-                completeSection.classList.add('animate-bounce-short');
-                
-                const btn = completeSection.querySelector('button');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                
-                showToast(T.allDone, 'success');
-            }
-        }
-
-        function completeAggregateSection() {
-            const T = t[appState.lang];
-            if (Object.values(appState.completedExcelTasks).every(v => v)) {
-                completeSection('aggregate_funcs');
-            } else {
-                showToast(T.mustComplete, 'error');
-            }
-        }
-
-       function renderFinalQuiz() {
-            const T = t[appState.lang];
-            const userName = appState.userName || 'المتدرب';
-            const arrowIcon = appState.lang === 'ar' ? 'arrow-right' : 'arrow-left';
-            const questions = T.questions; // جلب الأسئلة حسب اللغة
-            
-            return `
-                <div class="text-center max-w-3xl mx-auto py-8">
-                    <div class="mb-10">
-                        <div class="inline-block p-4 rounded-full bg-x-light dark:bg-gray-700 mb-4">
-                            <i data-lucide="award" class="w-12 h-12 text-x-secondary"></i>
-                        </div>
-                        <h2 class="text-3xl font-black mb-2 text-x-primary">${T.quizTitle}</h2>
-                        <p class="text-gray-600 dark:text-gray-300">${userName}${T.quizSub}</p>
-                    </div>
-                    
-                    <div id="final-quiz-container" class="space-y-6 ${appState.lang === 'ar' ? 'text-right' : 'text-left'} mb-10">
-                        ${questions.map((q, idx) => finalQ(idx, q.text, q.options, q.correct)).join('')}
+        function renderQuiz(container, data) {
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto py-8">
+                    <div class="text-center mb-10">
+                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block">المرحلة الأخيرة</span>
+                        <h2 class="text-4xl font-black text-gray-900">${data.title}</h2>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button id="submit-final-quiz" class="bg-x-secondary hover:bg-yellow-500 text-gray-900 text-xl font-bold py-4 px-8 rounded-xl shadow-lg transition transform hover:scale-105">
-                            <i data-lucide="send" class="inline w-5 h-5 ml-2"></i> ${T.submitQuiz}
-                        </button>
-                        <button onclick="renderContent('aggregate_funcs')" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white text-xl font-bold py-4 px-8 rounded-xl shadow-lg transition">
-                            <i data-lucide="${arrowIcon}" class="inline w-5 h-5 ml-2"></i> ${T.review}
-                        </button>
-                    </div>
-                    
-                    <div id="certificate-btn-container" class="hidden mt-10 animate-bounce-short">
-                         <button id="certificate-btn" class="bg-x-primary hover:bg-teal-700 text-white text-2xl font-bold py-5 px-12 rounded-2xl shadow-xl transition transform hover:scale-105">
-                            <i data-lucide="award" class="inline w-8 h-8 ml-3"></i> ${T.getCert}
-                        </button>
-                        <p class="text-gray-500 dark:text-gray-400 mt-4">${userName}, ${T.congrats} </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function finalQ(idx, text, options, correct) {
-            const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
-            const textAlign = appState.lang === 'ar' ? 'text-right' : 'text-left';
-            
-            return `
-                <div class="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-600 quiz-card hover:border-x-primary transition-colors">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-8 rounded-full bg-x-primary text-white flex items-center justify-center font-bold ${appState.lang === 'ar' ? 'ml-3' : 'mr-3'}">${idx+1}</div>
-                        <p class="font-bold text-lg dark:text-white flex-grow">${text}</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        ${shuffledOptions.map(opt => `
-                            <label class="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg cursor-pointer hover:bg-teal-50 dark:hover:bg-gray-700 transition border-2 border-transparent hover:border-x-primary">
-                                <input type="radio" name="fq-${idx}" value="${opt}" data-correct="${correct}" class="w-5 h-5 text-x-primary focus:ring-x-primary">
-                                <span class="${appState.lang === 'ar' ? 'mr-4' : 'ml-4'} font-medium dark:text-gray-200 ${textAlign} w-full">${opt}</span>
-                            </label>
+                    <div class="space-y-6">
+                        ${data.q_list.map((q, i) => `
+                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                                <p class="font-bold text-lg text-gray-800 mb-4">${i+1}. ${q.q}</p>
+                                <div class="grid grid-cols-1 gap-3">
+                                    ${q.options.map(opt => `
+                                        <label class="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-x-primary hover:bg-green-50 transition-all group">
+                                            <input type="radio" name="q${i}" value="${opt}" class="w-5 h-5 accent-x-primary group-hover:scale-110 transition">
+                                            <span class="text-gray-600 font-medium group-hover:text-x-primary">${opt}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>
                         `).join('')}
                     </div>
+
+                    <button onclick="submitQuiz()" class="w-full mt-10 bg-x-primary hover:bg-x-dark text-white font-bold py-5 rounded-2xl shadow-xl text-xl transition transform hover:-translate-y-1">
+                        ${data.btn}
+                    </button>
                 </div>
             `;
         }
 
-        function submitFinalQuiz() {
-            const T = t[appState.lang];
-            let correct = 0;
-            let total = 8;
-            let inputs = document.querySelectorAll('input[name^="fq-"]:checked');
-            
-            if (inputs.length < total) {
-                showToast(`(${inputs.length}/${total})`, 'info');
-                return;
-            }
+        function submitQuiz() {
+            const data = content[state.lang].quiz.q_list;
+            let correctCount = 0;
 
-            inputs.forEach(inp => {
-                if (inp.value === inp.dataset.correct) correct++;
+            data.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if(selected && selected.value === q.a) correctCount++;
             });
 
-            const score = Math.round((correct / total) * 100);
-            const userName = appState.userName || 'المتدرب';
-            
-            if (score >= 75) {
-                appState.quizScore = score;
-                showToast(`${T.passMsg} ${score}%`, 'success');
-                triggerConfettiCelebration();
-                document.getElementById('certificate-btn-container').classList.remove('hidden');
-                document.getElementById('submit-final-quiz').classList.add('hidden');
-                completeSection('final_quiz');
+            if (correctCount === data.length) {
+                state.completed.add('quiz');
+                updateProgress();
+                confetti({ particleCount: 300, spread: 180 });
+                
+                // Show Certificate Modal
+                const today = new Date().toLocaleDateString('en-GB');
+                document.getElementById('cert-date').textContent = today;
+                document.getElementById('cert-modal').classList.remove('hidden');
+                document.getElementById('cert-modal').classList.add('flex');
             } else {
-                showToast(`${T.failMsg} ${score}%`, 'error');
-                const container = document.getElementById('final-quiz-container');
-                container.classList.add('animate-shake');
-                setTimeout(() => {
-                    container.classList.remove('animate-shake');
-                    document.querySelectorAll('input[name^="fq-"]').forEach(el => el.checked = false);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }, 1000);
+                showToast(`حصلت على ${correctCount} من ${data.length}. حاول مرة أخرى!`, 'error');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        function triggerConfettiCelebration() {
-            const duration = 3000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-            
-            const interval = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                const particleCount = 50 * (timeLeft / duration);
-                confetti({ ...defaults, particleCount, origin: { x: Math.random() * 0.5 + 0.25, y: Math.random() * 0.5 } });
-            }, 250);
-            
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6 },
-                colors: ['#099999', '#fbbf24', '#107c41', '#ffffff']
+        function downloadCert() {
+            const el = document.getElementById('cert-canvas');
+            html2canvas(el, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Certificate_${state.user}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
             });
         }
 
-        // ==================== نظام الشهادة ====================
-        function generateCertificate() {
-            let name = appState.userName || 'المتدرب';
-            document.getElementById('cert-name').textContent = name;
-            document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-GB');
-            document.getElementById('cert-id').textContent = `${Date.now().toString().slice(-6)}`;
-
-            const modal = document.getElementById('certificate-modal');
-            modal.style.display = 'flex';
-            if (typeof triggerConfettiCelebration === 'function') triggerConfettiCelebration();
-        }
-
-        async function printCertificate() {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById('certificate-modal'); 
-            const buttons = element.querySelectorAll('button');
-            buttons.forEach(btn => btn.style.display = 'none');
-
-            try {
-                const canvas = await html2canvas(element.querySelector('.bg-white'), { scale: 2, useCORS: true });
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 297; 
-                const pageHeight = (canvas.height * imgWidth) / canvas.width;
-                const pdf = new jsPDF({ orientation: 'l', unit: 'mm', format: [imgWidth, pageHeight] });
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, pageHeight);
-                pdf.save(`Certificate-${document.getElementById('cert-name').textContent}.pdf`);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                buttons.forEach(btn => btn.style.display = '');
-            }
-        }
-        
-        function completeSection(sectionId) {
-            appState.completedSections.add(sectionId);
-            updateProgress();
-            
-            const nextSection = sections[sectionId].next;
-            if (nextSection) {
-                setTimeout(() => {
-                    renderContent(nextSection);
-                }, 1500);
-            }
-        }
-
-        function skipToExcelSimulation() {
-            renderContent('aggregate_funcs');
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            let icon = 'info';
-            if (type === 'success') icon = 'check-circle';
-            if (type === 'error') icon = 'alert-triangle';
-            if (type === 'info') icon = 'info';
-
-            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i><span>${message}</span>`;
-            container.appendChild(toast);
+        function showToast(msg, type) {
+            const box = document.getElementById('toast-box');
+            box.innerHTML = type === 'success' 
+                ? `<i data-lucide="check-circle" class="w-5"></i> ${msg}`
+                : `<i data-lucide="alert-triangle" class="w-5"></i> ${msg}`;
+            box.className = `toast ${type} show`;
             lucide.createIcons();
-            requestAnimationFrame(() => toast.classList.add('show'));
+            
             setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
+                box.classList.remove('show');
             }, 3000);
         }
 
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'submit-final-quiz' || e.target.closest('#submit-final-quiz')) submitFinalQuiz();
-            if (e.target.id === 'certificate-btn' || e.target.closest('#certificate-btn')) generateCertificate();
-        });
+        // Initialize App
+        window.onload = init;
+
     </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
