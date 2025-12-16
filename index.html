@@ -16,11 +16,13 @@
             theme: {
                 extend: {
                     colors: {
-                        'x-primary': '#107c41',      /* لون إكسل الرسمي */
+                        'x-primary': '#107c41',       /* لون إكسل الرسمي */
                         'x-dark': '#0b5c30',
-                        'x-accent': '#fbbf24',       /* لون ذهبي */
+                        'x-accent': '#fbbf24',        /* لون ذهبي */
                         'bg-soft': '#f8fafc',
-                        'grid-line': '#e2e8f0'
+                        'grid-line': '#e2e8f0',
+                        'male-blue': '#3b82f6',
+                        'female-pink': '#ec4899'
                     },
                     fontFamily: { sans: ['Tajawal', 'sans-serif'] },
                     animation: {
@@ -61,7 +63,6 @@
             justify-content: center;
             min-height: 40px;
             position: relative;
-            /* منع انكماش الخلايا على الموبايل */
             white-space: nowrap; 
         }
         .excel-header {
@@ -86,7 +87,7 @@
             color: #166534;
             box-shadow: 0 0 0 4px rgba(16, 124, 65, 0.1);
             z-index: 10;
-            font-size: 16px; /* يمنع الزووم في الآيفون */
+            font-size: 16px;
         }
         .formula-input.error {
             border-color: #ef4444;
@@ -110,23 +111,69 @@
         .toast.error { border-right: 6px solid #ef4444; color: #991b1b; }
 
         .active-nav { background-color: #107c41; color: white; box-shadow: 0 4px 12px rgba(16, 124, 65, 0.3); }
-        .code-block { font-family: 'Consolas', monospace; direction: ltr; background: #f1f5f9; padding: 2px 6px; rounded: 4px; color: #0f172a; border: 1px solid #cbd5e1; }
+        
+        /* Gender Selection Styles */
+        .gender-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .gender-option.selected {
+            transform: scale(1.05);
+            background-color: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .gender-option:hover { transform: translateY(-3px); }
+        
+        /* Male Selected */
+        .gender-option[data-type="male"].selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .gender-option[data-type="male"].selected i { color: #3b82f6; }
+
+        /* Female Selected */
+        .gender-option[data-type="female"].selected {
+            border-color: #ec4899;
+            background-color: #fdf2f8;
+        }
+        .gender-option[data-type="female"].selected i { color: #ec4899; }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col pb-6">
 
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
-        <div class="bg-white p-6 md:p-10 rounded-3xl shadow-2xl max-w-md w-full text-center animate-pop relative overflow-hidden">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center animate-pop relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-x-primary to-x-accent"></div>
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary shadow-sm">
-                <i data-lucide="user-check" class="w-8 h-8 md:w-10 md:h-10"></i>
-            </div>
-            <h2 class="text-2xl md:text-3xl font-black text-gray-800 mb-2">حياك الله يا معلم!</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed text-sm md:text-base">عشان نبلش شغل المعلمين ونطلعلك شهادة مرتبة آخر الدورة، اكتب اسمك الحلو.</p>
-            <form id="login-form" class="space-y-4">
-                <input type="text" id="username-input" class="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-center font-bold text-lg focus:border-x-primary focus:bg-white focus:ring-4 focus:ring-green-50 outline-none transition-all" placeholder="الاسم هنا..." required autocomplete="off">
+            
+            <h2 class="text-2xl md:text-3xl font-black text-gray-800 mb-2 mt-4">أهلاً بك في X Academy</h2>
+            <p class="text-gray-500 mb-6 text-sm">من فضلك اختر شخصيتك وابدأ الرحلة</p>
+
+            <form id="login-form" class="space-y-6">
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="gender-option selected bg-gray-50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group" data-type="male" onclick="selectGender('male')">
+                        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 group-hover:bg-blue-200 transition">
+                            <i data-lucide="user" class="w-8 h-8"></i>
+                        </div>
+                        <span class="font-bold text-gray-600 group-hover:text-blue-600">شب</span>
+                    </div>
+
+                    <div class="gender-option bg-gray-50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group" data-type="female" onclick="selectGender('female')">
+                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-pink-500 group-hover:bg-pink-200 transition">
+                            <i data-lucide="user-circle" class="w-8 h-8"></i>
+                        </div>
+                        <span class="font-bold text-gray-600 group-hover:text-pink-600">صبية</span>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <input type="text" id="username-input" class="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-center font-bold text-lg focus:border-x-primary focus:bg-white focus:ring-4 focus:ring-green-50 outline-none transition-all" placeholder="الاسم الكريم..." required autocomplete="off">
+                </div>
+
                 <button type="submit" class="w-full bg-x-primary hover:bg-x-dark text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                    <span>يلا نبلش الرحلة</span> <i data-lucide="arrow-left"></i>
+                    <span id="start-btn-text">يلا نبلش الرحلة</span> <i data-lucide="arrow-left"></i>
                 </button>
             </form>
         </div>
@@ -211,7 +258,7 @@
                     <p class="text-lg md:text-2xl text-gray-700 mb-4">نشهد بأن</p>
                     <div id="cert-user-name" class="text-3xl md:text-6xl font-black text-gray-900 mb-6 md:mb-8 pb-4 border-b-4 border-x-accent inline-block px-4 md:px-10">اسم الطالب</div>
                     
-                    <p class="text-sm md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8 md:mb-12">
+                    <p id="cert-text-body" class="text-sm md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8 md:mb-12">
                         قد أتم بنجاح كافة متطلبات الدورة التدريبية المتخصصة في المعادلات، المنطق الشرطي، معالجة النصوص، والتحليل الرقمي.
                     </p>
 
@@ -243,204 +290,318 @@
         // --- State Management ---
         const state = {
             lang: 'ar',
+            gender: 'male', // Default
             user: null,
             currentView: 'home',
             completed: new Set(),
             score: 0
         };
 
-        // --- Data Content (The "Full Fat" Content) ---
-        const content = {
-            ar: {
-                nav: {
-                    home: 'الرئيسية',
-                    math: '1. العمليات الحسابية',
-                    logic: '2. المنطق الشرطي (IF)',
-                    text: '3. معالجة النصوص',
-                    agg: '4. التحليل والتجميع',
-                    quiz: 'الاختبار النهائي'
-                },
-                home: {
-                    title: 'دورة اساسيات الاكسل',
-                    desc: 'تعلم الإكسل الصح بالممارسة. فش عنا "ضع دائرة"، هون رح تكتب المعادلات بإيدك زي كأنك شغال عالبرنامج بالزبط.',
-                    cards: [
-                        {icon: 'cpu', t: 'محاكاة ذكية', d: 'نظام يفهم معادلاتك مهما كتبتها'},
-                        {icon: 'target', t: 'أمثلة عملية', d: 'سيناريوهات من سوق العمل'},
-                        {icon: 'award', t: 'شهادة معتمدة', d: 'تصدر فور إتمام الاختبار'}
+        // --- Data Definitions (Separated for Male/Female) ---
+        
+        // 1. Arabic Male Content
+        const ar_male = {
+            nav: {
+                home: 'الرئيسية',
+                math: '1. العمليات الحسابية',
+                logic: '2. المنطق الشرطي (IF)',
+                text: '3. معالجة النصوص',
+                agg: '4. التحليل والتجميع',
+                quiz: 'الاختبار النهائي'
+            },
+            home: {
+                greeting: 'حياك الله يا معلم!',
+                sub_greeting: 'عشان نبلش شغل المعلمين ونطلعلك شهادة مرتبة آخر الدورة، اكتب اسمك الحلو.',
+                title: 'دورة اساسيات الاكسل',
+                desc: 'تعلم الإكسل الصح بالممارسة. فش عنا "ضع دائرة"، هون رح تكتب المعادلات بإيدك زي كأنك شغال عالبرنامج بالزبط.',
+                cards: [
+                    {icon: 'cpu', t: 'محاكاة ذكية', d: 'نظام يفهم معادلاتك مهما كتبتها'},
+                    {icon: 'target', t: 'أمثلة عملية', d: 'سيناريوهات من سوق العمل'},
+                    {icon: 'award', t: 'شهادة معتمدة', d: 'تصدر فور إتمام الاختبار'}
+                ],
+                btn: 'ابدأ الدرس الأول'
+            },
+            lessons: {
+                math: {
+                    title: 'الدرس الأول: العمليات الحسابية والأولويات',
+                    desc: 'أساس الإكسل هو الرياضيات. أهم قاعدة: "الضرب والقسمة أقوى من الجمع والطرح".',
+                    examples: [
+                        { code: '=5+10', txt: 'جمع بسيط' },
+                        { code: '=A1*B1', txt: 'ضرب قيم خليتين (دائماً استخدم أسماء الخلايا)' },
+                        { code: '=(10+2)*5', txt: 'الأقواس تجبر الإكسل يجمع أولاً (12) ثم يضرب بـ 5 = 60' },
+                        { code: '=10+2*5', txt: 'بدون أقواس، الضرب أولاً (10) ثم الجمع = 20' }
                     ],
-                    btn: 'ابدأ الدرس الأول'
-                },
-                lessons: {
-                    math: {
-                        title: 'الدرس الأول: العمليات الحسابية والأولويات',
-                        desc: 'أساس الإكسل هو الرياضيات. أهم قاعدة: "الضرب والقسمة أقوى من الجمع والطرح".',
-                        examples: [
-                            { code: '=5+10', txt: 'جمع بسيط' },
-                            { code: '=A1*B1', txt: 'ضرب قيم خليتين (دائماً استخدم أسماء الخلايا)' },
-                            { code: '=(10+2)*5', txt: 'الأقواس تجبر الإكسل يجمع أولاً (12) ثم يضرب بـ 5 = 60' },
-                            { code: '=10+2*5', txt: 'بدون أقواس، الضرب أولاً (10) ثم الجمع = 20' }
-                        ],
-                        challenge: {
-                            q: 'لديك الراتب الأساسي (500) والعلاوة (100) والضريبة (50). احسب "صافي الراتب" في الخلية B4.',
-                            hint: 'المعادلة: (الراتب + العلاوة) - الضريبة.',
-                            data: { A1:'الراتب', B1:500, A2:'العلاوة', B2:100, A3:'الضريبة', B3:50, A4:'الصافي', B4:null },
-                            target: 'B4',
-                            valid: ['=B1+B2-B3', '=(B1+B2)-B3']
-                        }
-                    },
-                    logic: {
-                        title: 'الدرس الثاني: المنطق واتخاذ القرار (IF)',
-                        desc: 'دالة IF هي الدماغ المفكر. الهيكلية: IF(الشرط, لو تحقق, لو لم يتحقق).',
-                        examples: [
-                            { code: '=IF(A1>50,"Pass","Fail")', txt: 'إذا العلامة أكبر من 50 اكتب ناجح، غير هيك راسب' },
-                            { code: '=IF(B2="Yes",100,0)', txt: 'التعامل مع النصوص لازم يكون بين علامات اقتباس ""' },
-                            { code: '=IF(C1<0,"Negative","Positive")', txt: 'فحص الأرقام السالبة والموجبة' }
-                        ],
-                        challenge: {
-                            q: 'الموظف "سعيد" حقق مبيعات 12000. التارجت المطلوب 10000. في الخلية B3، اكتب معادلة: اذا المبيعات (B2) أكبر أو تساوي 10000، اكتب "Bonus"، غير هيك اكتب "No".',
-                            hint: 'تذكر: النصوص مثل "Bonus" لازم تكون بين " ".',
-                            data: { A1:'الموظف', B1:'سعيد', A2:'المبيعات', B2:12000, A3:'الحالة', B3:null },
-                            target: 'B3',
-                            valid: ['=IF(B2>=10000,"Bonus","No")', '=IF(B2>9999,"Bonus","No")']
-                        }
-                    },
-                    text: {
-                        title: 'الدرس الثالث: التعامل مع النصوص',
-                        desc: 'تنظيف البيانات وفصل الأسماء مهارة أساسية.',
-                        examples: [
-                            { code: '=TEXTSPLIT(A1, " ")', txt: 'فصل النص بناءً على المسافة (Space)' },
-                            { code: '=UPPER(A1)', txt: 'تحويل النص لأحرف كبيرة (إنجليزي)' },
-                            { code: '=TRIM(A1)', txt: 'إزالة المسافات الزائدة من النص' }
-                        ],
-                        challenge: {
-                            q: 'الاسم الكامل "Basel Ghanem" موجود في B1. استخدم دالة لفصل الاسم الأول في الخلية B2 بناءً على المسافة.',
-                            hint: 'استخدم دالة TEXTSPLIT والفاصل هو " " (مسافة).',
-                            data: { A1:'الاسم الكامل', B1:'Basel Ghanem', A2:'الاسم الأول', B2:null },
-                            target: 'B2',
-                            valid: ['=TEXTSPLIT(B1," ")']
-                        }
-                    },
-                    agg: {
-                        title: 'الدرس الرابع: التجميع والتحليل',
-                        desc: 'تلخيص البيانات الكبيرة برقم واحد مفيد.',
-                        examples: [
-                            { code: '=SUM(A1:A100)', txt: 'جمع كل الأرقام في العمود' },
-                            { code: '=AVERAGE(B1:B10)', txt: 'حساب المعدل (الوسط الحسابي)' },
-                            { code: '=MAX(C1:C50)', txt: 'إيجاد أكبر قيمة (أعلى راتب مثلاً)' },
-                            { code: '=COUNT(D1:D10)', txt: 'عد الخلايا التي تحتوي أرقاماً فقط' }
-                        ],
-                        challenge: {
-                            q: 'احسب مجموع المبيعات للأشهر الثلاثة (من B1 إلى B3) وضع النتيجة في B4.',
-                            hint: 'استخدم دالة SUM للنطاق.',
-                            data: { A1:'يناير', B1:150, A2:'فبراير', B2:200, A3:'مارس', B3:350, A4:'المجموع', B4:null },
-                            target: 'B4',
-                            valid: ['=SUM(B1:B3)']
-                        }
+                    challenge: {
+                        q: 'لديك الراتب الأساسي (500) والعلاوة (100) والضريبة (50). احسب "صافي الراتب" في الخلية B4.',
+                        hint: 'المعادلة: (الراتب + العلاوة) - الضريبة.',
+                        data: { A1:'الراتب', B1:500, A2:'العلاوة', B2:100, A3:'الضريبة', B3:50, A4:'الصافي', B4:null },
+                        target: 'B4',
+                        valid: ['=B1+B2-B3', '=(B1+B2)-B3']
                     }
                 },
-                quiz: {
-                    title: 'اختبار المعلمين النهائي',
-                    q_list: [
-                        { q: 'للبدء بأي معادلة في إكسل، ما هو الرمز الأول؟', options: ['/', '=', '#'], a: '=' },
-                        { q: 'أي دالة تستخدم لحساب المتوسط الحسابي؟', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
-                        { 
-  q: 'في دالة IF، كيف نكتب النصوص؟', 
-  options: ['بدون شيء', 'بين أقواس', 'بين تنصيص'], 
-  a: 'بين تنصيص' 
-},
-                        { q: 'النتيجة لـ =10+2*5 هي:', options: ['60', '20', '12'], a: '20' }
+                logic: {
+                    title: 'الدرس الثاني: المنطق واتخاذ القرار (IF)',
+                    desc: 'دالة IF هي الدماغ المفكر. الهيكلية: IF(الشرط, لو تحقق, لو لم يتحقق).',
+                    examples: [
+                        { code: '=IF(A1>50,"Pass","Fail")', txt: 'إذا العلامة أكبر من 50 اكتب ناجح، غير هيك راسب' },
+                        { code: '=IF(B2="Yes",100,0)', txt: 'التعامل مع النصوص لازم يكون بين علامات اقتباس ""' },
+                        { code: '=IF(C1<0,"Negative","Positive")', txt: 'فحص الأرقام السالبة والموجبة' }
                     ],
-                    btn: 'ابعث الإجابة'
+                    challenge: {
+                        q: 'الموظف "سعيد" حقق مبيعات 12000. التارجت المطلوب 10000. في الخلية B3، اكتب معادلة: اذا المبيعات (B2) أكبر أو تساوي 10000، اكتب "Bonus"، غير هيك اكتب "No".',
+                        hint: 'تذكر: النصوص مثل "Bonus" لازم تكون بين " ".',
+                        data: { A1:'الموظف', B1:'سعيد', A2:'المبيعات', B2:12000, A3:'الحالة', B3:null },
+                        target: 'B3',
+                        valid: ['=IF(B2>=10000,"Bonus","No")', '=IF(B2>9999,"Bonus","No")']
+                    }
+                },
+                text: {
+                    title: 'الدرس الثالث: التعامل مع النصوص',
+                    desc: 'تنظيف البيانات وفصل الأسماء مهارة أساسية.',
+                    examples: [
+                        { code: '=TEXTSPLIT(A1, " ")', txt: 'فصل النص بناءً على المسافة (Space)' },
+                        { code: '=UPPER(A1)', txt: 'تحويل النص لأحرف كبيرة (إنجليزي)' },
+                        { code: '=TRIM(A1)', txt: 'إزالة المسافات الزائدة من النص' }
+                    ],
+                    challenge: {
+                        q: 'الاسم الكامل "Basel Ghanem" موجود في B1. استخدم دالة لفصل الاسم الأول في الخلية B2 بناءً على المسافة.',
+                        hint: 'استخدم دالة TEXTSPLIT والفاصل هو " " (مسافة).',
+                        data: { A1:'الاسم الكامل', B1:'Basel Ghanem', A2:'الاسم الأول', B2:null },
+                        target: 'B2',
+                        valid: ['=TEXTSPLIT(B1," ")']
+                    }
+                },
+                agg: {
+                    title: 'الدرس الرابع: التجميع والتحليل',
+                    desc: 'تلخيص البيانات الكبيرة برقم واحد مفيد.',
+                    examples: [
+                        { code: '=SUM(A1:A100)', txt: 'جمع كل الأرقام في العمود' },
+                        { code: '=AVERAGE(B1:B10)', txt: 'حساب المعدل (الوسط الحسابي)' },
+                        { code: '=MAX(C1:C50)', txt: 'إيجاد أكبر قيمة (أعلى راتب مثلاً)' },
+                        { code: '=COUNT(D1:D10)', txt: 'عد الخلايا التي تحتوي أرقاماً فقط' }
+                    ],
+                    challenge: {
+                        q: 'احسب مجموع المبيعات للأشهر الثلاثة (من B1 إلى B3) وضع النتيجة في B4.',
+                        hint: 'استخدم دالة SUM للنطاق.',
+                        data: { A1:'يناير', B1:150, A2:'فبراير', B2:200, A3:'مارس', B3:350, A4:'المجموع', B4:null },
+                        target: 'B4',
+                        valid: ['=SUM(B1:B3)']
+                    }
                 }
             },
-            en: {
-                nav: { home: 'Home', math: '1. Math Ops', logic: '2. Logic (IF)', text: '3. Text Funcs', agg: '4. Aggregation', quiz: 'Final Quiz' },
-                home: {
-                    title: 'Professional Excel Course',
-                    desc: 'Learn by doing. No multiple choice here; you type the actual formulas just like real Excel.',
-                    cards: [
-                        {icon: 'cpu', t: 'Smart Simulation', d: 'Parses your formulas dynamically'},
-                        {icon: 'target', t: 'Real Examples', d: 'Business scenarios'},
-                        {icon: 'award', t: 'Certificate', d: 'Instant certification upon completion'}
+            quiz: {
+                title: 'اختبار المعلمين النهائي',
+                q_list: [
+                    { q: 'للبدء بأي معادلة في إكسل، ما هو الرمز الأول؟', options: ['/', '=', '#'], a: '=' },
+                    { q: 'أي دالة تستخدم لحساب المتوسط الحسابي؟', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
+                    { q: 'في دالة IF، كيف نكتب النصوص؟', options: ['بدون شيء', 'بين أقواس', 'بين تنصيص'], a: 'بين تنصيص' },
+                    { q: 'النتيجة لـ =10+2*5 هي:', options: ['60', '20', '12'], a: '20' }
+                ],
+                btn: 'ابعث الإجابة'
+            },
+            cert_body: 'قد أتم بنجاح كافة متطلبات الدورة التدريبية المتخصصة في المعادلات، المنطق الشرطي، معالجة النصوص، والتحليل الرقمي.'
+        };
+
+        // 2. Arabic Female Content (Customized for Female)
+        const ar_female = {
+            nav: {
+                home: 'الرئيسية',
+                math: '1. العمليات الحسابية',
+                logic: '2. المنطق الشرطي (IF)',
+                text: '3. معالجة النصوص',
+                agg: '4. التحليل والتجميع',
+                quiz: 'الاختبار النهائي'
+            },
+            home: {
+                greeting: 'حياك الله يا معلمة!',
+                sub_greeting: 'عشان نبلش شغل المحترفات ونطلعلك شهادة مرتبة آخر الدورة، اكتبي اسمك الحلو.',
+                title: 'دورة اساسيات الاكسل',
+                desc: 'تعلمي الإكسل الصح بالممارسة. فش عنا "ضع دائرة"، هون رح تكتبي المعادلات بإيدك زي كأنك شغالة عالبرنامج بالزبط.',
+                cards: [
+                    {icon: 'cpu', t: 'محاكاة ذكية', d: 'نظام يفهم معادلاتك مهما كتبتيها'},
+                    {icon: 'target', t: 'أمثلة عملية', d: 'سيناريوهات من سوق العمل'},
+                    {icon: 'award', t: 'شهادة معتمدة', d: 'تصدر فور إتمام الاختبار'}
+                ],
+                btn: 'ابدئي الدرس الأول'
+            },
+            lessons: {
+                math: {
+                    title: 'الدرس الأول: العمليات الحسابية والأولويات',
+                    desc: 'أساس الإكسل هو الرياضيات. أهم قاعدة: "الضرب والقسمة أقوى من الجمع والطرح".',
+                    examples: [
+                        { code: '=5+10', txt: 'جمع بسيط' },
+                        { code: '=A1*B1', txt: 'ضرب قيم خليتين (دائماً استخدمي أسماء الخلايا)' },
+                        { code: '=(10+2)*5', txt: 'الأقواس تجبر الإكسل يجمع أولاً (12) ثم يضرب بـ 5 = 60' },
+                        { code: '=10+2*5', txt: 'بدون أقواس، الضرب أولاً (10) ثم الجمع = 20' }
                     ],
-                    btn: 'Start First Lesson'
-                },
-                lessons: {
-                    math: {
-                        title: 'Lesson 1: Math & Order of Ops',
-                        desc: 'Multiplication/Division happen before Addition/Subtraction.',
-                        examples: [
-                            { code: '=5+10', txt: 'Simple Add' },
-                            { code: '=A1*B1', txt: 'Multiply Cells (Best Practice)' },
-                            { code: '=(10+2)*5', txt: 'Parentheses first: 12*5 = 60' },
-                            { code: '=10+2*5', txt: 'Mult first: 10+10 = 20' }
-                        ],
-                        challenge: {
-                            q: 'Calculate Net Salary in B4: (Salary + Bonus) - Tax.',
-                            hint: 'Formula: (B1 + B2) - B3',
-                            data: { A1:'Salary', B1:500, A2:'Bonus', B2:100, A3:'Tax', B3:50, A4:'Net', B4:null },
-                            target: 'B4',
-                            valid: ['=B1+B2-B3', '=(B1+B2)-B3']
-                        }
-                    },
-                    logic: {
-                        title: 'Lesson 2: Logic (IF)',
-                        desc: 'IF(Condition, Value if True, Value if False).',
-                        examples: [
-                            { code: '=IF(A1>50,"Pass","Fail")', txt: 'Pass if > 50' },
-                            { code: '=IF(B2="Yes",100,0)', txt: 'Text must be in quotes' }
-                        ],
-                        challenge: {
-                            q: 'Target is 10000. If Sales (B2) >= 10000, write "Bonus", else "No" in B3.',
-                            hint: 'Remember quotes for "Bonus".',
-                            data: { A1:'Emp', B1:'John', A2:'Sales', B2:12000, A3:'Status', B3:null },
-                            target: 'B3',
-                            valid: ['=IF(B2>=10000,"Bonus","No")']
-                        }
-                    },
-                    text: {
-                        title: 'Lesson 3: Text Functions',
-                        desc: 'Cleaning and splitting text.',
-                        examples: [
-                            { code: '=TEXTSPLIT(A1, " ")', txt: 'Split by space' },
-                            { code: '=UPPER(A1)', txt: 'Convert to uppercase' }
-                        ],
-                        challenge: {
-                            q: 'Split the full name in B1 using the space delimiter into B2.',
-                            hint: 'Use TEXTSPLIT function.',
-                            data: { A1:'Full Name', B1:'Basel Ghanem', A2:'First Name', B2:null },
-                            target: 'B2',
-                            valid: ['=TEXTSPLIT(B1," ")']
-                        }
-                    },
-                    agg: {
-                        title: 'Lesson 4: Aggregation',
-                        desc: 'Summarizing data.',
-                        examples: [
-                            { code: '=SUM(A1:A10)', txt: 'Sum range' },
-                            { code: '=AVERAGE(B1:B10)', txt: 'Average' },
-                            { code: '=MAX(C1:C10)', txt: 'Max value' }
-                        ],
-                        challenge: {
-                            q: 'Sum the values from B1 to B3 into B4.',
-                            hint: 'Use SUM function.',
-                            data: { A1:'Jan', B1:150, A2:'Feb', B2:200, A3:'Mar', B3:350, A4:'Total', B4:null },
-                            target: 'B4',
-                            valid: ['=SUM(B1:B3)']
-                        }
+                    challenge: {
+                        q: 'لديك الراتب الأساسي (500) والعلاوة (100) والضريبة (50). احسبي "صافي الراتب" في الخلية B4.',
+                        hint: 'المعادلة: (الراتب + العلاوة) - الضريبة.',
+                        data: { A1:'الراتب', B1:500, A2:'العلاوة', B2:100, A3:'الضريبة', B3:50, A4:'الصافي', B4:null },
+                        target: 'B4',
+                        valid: ['=B1+B2-B3', '=(B1+B2)-B3']
                     }
                 },
-                quiz: {
-                    title: 'Final Quiz',
-                    q_list: [
-                        { q: 'Formulas start with:', options: ['+', '=', '#'], a: '=' },
-                        { q: 'Function for average:', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
-                        { q: 'Text in formulas needs:', options: ['Nothing', 'Brackets', 'Quotes ""'], a: 'Quotes ""' },
-                        { q: 'Result of =10+2*5:', options: ['60', '20', '12'], a: '20' }
+                logic: {
+                    title: 'الدرس الثاني: المنطق واتخاذ القرار (IF)',
+                    desc: 'دالة IF هي الدماغ المفكر. الهيكلية: IF(الشرط, لو تحقق, لو لم يتحقق).',
+                    examples: [
+                        { code: '=IF(A1>50,"Pass","Fail")', txt: 'إذا العلامة أكبر من 50 اكتبي ناجح، غير هيك راسب' },
+                        { code: '=IF(B2="Yes",100,0)', txt: 'التعامل مع النصوص لازم يكون بين علامات اقتباس ""' },
+                        { code: '=IF(C1<0,"Negative","Positive")', txt: 'فحص الأرقام السالبة والموجبة' }
                     ],
-                    btn: 'Submit Answers'
+                    challenge: {
+                        q: 'الموظفة "سعاد" حققت مبيعات 12000. التارجت المطلوب 10000. في الخلية B3، اكتبي معادلة: اذا المبيعات (B2) أكبر أو تساوي 10000، اكتبي "Bonus"، غير هيك اكتبي "No".',
+                        hint: 'تذكري: النصوص مثل "Bonus" لازم تكون بين " ".',
+                        data: { A1:'الموظفة', B1:'سعاد', A2:'المبيعات', B2:12000, A3:'الحالة', B3:null },
+                        target: 'B3',
+                        valid: ['=IF(B2>=10000,"Bonus","No")', '=IF(B2>9999,"Bonus","No")']
+                    }
+                },
+                text: {
+                    title: 'الدرس الثالث: التعامل مع النصوص',
+                    desc: 'تنظيف البيانات وفصل الأسماء مهارة أساسية.',
+                    examples: [
+                        { code: '=TEXTSPLIT(A1, " ")', txt: 'فصل النص بناءً على المسافة (Space)' },
+                        { code: '=UPPER(A1)', txt: 'تحويل النص لأحرف كبيرة (إنجليزي)' },
+                        { code: '=TRIM(A1)', txt: 'إزالة المسافات الزائدة من النص' }
+                    ],
+                    challenge: {
+                        q: 'الاسم الكامل "Huda AlMajali" موجود في B1. استخدمي دالة لفصل الاسم الأول في الخلية B2 بناءً على المسافة.',
+                        hint: 'استخدمي دالة TEXTSPLIT والفاصل هو " " (مسافة).',
+                        data: { A1:'الاسم الكامل', B1:'Huda AlMajali', A2:'الاسم الأول', B2:null },
+                        target: 'B2',
+                        valid: ['=TEXTSPLIT(B1," ")']
+                    }
+                },
+                agg: {
+                    title: 'الدرس الرابع: التجميع والتحليل',
+                    desc: 'تلخيص البيانات الكبيرة برقم واحد مفيد.',
+                    examples: [
+                        { code: '=SUM(A1:A100)', txt: 'جمع كل الأرقام في العمود' },
+                        { code: '=AVERAGE(B1:B10)', txt: 'حساب المعدل (الوسط الحسابي)' },
+                        { code: '=MAX(C1:C50)', txt: 'إيجاد أكبر قيمة (أعلى راتب مثلاً)' },
+                        { code: '=COUNT(D1:D10)', txt: 'عد الخلايا التي تحتوي أرقاماً فقط' }
+                    ],
+                    challenge: {
+                        q: 'احسبي مجموع المبيعات للأشهر الثلاثة (من B1 إلى B3) وضعي النتيجة في B4.',
+                        hint: 'استخدمي دالة SUM للنطاق.',
+                        data: { A1:'يناير', B1:150, A2:'فبراير', B2:200, A3:'مارس', B3:350, A4:'المجموع', B4:null },
+                        target: 'B4',
+                        valid: ['=SUM(B1:B3)']
+                    }
                 }
-            }
+            },
+            quiz: {
+                title: 'اختبار المعلمات النهائي',
+                q_list: [
+                    { q: 'للبدء بأي معادلة في إكسل، ما هو الرمز الأول؟', options: ['/', '=', '#'], a: '=' },
+                    { q: 'أي دالة تستخدم لحساب المتوسط الحسابي؟', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
+                    { q: 'في دالة IF، كيف نكتب النصوص؟', options: ['بدون شيء', 'بين أقواس', 'بين تنصيص'], a: 'بين تنصيص' },
+                    { q: 'النتيجة لـ =10+2*5 هي:', options: ['60', '20', '12'], a: '20' }
+                ],
+                btn: 'ابعثي الإجابة'
+            },
+            cert_body: 'قد أتمت بنجاح كافة متطلبات الدورة التدريبية المتخصصة في المعادلات، المنطق الشرطي، معالجة النصوص، والتحليل الرقمي.'
+        };
+
+        // 3. English Content (Neutral)
+        const en_content = {
+            nav: { home: 'Home', math: '1. Math Ops', logic: '2. Logic (IF)', text: '3. Text Funcs', agg: '4. Aggregation', quiz: 'Final Quiz' },
+            home: {
+                greeting: 'Welcome Pro!',
+                sub_greeting: 'To start your journey and get certified, please enter your name.',
+                title: 'Professional Excel Course',
+                desc: 'Learn by doing. No multiple choice here; you type the actual formulas just like real Excel.',
+                cards: [
+                    {icon: 'cpu', t: 'Smart Simulation', d: 'Parses your formulas dynamically'},
+                    {icon: 'target', t: 'Real Examples', d: 'Business scenarios'},
+                    {icon: 'award', t: 'Certificate', d: 'Instant certification upon completion'}
+                ],
+                btn: 'Start First Lesson'
+            },
+            lessons: {
+                math: {
+                    title: 'Lesson 1: Math & Order of Ops',
+                    desc: 'Multiplication/Division happen before Addition/Subtraction.',
+                    examples: [
+                        { code: '=5+10', txt: 'Simple Add' },
+                        { code: '=A1*B1', txt: 'Multiply Cells (Best Practice)' },
+                        { code: '=(10+2)*5', txt: 'Parentheses first: 12*5 = 60' },
+                        { code: '=10+2*5', txt: 'Mult first: 10+10 = 20' }
+                    ],
+                    challenge: {
+                        q: 'Calculate Net Salary in B4: (Salary + Bonus) - Tax.',
+                        hint: 'Formula: (B1 + B2) - B3',
+                        data: { A1:'Salary', B1:500, A2:'Bonus', B2:100, A3:'Tax', B3:50, A4:'Net', B4:null },
+                        target: 'B4',
+                        valid: ['=B1+B2-B3', '=(B1+B2)-B3']
+                    }
+                },
+                logic: {
+                    title: 'Lesson 2: Logic (IF)',
+                    desc: 'IF(Condition, Value if True, Value if False).',
+                    examples: [
+                        { code: '=IF(A1>50,"Pass","Fail")', txt: 'Pass if > 50' },
+                        { code: '=IF(B2="Yes",100,0)', txt: 'Text must be in quotes' }
+                    ],
+                    challenge: {
+                        q: 'Target is 10000. If Sales (B2) >= 10000, write "Bonus", else "No" in B3.',
+                        hint: 'Remember quotes for "Bonus".',
+                        data: { A1:'Emp', B1:'John', A2:'Sales', B2:12000, A3:'Status', B3:null },
+                        target: 'B3',
+                        valid: ['=IF(B2>=10000,"Bonus","No")']
+                    }
+                },
+                text: {
+                    title: 'Lesson 3: Text Functions',
+                    desc: 'Cleaning and splitting text.',
+                    examples: [
+                        { code: '=TEXTSPLIT(A1, " ")', txt: 'Split by space' },
+                        { code: '=UPPER(A1)', txt: 'Convert to uppercase' }
+                    ],
+                    challenge: {
+                        q: 'Split the full name in B1 using the space delimiter into B2.',
+                        hint: 'Use TEXTSPLIT function.',
+                        data: { A1:'Full Name', B1:'Basel Ghanem', A2:'First Name', B2:null },
+                        target: 'B2',
+                        valid: ['=TEXTSPLIT(B1," ")']
+                    }
+                },
+                agg: {
+                    title: 'Lesson 4: Aggregation',
+                    desc: 'Summarizing data.',
+                    examples: [
+                        { code: '=SUM(A1:A10)', txt: 'Sum range' },
+                        { code: '=AVERAGE(B1:B10)', txt: 'Average' },
+                        { code: '=MAX(C1:C10)', txt: 'Max value' }
+                    ],
+                    challenge: {
+                        q: 'Sum the values from B1 to B3 into B4.',
+                        hint: 'Use SUM function.',
+                        data: { A1:'Jan', B1:150, A2:'Feb', B2:200, A3:'Mar', B3:350, A4:'Total', B4:null },
+                        target: 'B4',
+                        valid: ['=SUM(B1:B3)']
+                    }
+                }
+            },
+            quiz: {
+                title: 'Final Quiz',
+                q_list: [
+                    { q: 'Formulas start with:', options: ['+', '=', '#'], a: '=' },
+                    { q: 'Function for average:', options: ['SUM', 'MAX', 'AVERAGE'], a: 'AVERAGE' },
+                    { q: 'Text in formulas needs:', options: ['Nothing', 'Brackets', 'Quotes ""'], a: 'Quotes ""' },
+                    { q: 'Result of =10+2*5:', options: ['60', '20', '12'], a: '20' }
+                ],
+                btn: 'Submit Answers'
+            },
+            cert_body: 'Successfully completed the professional course requirements in Formulas, Logic, Text processing, and Data aggregation.'
+        };
+
+        // Initialize Content Holder
+        let content = {
+            ar: ar_male, // Default
+            en: en_content
         };
 
         // --- Core Functions ---
@@ -450,21 +611,70 @@
             const modal = document.getElementById('auth-modal');
             modal.style.display = 'flex';
             lucide.createIcons();
+            
+            // Set default greeting logic for modal based on default selection (male)
+            updateModalTexts();
 
             document.getElementById('login-form').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const name = document.getElementById('username-input').value.trim();
                 if(name) {
                     state.user = name;
-                    document.getElementById('header-name').textContent = name;
+                    
+                    // Finalize content based on gender selection
+                    if (state.gender === 'female') {
+                        content.ar = ar_female;
+                    } else {
+                        content.ar = ar_male;
+                    }
+
                     document.getElementById('cert-user-name').textContent = name;
+                    
+                    // --- FIX: Safely update user icon by rebuilding HTML instead of targeting <i> ---
+                    const userDisplay = document.getElementById('user-display');
+                    if(state.gender === 'female') {
+                         userDisplay.innerHTML = `<i data-lucide="user-circle" class="w-4 h-4 text-x-primary"></i> <span id="header-name" class="font-bold text-sm text-x-primary">${name}</span>`;
+                    } else {
+                         userDisplay.innerHTML = `<i data-lucide="user" class="w-4 h-4 text-x-primary"></i> <span id="header-name" class="font-bold text-sm text-x-primary">${name}</span>`;
+                    }
+                    // -------------------------------------------------------------------------------
+
                     modal.style.display = 'none';
                     renderSidebar();
                     renderPage('home');
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    lucide.createIcons(); // Re-render icons including the new user icon
                 }
             });
         }
+
+        // --- Gender Selection Logic ---
+        function selectGender(type) {
+            state.gender = type;
+            
+            // UI Update
+            document.querySelectorAll('.gender-option').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`.gender-option[data-type="${type}"]`).classList.add('selected');
+
+            // Update Modal Texts Immediately
+            updateModalTexts();
+        }
+
+        function updateModalTexts() {
+            const title = document.querySelector('#auth-modal h2');
+            const sub = document.querySelector('#auth-modal p');
+            
+            if (state.gender === 'female') {
+                title.textContent = "أهلاً بكِ في X Academy";
+                title.classList.add('text-pink-600');
+                title.classList.remove('text-gray-800');
+            } else {
+                title.textContent = "أهلاً بك في X Academy";
+                title.classList.remove('text-pink-600');
+                title.classList.add('text-gray-800');
+            }
+        }
+
 
         function toggleLang() {
             state.lang = state.lang === 'ar' ? 'en' : 'ar';
@@ -497,7 +707,6 @@
                 btn.className = `w-full px-4 py-3 rounded-xl flex items-center justify-between transition-all duration-200 group ${isActive ? 'active-nav' : 'hover:bg-gray-50 text-gray-600'}`;
                 btn.onclick = () => {
                     renderPage(item.id);
-                    // Hide menu on mobile click
                     if(window.innerWidth < 1024) {
                         document.getElementById('mobile-menu-content').classList.add('hidden');
                     }
@@ -521,13 +730,12 @@
             const pct = Math.round((current/total) * 100);
             
             document.getElementById('progress-percent').textContent = pct + '%';
-            // Circumference of radius 45% (approx 90px dia) is different, using pathLength or logic
             document.getElementById('progress-ring').style.strokeDashoffset = 301 - (301 * pct / 100);
         }
 
         function renderPage(viewId) {
             state.currentView = viewId;
-            renderSidebar(); // Update active state
+            renderSidebar(); 
             const area = document.getElementById('content-area');
             const T = content[state.lang];
 
@@ -543,6 +751,7 @@
                         <div class="inline-block p-4 bg-green-50 rounded-3xl mb-4 md:mb-6 shadow-sm">
                             <i data-lucide="sheet" class="w-12 h-12 md:w-16 md:h-16 text-x-primary"></i>
                         </div>
+                        <h2 class="text-xl font-bold text-x-primary mb-2">${H.greeting}</h2>
                         <h1 class="text-3xl md:text-5xl font-black text-gray-900 mb-4 md:mb-6">${H.title}</h1>
                         <p class="text-lg md:text-xl text-gray-500 mb-8 md:mb-12 leading-relaxed">${H.desc}</p>
                         
@@ -758,6 +967,10 @@
                 // Show Certificate Modal
                 const today = new Date().toLocaleDateString('en-GB');
                 document.getElementById('cert-date').textContent = today;
+                
+                // Update Cert Body Text based on gender
+                document.getElementById('cert-text-body').textContent = content[state.lang].cert_body;
+
                 document.getElementById('cert-modal').classList.remove('hidden');
                 document.getElementById('cert-modal').classList.add('flex');
             } else {
