@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>X Academy - Professional Excel Course</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +40,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         
         /* تنسيقات الإكسل الخاصة */
         .excel-grid {
@@ -61,6 +61,8 @@
             justify-content: center;
             min-height: 40px;
             position: relative;
+            /* منع انكماش الخلايا على الموبايل */
+            white-space: nowrap; 
         }
         .excel-header {
             background-color: #f3f4f6;
@@ -84,6 +86,7 @@
             color: #166534;
             box-shadow: 0 0 0 4px rgba(16, 124, 65, 0.1);
             z-index: 10;
+            font-size: 16px; /* يمنع الزووم في الآيفون */
         }
         .formula-input.error {
             border-color: #ef4444;
@@ -100,6 +103,7 @@
             display: flex; align-items: center; gap: 12px;
             border-radius: 12px; font-weight: bold; z-index: 9999;
             opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            width: 90%; max-width: 400px;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         .toast.success { border-right: 6px solid #107c41; color: #065f46; }
@@ -109,16 +113,16 @@
         .code-block { font-family: 'Consolas', monospace; direction: ltr; background: #f1f5f9; padding: 2px 6px; rounded: 4px; color: #0f172a; border: 1px solid #cbd5e1; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-6">
 
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
-        <div class="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full text-center animate-pop relative overflow-hidden">
+        <div class="bg-white p-6 md:p-10 rounded-3xl shadow-2xl max-w-md w-full text-center animate-pop relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-x-primary to-x-accent"></div>
-            <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary shadow-sm">
-                <i data-lucide="user-check" class="w-10 h-10"></i>
+            <div class="w-16 h-16 md:w-20 md:h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 text-x-primary shadow-sm">
+                <i data-lucide="user-check" class="w-8 h-8 md:w-10 md:h-10"></i>
             </div>
-            <h2 class="text-3xl font-black text-gray-800 mb-2">حياك الله يا معلم!</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">عشان نبلش شغل المعلمين ونطلعلك شهادة مرتبة آخر الدورة، اكتب اسمك الحلو.</p>
+            <h2 class="text-2xl md:text-3xl font-black text-gray-800 mb-2">حياك الله يا معلم!</h2>
+            <p class="text-gray-500 mb-8 leading-relaxed text-sm md:text-base">عشان نبلش شغل المعلمين ونطلعلك شهادة مرتبة آخر الدورة، اكتب اسمك الحلو.</p>
             <form id="login-form" class="space-y-4">
                 <input type="text" id="username-input" class="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-center font-bold text-lg focus:border-x-primary focus:bg-white focus:ring-4 focus:ring-green-50 outline-none transition-all" placeholder="الاسم هنا..." required autocomplete="off">
                 <button type="submit" class="w-full bg-x-primary hover:bg-x-dark text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
@@ -134,20 +138,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="renderPage('home')">
-                    <div class="bg-gradient-to-br from-x-primary to-emerald-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-lg font-black text-xl">X</div>
+                    <div class="bg-gradient-to-br from-x-primary to-emerald-600 text-white w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center shadow-lg font-black text-lg md:text-xl">X</div>
                     <div class="flex flex-col">
-                        <span class="font-black text-xl text-gray-800 tracking-tight leading-none">Academy</span>
-                        <span class="text-xs font-bold text-x-primary tracking-wide">Professional Edition</span>
+                        <span class="font-black text-lg md:text-xl text-gray-800 tracking-tight leading-none">Academy</span>
+                        <span class="text-[10px] md:text-xs font-bold text-x-primary tracking-wide">Professional Edition</span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 md:gap-4">
                     <div id="user-display" class="hidden md:flex items-center gap-2 bg-green-50 px-4 py-1.5 rounded-full border border-green-100">
                         <i data-lucide="user" class="w-4 h-4 text-x-primary"></i>
                         <span id="header-name" class="font-bold text-sm text-x-primary">زائر</span>
                     </div>
                     <button onclick="toggleLang()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-600 transition">
                         <i data-lucide="globe" class="w-4 h-4"></i> <span id="lang-btn">EN</span>
+                    </button>
+                    <button onclick="document.getElementById('mobile-menu-content').classList.toggle('hidden')" class="lg:hidden p-2 bg-gray-100 rounded-lg text-gray-600">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
@@ -157,73 +164,75 @@
     <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col lg:flex-row p-4 gap-6 mt-4">
         
         <aside class="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 h-fit lg:sticky lg:top-24 flex flex-col gap-6">
-            <div class="flex flex-col items-center justify-center relative py-2">
-                <div class="relative w-28 h-28">
-                    <svg class="w-full h-full transform -rotate-90">
-                        <circle cx="56" cy="56" r="48" fill="none" stroke="#f1f5f9" stroke-width="8"/>
-                        <circle id="progress-ring" cx="56" cy="56" r="48" fill="none" stroke="#107c41" stroke-width="8" stroke-dasharray="301" stroke-dashoffset="301" stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span id="progress-percent" class="text-2xl font-black text-gray-800">0%</span>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase">إنجاز</span>
+            <div id="mobile-menu-content" class="hidden lg:flex flex-col gap-6">
+                <div class="flex flex-col items-center justify-center relative py-2">
+                    <div class="relative w-24 h-24 md:w-28 md:h-28">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="50%" cy="50%" r="45%" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+                            <circle id="progress-ring" cx="50%" cy="50%" r="45%" fill="none" stroke="#107c41" stroke-width="8" stroke-dasharray="301" stroke-dashoffset="301" stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span id="progress-percent" class="text-2xl font-black text-gray-800">0%</span>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">إنجاز</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <nav id="nav-menu" class="space-y-2 flex-grow"></nav>
+                <nav id="nav-menu" class="space-y-2 flex-grow"></nav>
 
-            <div class="pt-4 border-t border-gray-100 text-center">
-                <p class="text-xs text-gray-400 font-medium">Developed by X Academy Team</p>
+                <div class="pt-4 border-t border-gray-100 text-center">
+                    <p class="text-xs text-gray-400 font-medium">Developed by X Academy Team</p>
+                </div>
             </div>
         </aside>
 
-        <main id="content-area" class="flex-grow bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[70vh] p-8 animate-slide-in relative overflow-hidden">
-            </main>
+        <main id="content-area" class="flex-grow bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[60vh] p-4 md:p-8 animate-slide-in relative overflow-hidden">
+        </main>
 
     </div>
 
     <div id="cert-modal" class="fixed inset-0 bg-black/80 z-[100] hidden justify-center items-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl p-1 relative shadow-2xl animate-pop">
+        <div class="bg-white rounded-2xl w-full max-w-4xl p-1 relative shadow-2xl animate-pop max-h-[90vh] overflow-y-auto">
             <button onclick="document.getElementById('cert-modal').classList.add('hidden')" class="absolute top-4 right-4 z-50 bg-gray-100 p-2 rounded-full hover:bg-red-100 hover:text-red-600 transition"><i data-lucide="x"></i></button>
             
-            <div id="cert-canvas" class="bg-white p-16 text-center border-8 border-double border-x-primary relative overflow-hidden" dir="rtl">
-                <div class="absolute top-0 left-0 w-32 h-32 bg-x-primary opacity-5 rounded-br-full"></div>
-                <div class="absolute bottom-0 right-0 w-32 h-32 bg-x-primary opacity-5 rounded-tl-full"></div>
+            <div id="cert-canvas" class="bg-white p-8 md:p-16 text-center border-8 border-double border-x-primary relative overflow-hidden" dir="rtl">
+                <div class="absolute top-0 left-0 w-24 h-24 md:w-32 md:h-32 bg-x-primary opacity-5 rounded-br-full"></div>
+                <div class="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-x-primary opacity-5 rounded-tl-full"></div>
 
                 <div class="relative z-10">
-                    <div class="flex justify-center items-center gap-3 mb-8">
-                        <div class="bg-x-primary text-white w-12 h-12 rounded-lg flex items-center justify-center font-black text-2xl shadow-md">X</div>
-                        <h2 class="text-3xl font-black text-gray-800">X Academy</h2>
+                    <div class="flex justify-center items-center gap-3 mb-6 md:mb-8">
+                        <div class="bg-x-primary text-white w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl shadow-md">X</div>
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-800">X Academy</h2>
                     </div>
 
-                    <h1 class="text-5xl font-black text-x-primary mb-4">شهادة إتمام دورة</h1>
-                    <p class="text-xl text-gray-500 font-medium mb-10">Mastering Excel Basics & Formulas</p>
+                    <h1 class="text-3xl md:text-5xl font-black text-x-primary mb-4">شهادة إتمام دورة</h1>
+                    <p class="text-sm md:text-xl text-gray-500 font-medium mb-6 md:mb-10">Mastering Excel Basics & Formulas</p>
 
-                    <p class="text-2xl text-gray-700 mb-4">نشهد بأن</p>
-                    <div id="cert-user-name" class="text-6xl font-black text-gray-900 mb-8 pb-4 border-b-4 border-x-accent inline-block px-10">اسم الطالب</div>
+                    <p class="text-lg md:text-2xl text-gray-700 mb-4">نشهد بأن</p>
+                    <div id="cert-user-name" class="text-3xl md:text-6xl font-black text-gray-900 mb-6 md:mb-8 pb-4 border-b-4 border-x-accent inline-block px-4 md:px-10">اسم الطالب</div>
                     
-                    <p class="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-12">
+                    <p class="text-sm md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8 md:mb-12">
                         قد أتم بنجاح كافة متطلبات الدورة التدريبية المتخصصة في المعادلات، المنطق الشرطي، معالجة النصوص، والتحليل الرقمي.
                     </p>
 
-                    <div class="flex justify-between items-end border-t border-gray-200 pt-8 mt-8">
+                    <div class="flex justify-between items-end border-t border-gray-200 pt-6 md:pt-8 mt-4 md:mt-8">
                         <div class="text-right">
-                            <p class="text-sm text-gray-400 font-bold mb-1">التاريخ</p>
-                            <p id="cert-date" class="text-lg font-bold text-gray-800 font-mono">2025/10/10</p>
+                            <p class="text-xs md:text-sm text-gray-400 font-bold mb-1">التاريخ</p>
+                            <p id="cert-date" class="text-sm md:text-lg font-bold text-gray-800 font-mono">2025/10/10</p>
                         </div>
                         <div class="flex gap-2">
-                             <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><i data-lucide="award" class="w-8 h-8"></i></div>
+                             <div class="w-12 h-12 md:w-16 md:h-16 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600"><i data-lucide="award" class="w-6 h-6 md:w-8 md:h-8"></i></div>
                         </div>
                         <div class="text-left">
-                            <p class="text-sm text-gray-400 font-bold mb-1">المدرب</p>
-                            <p class="text-lg font-bold text-gray-800 font-mono">Basel Ghanem</p>
+                            <p class="text-xs md:text-sm text-gray-400 font-bold mb-1">المدرب</p>
+                            <p class="text-sm md:text-lg font-bold text-gray-800 font-mono">Basel Ghanem</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="p-4 bg-gray-50 rounded-b-2xl flex justify-center gap-4">
-                <button onclick="downloadCert()" class="bg-x-primary hover:bg-x-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2 transition">
+                <button onclick="downloadCert()" class="bg-x-primary hover:bg-x-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2 transition w-full md:w-auto justify-center">
                     <i data-lucide="download"></i> تحميل الشهادة 
                 </button>
             </div>
@@ -253,7 +262,7 @@
                 },
                 home: {
                     title: 'دورة اساسيات الاكسل',
-                    desc: 'تعلم الإكسل الصح بالممارسة. فش عنا 'ضع دائرة'، هون رح تكتب المعادلات بإيدك زي كأنك شغال عالبرنامج بالزبط.',
+                    desc: 'تعلم الإكسل الصح بالممارسة. فش عنا "ضع دائرة"، هون رح تكتب المعادلات بإيدك زي كأنك شغال عالبرنامج بالزبط.',
                     cards: [
                         {icon: 'cpu', t: 'محاكاة ذكية', d: 'نظام يفهم معادلاتك مهما كتبتها'},
                         {icon: 'target', t: 'أمثلة عملية', d: 'سيناريوهات من سوق العمل'},
@@ -338,8 +347,7 @@
   q: 'في دالة IF، كيف نكتب النصوص؟', 
   options: ['بدون شيء', 'بين أقواس', 'بين تنصيص'], 
   a: 'بين تنصيص' 
-}
-,
+},
                         { q: 'النتيجة لـ =10+2*5 هي:', options: ['60', '20', '12'], a: '20' }
                     ],
                     btn: 'ابعث الإجابة'
@@ -487,7 +495,13 @@
                 
                 const btn = document.createElement('button');
                 btn.className = `w-full px-4 py-3 rounded-xl flex items-center justify-between transition-all duration-200 group ${isActive ? 'active-nav' : 'hover:bg-gray-50 text-gray-600'}`;
-                btn.onclick = () => renderPage(item.id);
+                btn.onclick = () => {
+                    renderPage(item.id);
+                    // Hide menu on mobile click
+                    if(window.innerWidth < 1024) {
+                        document.getElementById('mobile-menu-content').classList.add('hidden');
+                    }
+                };
                 btn.innerHTML = `
                     <div class="flex items-center gap-3">
                         <i data-lucide="${item.icon}" class="w-5 h-5"></i>
@@ -507,7 +521,7 @@
             const pct = Math.round((current/total) * 100);
             
             document.getElementById('progress-percent').textContent = pct + '%';
-            // Circumference of radius 48 is ~301
+            // Circumference of radius 45% (approx 90px dia) is different, using pathLength or logic
             document.getElementById('progress-ring').style.strokeDashoffset = 301 - (301 * pct / 100);
         }
 
@@ -525,24 +539,24 @@
             if (viewId === 'home') {
                 const H = T.home;
                 area.innerHTML = `
-                    <div class="text-center max-w-3xl mx-auto py-10">
-                        <div class="inline-block p-4 bg-green-50 rounded-3xl mb-6 shadow-sm">
-                            <i data-lucide="sheet" class="w-16 h-16 text-x-primary"></i>
+                    <div class="text-center max-w-3xl mx-auto py-6 md:py-10">
+                        <div class="inline-block p-4 bg-green-50 rounded-3xl mb-4 md:mb-6 shadow-sm">
+                            <i data-lucide="sheet" class="w-12 h-12 md:w-16 md:h-16 text-x-primary"></i>
                         </div>
-                        <h1 class="text-5xl font-black text-gray-900 mb-6">${H.title}</h1>
-                        <p class="text-xl text-gray-500 mb-12 leading-relaxed">${H.desc}</p>
+                        <h1 class="text-3xl md:text-5xl font-black text-gray-900 mb-4 md:mb-6">${H.title}</h1>
+                        <p class="text-lg md:text-xl text-gray-500 mb-8 md:mb-12 leading-relaxed">${H.desc}</p>
                         
-                        <div class="grid md:grid-cols-3 gap-6 mb-12 text-start">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 text-start">
                             ${H.cards.map(c => `
-                                <div class="p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-green-200 hover:shadow-md transition">
-                                    <i data-lucide="${c.icon}" class="w-8 h-8 text-x-primary mb-3"></i>
-                                    <h3 class="font-bold text-lg text-gray-800 mb-1">${c.t}</h3>
-                                    <p class="text-sm text-gray-500">${c.d}</p>
+                                <div class="p-4 md:p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-green-200 hover:shadow-md transition">
+                                    <i data-lucide="${c.icon}" class="w-6 h-6 md:w-8 md:h-8 text-x-primary mb-3"></i>
+                                    <h3 class="font-bold text-base md:text-lg text-gray-800 mb-1">${c.t}</h3>
+                                    <p class="text-xs md:text-sm text-gray-500">${c.d}</p>
                                 </div>
                             `).join('')}
                         </div>
 
-                        <button onclick="renderPage('math')" class="bg-x-primary hover:bg-x-dark text-white text-lg font-bold py-4 px-12 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 flex items-center gap-2 mx-auto">
+                        <button onclick="renderPage('math')" class="w-full md:w-auto bg-x-primary hover:bg-x-dark text-white text-lg font-bold py-4 px-12 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2 mx-auto">
                             ${H.btn} <i data-lucide="${state.lang === 'ar' ? 'arrow-left' : 'arrow-right'}"></i>
                         </button>
                     </div>
@@ -560,7 +574,7 @@
             const examplesHTML = data.examples.map(ex => `
                 <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <div class="bg-white p-1.5 rounded border border-gray-300 font-mono text-xs font-bold text-x-primary shrink-0" dir="ltr">${ex.code}</div>
-                    <p class="text-sm text-gray-700 pt-0.5 font-medium">${ex.txt}</p>
+                    <p class="text-xs md:text-sm text-gray-700 pt-0.5 font-medium">${ex.txt}</p>
                 </div>
             `).join('');
 
@@ -568,10 +582,10 @@
             let gridRows = '';
             for(let i=1; i<=4; i++) {
                 gridRows += `
-                    <tr class="h-10">
-                        <td class="bg-gray-100 text-gray-500 font-bold text-xs border border-gray-300 text-center w-8">${i}</td>
-                        <td class="border border-gray-200 bg-white text-center text-sm px-2 text-gray-600">${data.challenge.data['A'+i] || ''}</td>
-                        <td class="border border-gray-200 bg-white text-center text-sm font-bold text-gray-800 relative p-0">
+                    <tr class="h-12 md:h-10">
+                        <td class="bg-gray-100 text-gray-500 font-bold text-xs border border-gray-300 text-center w-10 md:w-8">${i}</td>
+                        <td class="border border-gray-200 bg-white text-center text-sm px-2 text-gray-600 min-w-[80px]">${data.challenge.data['A'+i] || ''}</td>
+                        <td class="border border-gray-200 bg-white text-center text-sm font-bold text-gray-800 relative p-0 min-w-[100px]">
                             ${'B'+i === data.challenge.target 
                                 ? `<input id="user-formula" class="formula-input" placeholder="fx..." autocomplete="off">` 
                                 : (data.challenge.data['B'+i] !== null ? data.challenge.data['B'+i] : '')}
@@ -582,20 +596,20 @@
 
             container.innerHTML = `
                 <div class="max-w-5xl mx-auto">
-                    <div class="mb-8 border-b border-gray-100 pb-6">
+                    <div class="mb-6 md:mb-8 border-b border-gray-100 pb-4 md:pb-6">
                         <span class="bg-green-100 text-x-dark px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block">تعلم ومارس</span>
-                        <h2 class="text-3xl font-black text-gray-900 mb-3">${data.title}</h2>
-                        <p class="text-lg text-gray-500">${data.desc}</p>
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-3">${data.title}</h2>
+                        <p class="text-base md:text-lg text-gray-500">${data.desc}</p>
                     </div>
 
-                    <div class="grid lg:grid-cols-2 gap-10">
+                    <div class="grid lg:grid-cols-2 gap-6 md:gap-10">
                         <div>
                             <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="book" class="text-x-primary"></i> شرح وأمثلة</h3>
                             <div class="space-y-3 mb-6">
                                 ${examplesHTML}
                             </div>
                             
-                            <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                            <div class="bg-blue-50 p-4 md:p-5 rounded-2xl border border-blue-100">
                                 <h4 class="font-bold text-blue-800 mb-2 text-sm flex items-center gap-2"><i data-lucide="info" class="w-4"></i> التحدي المطلوب</h4>
                                 <p class="text-gray-700 text-sm leading-relaxed">${data.challenge.q}</p>
                                 <div class="mt-3 text-xs bg-white p-2 rounded border border-blue-200 text-blue-600 inline-block font-bold">
@@ -604,32 +618,34 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-100 p-1 rounded-2xl shadow-inner border border-gray-200">
+                        <div class="bg-gray-100 p-2 md:p-1 rounded-2xl shadow-inner border border-gray-200 mt-4 lg:mt-0">
                             <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-300">
-                                <div class="bg-gray-50 border-b border-gray-300 flex items-center px-2 py-1 gap-2">
-                                    <div class="flex gap-1">
+                                <div class="bg-gray-50 border-b border-gray-300 flex items-center px-2 py-2 md:py-1 gap-2">
+                                    <div class="flex gap-1 hidden md:flex">
                                         <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                                         <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
                                         <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
                                     </div>
-                                    <div class="h-4 w-px bg-gray-300 mx-2"></div>
+                                    <div class="h-4 w-px bg-gray-300 mx-2 hidden md:block"></div>
                                     <span class="text-xs font-bold text-gray-400 italic font-serif">fx</span>
-                                    <div id="formula-bar-mirror" class="flex-grow bg-white border border-gray-200 h-6 rounded text-xs px-2 flex items-center font-mono text-gray-500"></div>
+                                    <div id="formula-bar-mirror" class="flex-grow bg-white border border-gray-200 h-8 md:h-6 rounded text-xs px-2 flex items-center font-mono text-gray-500 overflow-hidden whitespace-nowrap"></div>
                                 </div>
 
                                 <div class="flex bg-gray-100 border-b border-gray-300">
-                                    <div class="w-8 border-r border-gray-300"></div>
+                                    <div class="w-10 md:w-8 border-r border-gray-300"></div>
                                     <div class="flex-1 text-center text-xs font-bold text-gray-500 py-1 border-r border-gray-300">A</div>
                                     <div class="flex-1 text-center text-xs font-bold text-gray-500 py-1">B</div>
                                 </div>
-
-                                <table class="w-full border-collapse">
-                                    ${gridRows}
-                                </table>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="w-full border-collapse min-w-[300px]">
+                                        ${gridRows}
+                                    </table>
+                                </div>
                             </div>
                             
                             <div class="mt-4 flex justify-between items-center px-2">
-                                <span id="feedback-msg" class="text-sm font-bold text-gray-500">بانتظار الإجابة...</span>
+                                <span id="feedback-msg" class="text-xs md:text-sm font-bold text-gray-500">بانتظار الإجابة...</span>
                                 <button onclick="checkAnswer('${lessonId}')" class="bg-gray-800 hover:bg-black text-white px-6 py-2 rounded-lg font-bold text-sm shadow-md transition">تحقق</button>
                             </div>
                         </div>
@@ -699,13 +715,13 @@
                 <div class="max-w-2xl mx-auto py-8">
                     <div class="text-center mb-10">
                         <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block">المرحلة الأخيرة</span>
-                        <h2 class="text-4xl font-black text-gray-900">${data.title}</h2>
+                        <h2 class="text-3xl md:text-4xl font-black text-gray-900">${data.title}</h2>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-4 md:space-y-6">
                         ${data.q_list.map((q, i) => `
-                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                                <p class="font-bold text-lg text-gray-800 mb-4">${i+1}. ${q.q}</p>
+                            <div class="bg-gray-50 p-4 md:p-6 rounded-2xl border border-gray-200">
+                                <p class="font-bold text-base md:text-lg text-gray-800 mb-4">${i+1}. ${q.q}</p>
                                 <div class="grid grid-cols-1 gap-3">
                                     ${q.options.map(opt => `
                                         <label class="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-x-primary hover:bg-green-50 transition-all group">
